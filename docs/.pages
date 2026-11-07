@@ -1,0 +1,29 @@
+nav:
+  - 首页: index.md
+  - 导读:
+    - 00-introduction.md
+  - 第一篇 入门篇:
+    - 01-environment.md
+    - 02-quickstart.md
+    - 03-configuration.md
+    - 04-frontend-tour.md
+    - 05-run-modes.md
+  - 第二篇 进阶篇:
+    - 06-request-lifecycle.md
+    - 07-tools-and-skills.md
+    - 08-sandbox.md
+    - 09-multi-agent.md
+    - 10-memory.md
+    - 11-context-engineering.md
+    - 12-scheduled-tasks-and-im.md
+    - 13-gateway-api.md
+  - 第三篇 精通篇:
+    - 14-architecture-layers.md
+    - 15-mcp.md
+    - 16-extensions.md
+    - 17-business-cases.md
+    - 18-frontend-dev.md
+    - 19-testing-quality.md
+    - 20-production.md
+  - 附录:
+    - appendices.md

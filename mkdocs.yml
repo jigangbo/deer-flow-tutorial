@@ -1,0 +1,55 @@
+site_name: "DeerFlow 从入门到精通 · 源码教程"
+site_description: "基于 DeerFlow 真实源码的中文系统教程：21 章 + 附录，覆盖环境配置、核心组件拆解、二次开发与 MCP 集成"
+site_url: "https://jigangbo.github.io/deer-flow-tutorial/"
+repo_url: "https://github.com/jigangbo/deer-flow-tutorial"
+copyright: "教程基于开源项目 <a href='https://github.com/bytedance/deer-flow'>bytedance/deer-flow</a> 的真实源码编写"
+
+docs_dir: "docs"
+site_dir: "site"
+
+theme:
+  name: material
+  language: zh
+  palette:
+    - scheme: default
+      primary: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.instant
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - navigation.indexes
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - toc.follow
+
+plugins:
+  - search:
+      lang: [zh, en]
+      separator: '[\s\u200b\-]'
+  - awesome-pages
+
+markdown_extensions:
+  - tables
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+  - pymdownx.arithmatex:
+      generic: true
+  - admonition
+  - pymdownx.details
+  - toc:
+      permalink: true
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
