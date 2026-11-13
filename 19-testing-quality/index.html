@@ -1,0 +1,2333 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="基于 DeerFlow 真实源码的中文系统教程：21 章 + 附录，覆盖环境配置、核心组件拆解、二次开发与 MCP 集成">
+      
+      
+      
+        <link rel="canonical" href="https://jigangbo.github.io/deer-flow-tutorial/19-testing-quality/">
+      
+      
+        <link rel="prev" href="../18-frontend-dev/">
+      
+      
+        <link rel="next" href="../20-production/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
+    
+    
+      
+        <title>第 19 章 可观测性、测试与质量保障 - DeerFlow 从入门到精通 · 源码教程</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#19" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href=".." title="DeerFlow 从入门到精通 · 源码教程" class="md-header__button md-logo" aria-label="DeerFlow 从入门到精通 · 源码教程" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            DeerFlow 从入门到精通 · 源码教程
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              第 19 章 可观测性、测试与质量保障
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jigangbo/deer-flow-tutorial" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="DeerFlow 从入门到精通 · 源码教程" class="md-nav__button md-logo" aria-label="DeerFlow 从入门到精通 · 源码教程" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    DeerFlow 从入门到精通 · 源码教程
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jigangbo/deer-flow-tutorial" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    导读
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    导读
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 0 章 全景鸟瞰
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第一篇 入门篇
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第一篇 入门篇
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-environment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 1 章 准备环境（Environment Setup）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 2 章 一键启动（Quick Start）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 3 章 配置系统入门
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-frontend-tour/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 4 章 前端界面与基本功能导览
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-run-modes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 5 章 更多运行方式
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第二篇 进阶篇
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第二篇 进阶篇
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-request-lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 6 章 一次请求的一生：Agent 运行时全链路
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-tools-and-skills/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 7 章 工具系统与 Skills
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-sandbox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 8 章 沙箱与代码执行
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-multi-agent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 9 章 Multi-Agent 路由与子代理委派
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10-memory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 10 章 记忆系统（Memory / DeerMem）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../11-context-engineering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 11 章 上下文工程与长对话治理
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../12-scheduled-tasks-and-im/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 12 章 定时任务与 IM 渠道
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../13-gateway-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 13 章 Gateway API 与编程接入
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第三篇 精通篇
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第三篇 精通篇
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../14-architecture-layers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 14 章 架构分层与开发规范（二次开发前必读）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../15-mcp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 15 章 MCP 集成（重点）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../16-extensions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 16 章 扩展（Extensions）开发
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../17-business-cases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 17 章 业务二次开发实战（综合案例）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../18-frontend-dev/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 18 章 前端二次开发
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 19 章 可观测性、测试与质量保障
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 19 章 可观测性、测试与质量保障
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#190" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.0 学习目标
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#191" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.1 日志与追踪
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="19.1 日志与追踪">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1911-trace-id-contextvar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.1.1 请求级 trace id：唯一来源是 ContextVar
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1912-trace" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.1.2 日志增强：默认关、开了才带 trace 字段
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1913-llm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.1.3 三条 LLM 追踪通道
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#192-token_usage-token_budget" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.2 成本控制：token_usage 与 token_budget
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="19.2 成本控制：token_usage 与 token_budget">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1921-enforcement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.2.1 计量开关与预算 enforcement
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1922" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.2.2 递归上限：服务端硬顶
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1923-token" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.2.3 子代理 token 归集
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#193-blockbuster-live" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.3 测试体系：四分片、Blockbuster 门禁与 live 测试
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="19.3 测试体系：四分片、Blockbuster 门禁与 live 测试">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1931" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.3.1 命令矩阵
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1932-blockbuster" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.3.2 Blockbuster：把"阻塞事件循环"变成红灯
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1933" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.3.3 测试规模与组织
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#194-scriptsbenchmark" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.4 基准测试：scripts/benchmark/ 的纪律
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="19.4 基准测试：scripts/benchmark/ 的纪律">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1941-deermem_eviction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.4.1 deermem_eviction：记忆淘汰策略评估
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1942-concurrencysqlite-vs-postgres" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.4.2 concurrency：SQLite vs Postgres 的多进程争用
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1943-context_snapshot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.4.3 context_snapshot：上下文交接快照评估
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1944" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.4.4 通用纪律
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#195-ci" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.5 前端测试与 CI 全景
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="19.5 前端测试与 CI 全景">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1951" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.5.1 前端测试矩阵
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1952-pre-commit-ci" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.5.2 pre-commit 与 CI 工作流
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tdd-bug" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        动手实验：TDD 修复一个带 bug 的小问题（含全量门禁）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        常见坑
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        下一步
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../20-production/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 20 章 生产部署与运维
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    附录
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    附录
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../appendices/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    附录
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#190" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.0 学习目标
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#191" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.1 日志与追踪
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="19.1 日志与追踪">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1911-trace-id-contextvar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.1.1 请求级 trace id：唯一来源是 ContextVar
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1912-trace" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.1.2 日志增强：默认关、开了才带 trace 字段
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1913-llm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.1.3 三条 LLM 追踪通道
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#192-token_usage-token_budget" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.2 成本控制：token_usage 与 token_budget
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="19.2 成本控制：token_usage 与 token_budget">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1921-enforcement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.2.1 计量开关与预算 enforcement
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1922" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.2.2 递归上限：服务端硬顶
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1923-token" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.2.3 子代理 token 归集
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#193-blockbuster-live" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.3 测试体系：四分片、Blockbuster 门禁与 live 测试
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="19.3 测试体系：四分片、Blockbuster 门禁与 live 测试">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1931" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.3.1 命令矩阵
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1932-blockbuster" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.3.2 Blockbuster：把"阻塞事件循环"变成红灯
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1933" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.3.3 测试规模与组织
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#194-scriptsbenchmark" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.4 基准测试：scripts/benchmark/ 的纪律
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="19.4 基准测试：scripts/benchmark/ 的纪律">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1941-deermem_eviction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.4.1 deermem_eviction：记忆淘汰策略评估
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1942-concurrencysqlite-vs-postgres" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.4.2 concurrency：SQLite vs Postgres 的多进程争用
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1943-context_snapshot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.4.3 context_snapshot：上下文交接快照评估
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1944" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.4.4 通用纪律
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#195-ci" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.5 前端测试与 CI 全景
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="19.5 前端测试与 CI 全景">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1951" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.5.1 前端测试矩阵
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1952-pre-commit-ci" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.5.2 pre-commit 与 CI 工作流
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tdd-bug" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        动手实验：TDD 修复一个带 bug 的小问题（含全量门禁）
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        常见坑
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        下一步
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="19">第 19 章 可观测性、测试与质量保障<a class="headerlink" href="#19" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><strong>本章源码锚点</strong></p>
+<table>
+<thead>
+<tr>
+<th>锚点</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>backend/Makefile:22</code></td>
+<td><code>test</code> 四分片并行；<code>:35</code> <code>test-blocking-io</code>；<code>:49</code> <code>test-shard</code> 耗时均衡</td>
+</tr>
+<tr>
+<td><code>backend/tests/blocking_io/conftest.py:26</code></td>
+<td>Blockbuster 严格门禁的 hookwrapper</td>
+</tr>
+<tr>
+<td><code>backend/pyproject.toml:63</code></td>
+<td><code>blockbuster&gt;=1.5.26,&lt;1.6</code> 依赖声明</td>
+</tr>
+<tr>
+<td><code>backend/packages/harness/deerflow/trace_context.py:1</code></td>
+<td>请求级 trace id 的唯一来源</td>
+</tr>
+<tr>
+<td><code>backend/packages/harness/deerflow/logging_config.py:9</code></td>
+<td>日志格式与 trace 字段注入</td>
+</tr>
+<tr>
+<td><code>config.example.yaml:96</code> / <code>:106</code></td>
+<td><code>token_usage:</code> 与 <code>token_budget:</code> 配置段</td>
+</tr>
+<tr>
+<td><code>backend/scripts/benchmark/</code></td>
+<td>deermem_eviction / concurrency / context_snapshot 基准目录</td>
+</tr>
+<tr>
+<td><code>frontend/rstest.config.ts:22</code></td>
+<td>前端 node / happy-dom 双测试项目</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<h2 id="190">19.0 学习目标<a class="headerlink" href="#190" title="Permanent link">&para;</a></h2>
+<p>读完本章，你应该能够：</p>
+<ol>
+<li>描述 DeerFlow 的可观测性三件套：请求级 trace id（<code>X-Trace-Id</code>）如何绑定与传播、日志增强格式、Monocle/LangSmith/Langfuse 三条追踪通道如何开启。</li>
+<li>用 <code>token_usage</code> / <code>token_budget</code> 配置把一次 run 的成本控制在预算内，并说明超预算时"警告注入"与"强制收尾"两种干预的差异。</li>
+<li>读懂后端测试的完整分层：<code>make test</code> 四个耗时均衡分片、<code>make test-blocking-io</code> 的 Blockbuster 门禁、<code>make test-live</code> 的 opt-in 协议、<code>make test-shard</code> 的 <code>.test_durations</code> 基线。</li>
+<li>说清基准测试目录的纪律：数据集不可变 pin + SHA-256、禁止静默下载、合成用例自报身份。</li>
+<li>在前端 <code>pnpm check</code> / <code>rstest</code> / Playwright 与 <code>.pre-commit-config.yaml</code> 的约束下完成一次符合 TDD 要求的 bug 修复。</li>
+</ol>
+<hr />
+<h2 id="191">19.1 日志与追踪<a class="headerlink" href="#191" title="Permanent link">&para;</a></h2>
+<h3 id="1911-trace-id-contextvar">19.1.1 请求级 trace id：唯一来源是 ContextVar<a class="headerlink" href="#1911-trace-id-contextvar" title="Permanent link">&para;</a></h3>
+<p><code>backend/packages/harness/deerflow/trace_context.py</code> 的模块文档（1–31 行）把规则讲得非常透，值得整段读：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>// backend/packages/harness/deerflow/trace_context.py:1-9（docstring 节选）
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>"""Request trace context helpers.
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>The value stored here is DeerFlow's request-level correlation id. It is
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>separate from Langfuse's own trace id and from DeerFlow run ids.
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>**This ContextVar is the only source of a trace id.** Every path that reaches a
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>run binds one first: the Gateway ``TraceMiddleware`` for HTTP, and
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>:func:`ensure_trace_context` for the entry points that never touch ASGI --
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>scheduled occurrences, MCP task notification runs, IM channel messages, and the
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>embedded :class:`~deerflow.client.DeerFlowClient`.
+</code></pre></div>
+<p>设计的几个关键决定（原文都在 docstring 里）：</p>
+<ul>
+<li><strong>trace id ≠ run id ≠ Langfuse trace id</strong>：它是纯关联 ID，用来把"同一次请求"在日志、响应头、run 元数据之间串起来。</li>
+<li><strong>所有下游载体都是"派生输出，永不回读"</strong>（<code>trace_context.py:14-20</code>）：<code>X-Trace-Id</code> 响应头、<code>runtime.context</code> 里的 <code>deerflow_trace_id</code>、run 记录元数据、日志字段，全部只写不读。如果调用方在请求里塞了 <code>metadata.deerflow_trace_id</code>，会被替换而不是采纳——"一个你无法确信与日志一致的 trace id，比没有更糟"。跨服务想固定关联 ID 的正确做法是发送 <code>X-Trace-Id</code> 头。</li>
+<li><strong>跨执行边界用数据携带</strong>：ContextVar 是 task-local 的，裸线程跳跃不会保留；定时任务、MCP 通知、IM 消息这些不经过 ASGI 的入口各自先 <code>ensure_trace_context()</code> 重新绑定。</li>
+</ul>
+<h3 id="1912-trace">19.1.2 日志增强：默认关、开了才带 trace 字段<a class="headerlink" href="#1912-trace" title="Permanent link">&para;</a></h3>
+<p><code>backend/packages/harness/deerflow/logging_config.py:9-11</code> 定义了两种格式：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="o">//</span> <span class="n">backend</span><span class="o">/</span><span class="n">packages</span><span class="o">/</span><span class="n">harness</span><span class="o">/</span><span class="n">deerflow</span><span class="o">/</span><span class="n">logging_config</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">9</span><span class="o">-</span><span class="mi">11</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">DEFAULT_LOG_DATE_FORMAT</span> <span class="o">=</span> <span class="s2">"%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S"</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">DEFAULT_LOG_FORMAT</span> <span class="o">=</span> <span class="s2">"</span><span class="si">%(asctime)s</span><span class="s2"> - </span><span class="si">%(name)s</span><span class="s2"> - </span><span class="si">%(levelname)s</span><span class="s2"> - </span><span class="si">%(message)s</span><span class="s2">"</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">TRACE_TEXT_LOG_FORMAT</span> <span class="o">=</span> <span class="s2">"</span><span class="si">%(asctime)s</span><span class="s2"> - </span><span class="si">%(name)s</span><span class="s2"> - </span><span class="si">%(levelname)s</span><span class="s2"> - [trace_id=</span><span class="si">%(trace_id)s</span><span class="s2">] - </span><span class="si">%(message)s</span><span class="s2">"</span>
+</code></pre></div>
+<p>开关在 <code>config.example.yaml:52-55</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># config.example.yaml:52-55</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nt">logging</span><span class="p">:</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="nt">enhance</span><span class="p">:</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="nt">format</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">text</span>
+</code></pre></div>
+<p>注意两点（<code>config.example.yaml:48-51</code> 注释原文）：trace id <strong>永远</strong>会签发并通过 <code>X-Trace-Id</code> 响应头返回——<code>logging.enhance</code> 只控制日志记录里是否带 <code>trace_id</code> 字段，不控制 id 的存在；该开关是 restart-required 的（走 <code>reload_boundary.py</code>）。</p>
+<p>这个文件里还藏着一个安全细节：<code>httpx</code> 会在 INFO 级打印完整请求 URL，而入库媒体的 URL 是带签名凭证的，所以模块内置了一个 URL 脱敏正则（<code>logging_config.py:19-31</code>），把 host 之后的部分（含 basic-auth 用户信息）整体改写——这是"日志即泄露面"意识的实例。</p>
+<h3 id="1913-llm">19.1.3 三条 LLM 追踪通道<a class="headerlink" href="#1913-llm" title="Permanent link">&para;</a></h3>
+<p><code>backend/packages/harness/deerflow/tracing/</code> 目录有四个文件：<code>factory.py</code>、<code>monocle.py</code>、<code>metadata.py</code> 与 <code>AGENTS.md</code>。<code>factory.py:17-30</code> 按 trace 提供者构造回调：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="o">//</span> <span class="n">backend</span><span class="o">/</span><span class="n">packages</span><span class="o">/</span><span class="n">harness</span><span class="o">/</span><span class="n">deerflow</span><span class="o">/</span><span class="n">tracing</span><span class="o">/</span><span class="n">factory</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">17</span><span class="o">-</span><span class="mi">30</span><span class="err">（</span><span class="n">节选</span><span class="err">）</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">_create_langsmith_tracer</span><span class="p">(</span><span class="n">config</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    <span class="kn">from</span><span class="w"> </span><span class="nn">langchain_core.tracers.langchain</span><span class="w"> </span><span class="kn">import</span> <span class="n">LangChainTracer</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="k">return</span> <span class="n">LangChainTracer</span><span class="p">(</span><span class="n">project_name</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">project</span><span class="p">)</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="k">def</span><span class="w"> </span><span class="nf">_create_langfuse_handler</span><span class="p">(</span><span class="n">config</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>    <span class="kn">from</span><span class="w"> </span><span class="nn">langfuse</span><span class="w"> </span><span class="kn">import</span> <span class="n">Langfuse</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>    <span class="kn">from</span><span class="w"> </span><span class="nn">langfuse.langchain</span><span class="w"> </span><span class="kn">import</span> <span class="n">CallbackHandler</span> <span class="k">as</span> <span class="n">LangfuseCallbackHandler</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>    <span class="c1"># langfuse&gt;=4 initializes project-specific credentials through the client</span>
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>    <span class="c1"># singleton; the LangChain callback then attaches to that configured client.</span>
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>    <span class="n">Langfuse</span><span class="p">(</span>
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>        <span class="n">secret_key</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">secret_key</span><span class="p">,</span>
+</code></pre></div>
+<p>即 <strong>LangSmith / Langfuse 走 <code>config.yaml</code> 的 trace 配置段</strong>（工厂从 <code>get_enabled_tracing_providers()</code> 读取并校验），而 <strong>Monocle 走环境变量</strong>——<code>config.example.yaml:85-88</code> 写明：<code>MONOCLE_TRACING</code>、<code>MONOCLE_EXPORTERS</code>、<code>OKAHU_API_KEY</code>，默认关闭，README 的 "Monocle Tracing" 一节说明每个 exporter 捕获什么、数据落到哪。三条通道互不冲突，生产上通常只开一条。</p>
+<hr />
+<h2 id="192-token_usage-token_budget">19.2 成本控制：<code>token_usage</code> 与 <code>token_budget</code><a class="headerlink" href="#192-token_usage-token_budget" title="Permanent link">&para;</a></h2>
+<h3 id="1921-enforcement">19.2.1 计量开关与预算 enforcement<a class="headerlink" href="#1921-enforcement" title="Permanent link">&para;</a></h3>
+<p><code>config.example.yaml</code> 相邻两段给出了"只计量"与"硬限制"的两档：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="l l-Scalar l-Scalar-Plain">// config.example.yaml:96-97</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="l l-Scalar l-Scalar-Plain">token_usage</span><span class="p p-Indicator">:</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="l l-Scalar l-Scalar-Plain">// config.example.yaml:106-112</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="nt">token_budget</span><span class="p">:</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w">                </span><span class="c1"># Set to true to activate budget enforcement</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">  </span><span class="nt">max_tokens</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">200000</span><span class="w">            </span><span class="c1"># Total token limit (input + output) per run</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">  </span><span class="nt">max_input_tokens</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w">        </span><span class="c1"># Optional separate input-only limit</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">  </span><span class="nt">max_output_tokens</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w">       </span><span class="c1"># Optional separate output-only limit</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">  </span><span class="nt">warn_threshold</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.8</span><span class="w">           </span><span class="c1"># Warn at 80% of the budget</span>
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="w">  </span><span class="nt">hard_stop_threshold</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span><span class="w">      </span><span class="c1"># Force stop at 100% of the budget</span>
+</code></pre></div>
+<p>语义（<code>config.example.yaml:99-105</code> 注释）：<code>warn_threshold</code> 被跨越时，agent 会在上下文里收到一条<strong>警告消息</strong>（模型可以自己收敛）；<code>hard_stop_threshold</code> 被跨越时，挂起的 <code>tool_calls</code> 被剥除、agent 被迫立刻产出最终答案。默认 <code>enabled: false</code>——计量常开（<code>token_usage.enabled: true</code>），限流要显式打开。</p>
+<h3 id="1922">19.2.2 递归上限：服务端硬顶<a class="headerlink" href="#1922" title="Permanent link">&para;</a></h3>
+<p>成本失控的另一路径是无限递归。<code>config.example.yaml:120-125</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="l l-Scalar l-Scalar-Plain">// config.example.yaml:120-125</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="l l-Scalar l-Scalar-Plain">recursion_limit</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1"># The Gateway never trusts a configured or client-supplied value above this</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="c1"># ceiling, preventing runaway API cost / DoS. Raise it only if you legitimately</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="c1"># run very deeply nested subagent graphs.</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="nt">max_recursion_limit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span>
+</code></pre></div>
+<p>客户端可以按请求覆盖 <code>recursion_limit</code>，但非法或非正值回落到配置默认；任何值超过 <code>max_recursion_limit: 1000</code> 一律被网关钳制——这是"不信任客户端"的又一例（与第 20 章 run-context 信任边界同源）。调度轮在分发时读取 <code>scheduler.recursion_limit</code>（默认 1000，与 Web UI 一致），同样被这个硬顶约束（<code>backend/AGENTS.md:14</code>）。</p>
+<h3 id="1923-token">19.2.3 子代理 token 归集<a class="headerlink" href="#1923-token" title="Permanent link">&para;</a></h3>
+<p>子代理在后台并行运行，其用量必须归到主 run 的账上。相关约定见 <code>backend/AGENTS.md:13</code>：终端用量从<strong>当前 run 的 <code>ToolMessage.additional_kwargs</code> 与消息状态</strong>取，"never a global provider-ID cache"——因为 provider 的 <code>tool_call_id</code> 跨父 run 可能碰撞，全局缓存会把别的 run 的用量记到本 run 头上。你在第 9 章见过的 <code>token_collector.py</code> 负责具体的归集。</p>
+<hr />
+<h2 id="193-blockbuster-live">19.3 测试体系：四分片、Blockbuster 门禁与 live 测试<a class="headerlink" href="#193-blockbuster-live" title="Permanent link">&para;</a></h2>
+<h3 id="1931">19.3.1 命令矩阵<a class="headerlink" href="#1931" title="Permanent link">&para;</a></h3>
+<p><code>backend/Makefile</code> 的测试 target 是理解质量闸门的第一手材料：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nf">// backend/Makefile</span><span class="o">:</span>22-36（节选）
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="c"># Run all four duration-balanced shards locally; wait for every shard on failure.</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="nv">TEST_JOBS</span><span class="w"> </span><span class="o">?=</span><span class="w"> </span><span class="m">4</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="nv">TEST_SHARD_TARGETS</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span>test-shard-1<span class="w"> </span>test-shard-2<span class="w"> </span>test-shard-3<span class="w"> </span>test-shard-4
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="nf">test</span><span class="o">:</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">    </span><span class="k">$(</span>MAKE<span class="k">)</span><span class="w"> </span>--no-print-directory<span class="w"> </span>-k<span class="w"> </span>-j<span class="k">$(</span>TEST_JOBS<span class="k">)</span><span class="w"> </span><span class="k">$(</span>TEST_SHARD_TARGETS<span class="k">)</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="nf">$(TEST_SHARD_TARGETS)</span><span class="o">:</span>
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="w">    </span><span class="k">$(</span>MAKE<span class="k">)</span><span class="w"> </span>--no-print-directory<span class="w"> </span>test-shard<span class="w"> </span><span class="nv">SPLITS</span><span class="o">=</span><span class="m">4</span><span class="w"> </span><span class="nv">GROUP</span><span class="o">=</span><span class="k">$(</span>patsubst<span class="w"> </span>test-shard-%,%,<span class="nv">$@</span><span class="k">)</span>
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>
+<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="nf">test-live</span><span class="o">:</span>
+<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="w">    </span><span class="nv">DEER_FLOW_RUN_LIVE_TESTS</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">PYTHONPATH</span><span class="o">=</span>.<span class="w"> </span><span class="nv">PYTHONIOENCODING</span><span class="o">=</span>utf-8<span class="w"> </span><span class="nv">PYTHONUTF8</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>-m<span class="w"> </span>live<span class="w"> </span>tests/<span class="w"> </span>-v<span class="w"> </span>-s
+<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>
+<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="nf">test-blocking-io</span><span class="o">:</span>
+<a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a><span class="w">    </span><span class="nv">PYTHONPATH</span><span class="o">=</span>.<span class="w"> </span><span class="nv">PYTHONIOENCODING</span><span class="o">=</span>utf-8<span class="w"> </span><span class="nv">PYTHONUTF8</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>tests/blocking_io<span class="w"> </span>-q<span class="w"> </span>--tb<span class="o">=</span>short
+</code></pre></div>
+<p>再往下是分片本体（<code>backend/Makefile:49-52</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nf">// backend/Makefile</span><span class="o">:</span>49-52
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nf">test-shard</span><span class="o">:</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">    </span>@test<span class="w"> </span>-f<span class="w"> </span><span class="s2">"</span><span class="k">$(</span>DURATIONS_FILE<span class="k">)</span><span class="s2">"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">        </span><span class="o">(</span><span class="nb">echo</span><span class="w"> </span><span class="s2">"error: </span><span class="k">$(</span>DURATIONS_FILE<span class="k">)</span><span class="s2"> is missing; run 'make test-shard-durations' to regenerate the duration baseline"</span><span class="w"> </span>&gt;<span class="p">&amp;</span><span class="m">2</span><span class="p">;</span><span class="w"> </span><span class="nb">exit</span><span class="w"> </span><span class="m">1</span><span class="o">)</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">    </span><span class="nv">PYTHONPATH</span><span class="o">=</span>.<span class="w"> </span><span class="nv">PYTHONIOENCODING</span><span class="o">=</span>utf-8<span class="w"> </span><span class="nv">PYTHONUTF8</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>-m<span class="w"> </span><span class="s2">"not live"</span><span class="w"> </span>--ignore<span class="o">=</span>tests/blocking_io<span class="w"> </span>--splits<span class="w"> </span><span class="k">$(</span>SPLITS<span class="k">)</span><span class="w"> </span>--group<span class="w"> </span><span class="k">$(</span>GROUP<span class="k">)</span><span class="w"> </span>--splitting-algorithm<span class="w"> </span>least_duration<span class="w"> </span>--durations-path<span class="o">=</span><span class="k">$(</span>DURATIONS_FILE<span class="k">)</span><span class="w"> </span>tests/<span class="w"> </span>-q
+</code></pre></div>
+<p>四条注释级事实：</p>
+<ol>
+<li><strong><code>make test</code> = 四个耗时均衡分片并行</strong>（<code>TEST_JOBS=4</code>，<code>-k</code> 保证任一分片失败后其余仍跑完），等价于 CI 的 <code>backend-unit-tests.yml</code> 切法；<code>TEST_JOBS=1</code> 串行。</li>
+<li><strong>耗时均衡算法是 <code>least_duration</code></strong>：分片只<strong>读</strong> <code>.test_durations</code> 基线（没有 <code>--store-durations</code>），避免并发 CI 写竞争；改了测试集后用 <code>make test-shard-durations</code>（<code>backend/Makefile:57-58</code>）重建基线并提交。</li>
+<li><strong>离线是默认</strong>：<code>-m "not live"</code> 排除 live 测试，<code>--ignore=tests/blocking_io</code> 把阻塞 IO 门禁单列；live 测试必须显式 <code>DEER_FLOW_RUN_LIVE_TESTS=1</code>（<code>backend/AGENTS.md:226-227</code>），POSIX-only 标记还要用 <code>os.name</code> 守护 Windows 收集。</li>
+<li><strong>依赖与分片库</strong>：<code>backend/pyproject.toml:69</code> 的 <code>pytest-split&gt;=0.11.0</code> 提供 <code>--splits/--group</code>，<code>:63</code> 的 <code>blockbuster&gt;=1.5.26,&lt;1.6</code> 提供运行时门禁。</li>
+</ol>
+<h3 id="1932-blockbuster">19.3.2 Blockbuster：把"阻塞事件循环"变成红灯<a class="headerlink" href="#1932-blockbuster" title="Permanent link">&para;</a></h3>
+<p>DeerFlow 后端是全异步的，一行同步文件 IO 就能卡住整个 Gateway 事件循环。防线有三层，最硬的一层是 <code>tests/blocking_io/</code> 专用 conftest：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="o">//</span> <span class="n">backend</span><span class="o">/</span><span class="n">tests</span><span class="o">/</span><span class="n">blocking_io</span><span class="o">/</span><span class="n">conftest</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">26</span><span class="o">-</span><span class="mi">33</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="nd">@pytest</span><span class="o">.</span><span class="n">hookimpl</span><span class="p">(</span><span class="n">hookwrapper</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">pytest_runtest_protocol</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">pytest</span><span class="o">.</span><span class="n">Item</span><span class="p">,</span> <span class="n">nextitem</span><span class="p">:</span> <span class="n">pytest</span><span class="o">.</span><span class="n">Item</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">_is_blocking_io_item</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="ow">or</span> <span class="n">item</span><span class="o">.</span><span class="n">get_closest_marker</span><span class="p">(</span><span class="s2">"allow_blocking_io"</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>        <span class="k">yield</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>        <span class="k">return</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>    <span class="k">with</span> <span class="n">detect_blocking_io_strict</span><span class="p">():</span>
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>        <span class="k">yield</span>
+</code></pre></div>
+<p>三个细节（<code>backend/tests/blocking_io/conftest.py:1-12</code> docstring）：</p>
+<ul>
+<li>门禁包住<strong>整个 pytest item 协议（setup + call + teardown）</strong>，所以异步 fixture 与 lifespan 代码里的阻塞 IO 也逃不掉，不只测试函数体。</li>
+<li>hookwrapper 是全局注册的，因此必须有显式路径过滤（<code>_is_blocking_io_item</code>）防止普通测试被误伤。</li>
+<li>逃生舱是 <code>@pytest.mark.allow_blocking_io</code> 标记——用它要给出理由，review 会追问。</li>
+</ul>
+<p><code>tests/blocking_io/</code> 下有约 90 个专属测试文件，覆盖路由、沙箱、渠道、技能、persistence 等高危面。CI 由 <code>.github/workflows/backend-blocking-io-tests.yml</code> 单独跑这个目录。第二层防线是静态扫描：<code>make detect-blocking-io</code>（<code>backend/Makefile:67-68</code>）调用 <code>scripts/detect_blocking_io_static.py</code> 输出 JSON 清单。第三层是运行时兜底——<code>deerflow.utils.file_io.run_file_io</code>（ContextVar 保留式）与 <code>asyncio.to_thread</code> 是写新代码时的正确姿势（<code>backend/AGENTS.md:139-145</code> 列出的 HTTPX 客户端同步 TLS 构造都按此办理）。</p>
+<p><strong>为什么这条门禁值得专门一节</strong>：它把"异步纪律"从 code review 的口头约定变成可执行的 CI 断言。这是后端 TDD（<code>backend/AGENTS.md:216-227</code> 要求每个 feature/bugfix 必须带测试，跑 <code>make test</code> 与 <code>make test-blocking-io</code> 两个目标）之外，DeerFlow 最有特色的质量机制。</p>
+<h3 id="1933">19.3.3 测试规模与组织<a class="headerlink" href="#1933" title="Permanent link">&para;</a></h3>
+<p><code>backend/tests/</code> 顶层有 1340 个条目（绝大多数是 <code>test_&lt;feature&gt;.py</code>，另有 <code>fixtures/</code>、<code>support/</code>、<code>monocle/</code> 子目录与若干 <code>_*.py</code> 共享 helper）。组织规则（<code>backend/AGENTS.md:219-224</code>）：命名 <code>test_&lt;feature&gt;.py</code>；轻量配置/工具模块用纯单测；模块在测试中引发循环导入时在 <code>tests/conftest.py</code> 加 <code>sys.modules</code> mock（现有范例是 <code>deerflow.subagents.executor</code>）。前端 E2E 还有专门的回放形态：<code>replay_provider.py</code> + <code>.github/workflows/replay-e2e.yml</code> 支持"录一次、回放跑"。</p>
+<hr />
+<h2 id="194-scriptsbenchmark">19.4 基准测试：<code>scripts/benchmark/</code> 的纪律<a class="headerlink" href="#194-scriptsbenchmark" title="Permanent link">&para;</a></h2>
+<p><code>backend/scripts/benchmark/</code> 下现有：<code>checkpoint/</code>、<code>concurrency/</code>、<code>context_snapshot/</code>、<code>deermem_eviction/</code>、<code>deermem_scope_isolation/</code>、<code>goal_loop_stop/</code>、<code>sandbox/</code>、<code>scheduled_tasks/</code> 与 <code>skill_export.py</code>。大纲点名的三个：</p>
+<h3 id="1941-deermem_eviction">19.4.1 <code>deermem_eviction</code>：记忆淘汰策略评估<a class="headerlink" href="#1941-deermem_eviction" title="Permanent link">&para;</a></h3>
+<p><code>backend/scripts/benchmark/deermem_eviction/README.md:1-5</code> 开宗明义：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>// backend/scripts/benchmark/deermem_eviction/README.md:1-5
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a># DeerMem Capacity-Eviction Evaluation
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>This directory makes the controlled comparison behind DeerMem's opt-in `hybrid-v1` capacity policy reproducible. It depends on [deer-flow#4789]...
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>The evaluation calls the production `select_facts_for_capacity()` function. It does not copy the scoring implementation and does not introduce another eviction strategy.
+</code></pre></div>
+<p>它的"输入钉死"表是全仓库基准纪律的范本（<code>README.md:24-31</code>）：</p>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dataset</td>
+<td><code>xiaowu0162/longmemeval-cleaned</code></td>
+</tr>
+<tr>
+<td>Revision</td>
+<td><code>98d7416c24c778c2fee6e6f3006e7a073259d48f</code></td>
+</tr>
+<tr>
+<td>File</td>
+<td><code>longmemeval_oracle.json</code></td>
+</tr>
+<tr>
+<td>SHA-256</td>
+<td><code>821a2034d219ab45846873dd14c14f12cfe7776e73527a483f9dac095d38620c</code></td>
+</tr>
+<tr>
+<td>Official cases</td>
+<td>40 fixed IDs: 20 <code>knowledge-update</code>, 20 <code>temporal-reasoning</code></td>
+</tr>
+</tbody>
+</table>
+<p>数据集<strong>不下载</strong>（"The CLI never downloads LongMemEval"），调用方自己准备本地路径；离线校验不依赖网络、凭证或数据集本体，测试 fixture 必须是合成并自报身份的。运行命令（<code>backend/AGENTS.md:71-78</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nv">PYTHONPATH</span><span class="o">=</span>.<span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>scripts.benchmark.deermem_eviction<span class="w"> </span>validate-contracts
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="nv">PYTHONPATH</span><span class="o">=</span>.<span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>scripts.benchmark.deermem_eviction<span class="w"> </span>validate<span class="w"> </span>--dataset<span class="w"> </span><span class="s2">"</span><span class="nv">$LONGMEMEVAL_ORACLE_PATH</span><span class="s2">"</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="nv">PYTHONPATH</span><span class="o">=</span>.<span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>tests/test_bench_deermem_eviction_*.py<span class="w"> </span>-q
+</code></pre></div>
+<h3 id="1942-concurrencysqlite-vs-postgres">19.4.2 <code>concurrency</code>：SQLite vs Postgres 的多进程争用<a class="headerlink" href="#1942-concurrencysqlite-vs-postgres" title="Permanent link">&para;</a></h3>
+<p>这个基准直接回答第 20 章"为什么多实例必须 Postgres"：它测的是 <code>users</code> 表上的<strong>N 个独立 OS 进程</strong>争用（不是 asyncio 任务），即 <code>CONFIGURATION.md</code> 要求 Postgres 的那个场景（<code>backend/AGENTS.md:84-88</code>）。<code>worker.py</code> 绕过编排器已完成的 Alembic 引导、直连 SQLAlchemy 并镜像应用的每连接 SQLite PRAGMA；<code>run_concurrency_bench.py</code> 为 Postgres 播种一次性 schema、用 READY/GO 屏障同步计时起点，<strong>任何崩溃、操作数不足或 <code>errors &gt; 0</code> 都以非零码退出</strong>（<code>backend/AGENTS.md:89-92</code>）。Postgres 运行需要 <code>--pg-url</code> 指向一次性库，绝不触碰 <code>public</code>。</p>
+<h3 id="1943-context_snapshot">19.4.3 <code>context_snapshot</code>：上下文交接快照评估<a class="headerlink" href="#1943-context_snapshot" title="Permanent link">&para;</a></h3>
+<p><code>backend/scripts/benchmark/context_snapshot/README.md:1-5</code>：8 个合成 JSON/Python 任务、51 条预声明检查，<strong>不下载任何外部数据集</strong>；<code>run-live</code> 是显式动作，不属于 pytest 或默认 CI：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">CONTEXT_SNAPSHOT_BASE_URL</span><span class="o">=</span><span class="s2">"https://provider.example/v1"</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">CONTEXT_SNAPSHOT_MODEL</span><span class="o">=</span><span class="s2">"your-model-id"</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>scripts.benchmark.context_snapshot<span class="w"> </span>run-live<span class="w"> </span>--output-dir<span class="w"> </span>/tmp/context-snapshot-run
+</code></pre></div>
+<p>输出目录会拿到 <code>run.json</code>（记录模型、配置、种子、源码哈希、包版本、git revision 与 dirty 状态）——<strong>可复现性的完整证据链</strong>。</p>
+<h3 id="1944">19.4.4 通用纪律<a class="headerlink" href="#1944" title="Permanent link">&para;</a></h3>
+<p><code>backend/AGENTS.md:43-63</code> 把规矩写死：基准必须独立可复现、<strong>导入生产函数而不是复制实现</strong>；数据集按不可变 revision + SHA-256 pin；凭证只从具名环境变量读；模型 ID、推理参数、prompt、重试规则、时钟与随机种子全部版本化进评测配置；合成用例必须自报 synthetic；固定时钟与确定性排序用于离线选择。</p>
+<hr />
+<h2 id="195-ci">19.5 前端测试与 CI 全景<a class="headerlink" href="#195-ci" title="Permanent link">&para;</a></h2>
+<h3 id="1951">19.5.1 前端测试矩阵<a class="headerlink" href="#1951" title="Permanent link">&para;</a></h3>
+<p><code>frontend/package.json:20-21</code> 两个入口：<code>"test": "rstest"</code> 与 <code>"test:e2e": "playwright test"</code>。单测在 <code>tests/unit/</code> 下按 <code>src/</code> 镜像组织（现有子目录：<code>app/</code>、<code>components/</code>、<code>content/</code>、<code>core/</code>、<code>hooks/</code>、<code>lib/</code>、<code>scripts/</code>、<code>helpers/</code>），node 与 happy-dom 双 project 的切分规则已在第 18 章 18.5.2 讲过。E2E 目录四个：<code>tests/e2e/</code>（主套件，Chromium，CI 四分片）、<code>tests/e2e-auth/</code>、<code>tests/e2e-real-backend/</code>（连真实后端的契约测试，如 <code>auth-disabled-contract.spec.ts</code>）、<code>tests/e2e-record/</code>。注册权限路由时要同时更新 E2E 契约与后端 <code>backend/tests/test_auth_me_permissions.py</code>，两处共同钉死完整清单（<code>frontend/AGENTS.md:46-50</code>）。</p>
+<h3 id="1952-pre-commit-ci">19.5.2 pre-commit 与 CI 工作流<a class="headerlink" href="#1952-pre-commit-ci" title="Permanent link">&para;</a></h3>
+<p><code>.pre-commit-config.yaml</code> 定义了五个本地钩子（<code>make install</code> 时装好）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="l l-Scalar l-Scalar-Plain">// .pre-commit-config.yaml:5-22（后端三钩子）</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">- id</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ruff</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ruff lint</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">entry</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bash -c 'cd backend &amp;&amp; uv run ruff check --fix "${@/#backend\//}"' --</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">- id</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ruff-format</span>
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ruff format</span>
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">entry</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bash -c 'cd backend &amp;&amp; uv run ruff format "${@/#backend\//}"' --</span>
+<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">- id</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">uv-lock-check</span>
+<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">uv lock check</span>
+<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a><span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">entry</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bash -c 'cd backend &amp;&amp; uv lock --check'</span>
+</code></pre></div>
+<p>外加 <code>frontend-eslint</code> 与 <code>frontend-prettier</code> 两个前端钩子。注意 <code>uv-lock-check</code> 只在 <code>pyproject.toml</code> / <code>uv.lock</code> / harness <code>pyproject.toml</code> 变更时触发——这正是版本锁步（第 20 章）的本地第一道闸。</p>
+<p><code>.github/workflows/</code> 共 19 个工作流，按职责分组：</p>
+<ul>
+<li><strong>测试</strong>：<code>backend-unit-tests.yml</code>（四分片）、<code>backend-blocking-io-tests.yml</code>（门禁）、<code>frontend-unit-tests.yml</code>、<code>e2e-tests.yml</code>、<code>replay-e2e.yml</code>、<code>backend-windows-live-policy.yml</code>（Windows 收集策略）。</li>
+<li><strong>发布</strong>：<code>verify-versions.yml</code>（可复用）、<code>chart.yaml</code> 与 <code>container.yaml</code>（v* tag 触发，内部先跑版本校验）、<code>lark-cli-images.yaml</code>。</li>
+<li><strong>专项</strong>：<code>skill-review-ci.yml</code>（技能评审 + <code>tests/skills/</code> 回归 + 豁免文件 <code>.github/skill-review-waivers.v1.json</code>，blocker 永不可豁免）、<code>extension-package-check.yml</code>、<code>sandbox-image-smoke.yml</code>、<code>sandbox-network-proxy-image.yaml</code>、<code>lint-check.yml</code>、<code>nightly.yaml</code>、<code>label-sync.yml</code>、<code>triage.yml</code>、<code>jev-plugin-package.yml</code>。</li>
+</ul>
+<p>技能测试纪律（根 <code>AGENTS.md</code>）再强调一次，因为它最容易在自写技能时翻车：<strong>保真</strong>（测试不得改 YAML 值与正文）、<strong>显式 UTF-8</strong>（读 <code>SKILL.md</code> 用 <code>utf-8-sig</code> 剥 BOM、写用 <code>utf-8</code>，永不依赖平台 locale）、<strong>离线</strong>（非法元数据走子进程 CLI 校验；可选依赖不可用时演练降级；HTTP 用 mock transport）。</p>
+<hr />
+<h2 id="tdd-bug">动手实验：TDD 修复一个带 bug 的小问题（含全量门禁）<a class="headerlink" href="#tdd-bug" title="Permanent link">&para;</a></h2>
+<p>以"给 <code>select_facts_for_capacity()</code> 的容量参数加一个非法值防御"为例走完整流程（离线、不需要任何 API key）。</p>
+<p><strong>第 1 步：写失败测试。</strong> 新建 <code>backend/tests/test_capacity_guard.py</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">deerflow.memory.capacity</span><span class="w"> </span><span class="kn">import</span> <span class="n">select_facts_for_capacity</span>  <span class="c1"># 按实际模块路径导入</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="k">def</span><span class="w"> </span><span class="nf">test_capacity_must_be_positive</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a>    <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>        <span class="n">select_facts_for_capacity</span><span class="p">(</span><span class="n">facts</span><span class="o">=</span><span class="p">[],</span> <span class="n">capacity</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</code></pre></div>
+<p><strong>第 2 步：跑红灯。</strong> <code>cd backend &amp;&amp; python -m pytest tests/test_capacity_guard.py -q</code>——预期失败。</p>
+<p><strong>第 3 步：最小修复。</strong> 在生产函数入口加参数校验。同时确认导入路径是生产模块本体（基准纪律同样适用于测试：测真实实现，不测副本）。</p>
+<p><strong>第 4 步：全量门禁。</strong> 依次执行并全部转绿：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nb">cd</span><span class="w"> </span>backend
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>make<span class="w"> </span>lint<span class="w">                 </span><span class="c1"># ruff check + ruff format --check（行宽 240）</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>make<span class="w"> </span><span class="nb">test</span><span class="w">                 </span><span class="c1"># 四个耗时均衡分片</span>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>make<span class="w"> </span>test-blocking-io<span class="w">     </span><span class="c1"># Blockbuster 门禁</span>
+</code></pre></div>
+<p><strong>第 5 步（加分项）：前端联动。</strong> 如果你的修复影响 UI 展示（例如容量字段出现在记忆设置页），在 <code>frontend/tests/unit/</code> 镜像路径补一个 node 单测，跑 <code>cd frontend &amp;&amp; pnpm check &amp;&amp; pnpm rstest run memory</code>。</p>
+<p><strong>复盘检查点</strong>：红灯先于修复；测试断言的是行为而非实现；两个后端门禁都过了；没有引入任何 <code>allow_blocking_io</code> 标记；<code>uv lock --check</code> 没有抱怨（你没动依赖）。</p>
+<hr />
+<h2 id="_1">常见坑<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>live 测试被误触发或误收集</strong>：离线分片已用 <code>-m "not live"</code> 排除，但自己裸跑 <code>pytest tests/</code> 时若环境变量 <code>DEER_FLOW_RUN_LIVE_TESTS=1</code> 还挂着，真实 API 会被调用。live 永远显式开、用完即关（19.3.1）。</li>
+<li><strong>异步代码里写同步 IO</strong>：<code>open()</code>、<code>time.sleep()</code>、同步 HTTP 调用出现在 async 路径，<code>make test-blocking-io</code> 直接红灯。正确姿势是 <code>run_file_io</code> / <code>asyncio.to_thread</code>；确有例外用 <code>@pytest.mark.allow_blocking_io</code> 并说明理由（19.3.2）。</li>
+<li><strong><code>make test-shard</code> 报缺基线</strong>：<code>.test_durations</code> 不存在就拒绝运行——这是防并发写竞争的设计。先 <code>make test-shard-durations</code> 重建基线并随变更一起提交（19.3.1）。</li>
+<li><strong>基准测试里"顺手下载"数据集</strong>：违反 pin 纪律，评测命令永不静默下载；数据集路径由调用方提供、revision 与 SHA-256 提前钉死、合成用例自报身份（19.4.4）。</li>
+<li><strong><code>uv lock --check</code> 失败拖红 CI</strong>：手改了 <code>pyproject.toml</code> 却忘了刷新 <code>backend/uv.lock</code>。pre-commit 的 <code>uv-lock-check</code> 钩子本来能拦住，跳过钩子提交（<code>--no-verify</code>）就会把问题推给 CI（19.5.2）。</li>
+<li><strong>token 预算没生效</strong>：<code>token_budget.enabled</code> 默认 <code>false</code>，只开 <code>token_usage</code> 是"只看账单不拦消费"；且 <code>max_tokens</code> 是整个 run 的输入+输出总和，与模型单次调用的 <code>max_tokens</code> 输出上限是两个概念（19.2.1，另见 <code>config.example.yaml:132-143</code> 对两个相似字段的辨析）。</li>
+<li><strong>Windows 上 POSIX-only 测试炸收集</strong>：live/POSIX 标记必须用 <code>os.name</code> 守护（<code>backend/AGENTS.md:226-227</code>），否则 Windows 贡献者在收集阶段就崩。</li>
+</ol>
+<hr />
+<h2 id="_2">下一步<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<p>质量闸门的意义在"敢部署"。下一章（第 20 章 生产部署与运维）把镜头拉到线上：SQLite 还是 Postgres、单实例还是多实例、Helm Chart 与版本锁步如何配合、回环绑定与认证体系如何兜底安全、<code>make doctor</code> 与 <code>make support-bundle</code> 如何在故障时刻救你。你会把本章的测试纪律和基准证据，变成部署决策的依据。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      教程基于开源项目 <a href='https://github.com/bytedance/deer-flow'>bytedance/deer-flow</a> 的真实源码编写
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.sections", "navigation.expand", "navigation.top", "navigation.indexes", "search.suggest", "search.highlight", "content.code.copy", "toc.follow"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.a5f9d56c.min.js"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

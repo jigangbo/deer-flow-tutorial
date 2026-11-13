@@ -1,0 +1,2266 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="基于 DeerFlow 真实源码的中文系统教程：21 章 + 附录，覆盖环境配置、核心组件拆解、二次开发与 MCP 集成">
+      
+      
+      
+        <link rel="canonical" href="https://jigangbo.github.io/deer-flow-tutorial/18-frontend-dev/">
+      
+      
+        <link rel="prev" href="../17-business-cases/">
+      
+      
+        <link rel="next" href="../19-testing-quality/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
+    
+    
+      
+        <title>第 18 章 前端二次开发 - DeerFlow 从入门到精通 · 源码教程</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#18" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href=".." title="DeerFlow 从入门到精通 · 源码教程" class="md-header__button md-logo" aria-label="DeerFlow 从入门到精通 · 源码教程" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            DeerFlow 从入门到精通 · 源码教程
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              第 18 章 前端二次开发
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jigangbo/deer-flow-tutorial" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="DeerFlow 从入门到精通 · 源码教程" class="md-nav__button md-logo" aria-label="DeerFlow 从入门到精通 · 源码教程" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    DeerFlow 从入门到精通 · 源码教程
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jigangbo/deer-flow-tutorial" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    导读
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    导读
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 0 章 全景鸟瞰
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第一篇 入门篇
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第一篇 入门篇
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-environment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 1 章 准备环境（Environment Setup）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 2 章 一键启动（Quick Start）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 3 章 配置系统入门
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-frontend-tour/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 4 章 前端界面与基本功能导览
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-run-modes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 5 章 更多运行方式
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第二篇 进阶篇
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第二篇 进阶篇
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-request-lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 6 章 一次请求的一生：Agent 运行时全链路
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-tools-and-skills/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 7 章 工具系统与 Skills
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-sandbox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 8 章 沙箱与代码执行
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-multi-agent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 9 章 Multi-Agent 路由与子代理委派
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10-memory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 10 章 记忆系统（Memory / DeerMem）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../11-context-engineering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 11 章 上下文工程与长对话治理
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../12-scheduled-tasks-and-im/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 12 章 定时任务与 IM 渠道
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../13-gateway-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 13 章 Gateway API 与编程接入
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第三篇 精通篇
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第三篇 精通篇
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../14-architecture-layers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 14 章 架构分层与开发规范（二次开发前必读）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../15-mcp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 15 章 MCP 集成（重点）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../16-extensions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 16 章 扩展（Extensions）开发
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../17-business-cases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 17 章 业务二次开发实战（综合案例）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 18 章 前端二次开发
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 18 章 前端二次开发
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#180" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.0 学习目标
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#181" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.1 技术栈与结构
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="18.1 技术栈与结构">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1811" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.1.1 版本基线（先对齐认知）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1812" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.1.2 三层目录结构
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1813-nginx" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.1.3 后端连接方式：默认走 Nginx
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#182" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.2 流式数据流：一次回复如何变成屏幕上的字
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="18.2 流式数据流：一次回复如何变成屏幕上的字">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1821-usestream" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.2.1 订阅入口 useStream
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1822" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.2.2 三个事件回调的分工
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1823" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.2.3 为什么子代理进度走"根命名空间"
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#183-ui-ai-elements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.3 注册表红线：ui/ 与 ai-elements/ 不能手改
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#184-workspacescheduled-tasks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.4 新增页面实操：解剖 /workspace/scheduled-tasks
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="18.4 新增页面实操：解剖 /workspace/scheduled-tasks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1841" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.4.1 页面层只做组合
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1842" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.4.2 组件族与纯函数域
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1843" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.4.3 抽象成公式
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#185" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.5 工程工作流：从改代码到提交
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="18.5 工程工作流：从改代码到提交">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1851" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.5.1 命令面
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1852-node-vs-happy-dom" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.5.2 测试环境切分：node vs happy-dom
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1853-windows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.5.3 Windows 与开发源限制
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#artifacts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        动手实验：为 artifacts 新增一种自定义预览卡片
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        常见坑
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        下一步
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../19-testing-quality/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 19 章 可观测性、测试与质量保障
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../20-production/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 20 章 生产部署与运维
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    附录
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    附录
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../appendices/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    附录
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#180" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.0 学习目标
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#181" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.1 技术栈与结构
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="18.1 技术栈与结构">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1811" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.1.1 版本基线（先对齐认知）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1812" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.1.2 三层目录结构
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1813-nginx" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.1.3 后端连接方式：默认走 Nginx
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#182" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.2 流式数据流：一次回复如何变成屏幕上的字
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="18.2 流式数据流：一次回复如何变成屏幕上的字">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1821-usestream" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.2.1 订阅入口 useStream
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1822" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.2.2 三个事件回调的分工
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1823" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.2.3 为什么子代理进度走"根命名空间"
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#183-ui-ai-elements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.3 注册表红线：ui/ 与 ai-elements/ 不能手改
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#184-workspacescheduled-tasks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.4 新增页面实操：解剖 /workspace/scheduled-tasks
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="18.4 新增页面实操：解剖 /workspace/scheduled-tasks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1841" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.4.1 页面层只做组合
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1842" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.4.2 组件族与纯函数域
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1843" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.4.3 抽象成公式
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#185" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.5 工程工作流：从改代码到提交
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="18.5 工程工作流：从改代码到提交">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1851" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.5.1 命令面
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1852-node-vs-happy-dom" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.5.2 测试环境切分：node vs happy-dom
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1853-windows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.5.3 Windows 与开发源限制
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#artifacts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        动手实验：为 artifacts 新增一种自定义预览卡片
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        常见坑
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        下一步
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="18">第 18 章 前端二次开发<a class="headerlink" href="#18" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><strong>本章源码锚点</strong></p>
+<table>
+<thead>
+<tr>
+<th>锚点</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>frontend/package.json:6</code></td>
+<td>scripts 全表与依赖版本（Next 16 / React 19 / Tailwind v4 / langgraph-sdk）</td>
+</tr>
+<tr>
+<td><code>frontend/AGENTS.md:9</code></td>
+<td>技术栈官方口径（版本、Node/pnpm 要求）</td>
+</tr>
+<tr>
+<td><code>frontend/src/core/threads/hooks.ts:2180</code></td>
+<td><code>useStream</code> 流式订阅入口</td>
+</tr>
+<tr>
+<td><code>frontend/src/core/threads/stream-state.ts:26</code></td>
+<td><code>RENDERED_THREAD_STATE_KEYS</code> 状态归一化白名单</td>
+</tr>
+<tr>
+<td><code>frontend/src/core/api/api-client.ts:20</code></td>
+<td>LangGraph SDK 客户端单例与 CSRF 注入</td>
+</tr>
+<tr>
+<td><code>frontend/components.json:21</code></td>
+<td>Shadcn / MagicUI / React Bits / AI SDK 注册表来源</td>
+</tr>
+<tr>
+<td><code>frontend/src/app/workspace/scheduled-tasks/page.tsx:51</code></td>
+<td>"新增 workspace 页面"的官方范例</td>
+</tr>
+<tr>
+<td><code>frontend/rstest.config.ts:22</code></td>
+<td>node / happy-dom 双测试项目切分</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<h2 id="180">18.0 学习目标<a class="headerlink" href="#180" title="Permanent link">&para;</a></h2>
+<p>读完本章，你应该能够：</p>
+<ol>
+<li>说出前端的三层结构（<code>app/</code> 路由、<code>core/</code> 业务域、<code>components/</code> 组件）各自承担什么职责，以及为什么业务逻辑要收敛在 <code>core/</code> 而不是散落在组件里。</li>
+<li>完整描述一次流式回复的数据流：LangGraph SDK <code>useStream</code> → SSE 归一化 → TanStack Query 状态 → 组件渲染，并知道子代理进度为什么走根命名空间的 <code>task_*</code> 事件。</li>
+<li>识别 <code>ui/</code> 与 <code>ai-elements/</code> 这两个"注册表生成物"目录的红线：不能手改，改了会在下次同步时被覆盖。</li>
+<li>参照 <code>/workspace/scheduled-tasks</code> 的实现模式，独立新增一个 workspace 页面（路由 + 纯函数域 + 组件族 + 测试）。</li>
+<li>熟练使用 <code>pnpm dev</code> / <code>pnpm check</code> / <code>pnpm rstest run</code> / <code>pnpm test:e2e</code> 完成一次前端变更的完整工程闭环。</li>
+</ol>
+<hr />
+<h2 id="181">18.1 技术栈与结构<a class="headerlink" href="#181" title="Permanent link">&para;</a></h2>
+<h3 id="1811">18.1.1 版本基线（先对齐认知）<a class="headerlink" href="#1811" title="Permanent link">&para;</a></h3>
+<p><code>frontend/AGENTS.md:9</code> 给出的官方栈口径与 <code>frontend/package.json</code> 的实际依赖一致：</p>
+<ul>
+<li><strong>Next.js 16</strong>（<code>frontend/package.json:80</code>，<code>"next": "^16.4.1"</code>）——注意这是比多数教程资料更新的版本，<code>frontend/AGENTS.md:359-367</code> 甚至专门警告"This is NOT the Next.js you know"，要求动手前先读 <code>node_modules/next/dist/docs/</code>。</li>
+<li><strong>React 19</strong>（<code>frontend/package.json:88-89</code>，<code>react</code> / <code>react-dom</code> <code>^19.0.0</code>）。</li>
+<li><strong>Tailwind CSS v4</strong>（<code>frontend/package.json:125</code>，<code>tailwindcss: ^4.0.15</code>，PostCSS 插件方式接入）。</li>
+<li><strong>LangGraph SDK</strong>（<code>frontend/package.json:33-34</code>，<code>@langchain/langgraph-sdk: ^1.5.3</code>、<code>@langchain/core: ^1.1.15</code>）——前端不自己管理 Agent 循环，一切状态来自 SDK 对后端 run 流的订阅。</li>
+<li><strong>TanStack Query</strong>（<code>frontend/package.json:56</code>，<code>@tanstack/react-query: ^5.90.17</code>）——服务端状态的唯一管理者。</li>
+<li><strong>pnpm 10.26.2</strong>（<code>frontend/package.json:133</code>，<code>"packageManager": "pnpm@10.26.2"</code>），要求 Node.js 22+（<code>frontend/AGENTS.md:9</code>）。</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">// frontend/package.json:80-89（节选）</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nt">"next"</span><span class="p">:</span><span class="w"> </span><span class="s2">"^16.4.1"</span><span class="p">,</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="nt">"next-themes"</span><span class="p">:</span><span class="w"> </span><span class="s2">"^0.4.6"</span><span class="p">,</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="nt">"nextra"</span><span class="p">:</span><span class="w"> </span><span class="s2">"^4.6.1"</span><span class="p">,</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="nt">"nextra-theme-docs"</span><span class="p">:</span><span class="w"> </span><span class="s2">"^4.6.1"</span><span class="p">,</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">    </span><span class="nt">"nuxt-og-image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"^5.1.13"</span><span class="p">,</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">    </span><span class="nt">"ogl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"^1.0.11"</span><span class="p">,</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">    </span><span class="nt">"papaparse"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5.7.0"</span><span class="p">,</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">    </span><span class="nt">"qrcode.react"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4.2.0"</span><span class="p">,</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">    </span><span class="nt">"react"</span><span class="p">:</span><span class="w"> </span><span class="s2">"^19.0.0"</span><span class="p">,</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">    </span><span class="nt">"react-dom"</span><span class="p">:</span><span class="w"> </span><span class="s2">"^19.0.0"</span><span class="p">,</span>
+</code></pre></div>
+<blockquote>
+<p>版本纪律：<code>frontend/package.json:1-3</code> 里的 <code>"version": "2.3.0-dev"</code> 参与全书版本锁步（见第 20 章 20.3），不要单独手改这个字段。</p>
+</blockquote>
+<h3 id="1812">18.1.2 三层目录结构<a class="headerlink" href="#1812" title="Permanent link">&para;</a></h3>
+<p><code>frontend/src/</code> 一层只有十来个条目，但重心在三个目录：</p>
+<p><strong><code>app/</code> —— App Router 路由层</strong>。实际内容：<code>(auth)</code>（登录/初始化/回调）、<code>[lang]</code>（多语言文档站）、<code>api</code>（route handlers）、<code>artifacts</code>（独立产物查看器）、<code>blog</code>、<code>github-stars</code>、<code>mock</code>、<code>showcase</code>（allowlist 公开演示）、<code>workspace</code>（工作区）。核心会话页在 <code>app/workspace/chats/[thread_id]/</code>，自定义 Agent 会话页在 <code>app/workspace/agents/[agent_name]/chats/[thread_id]/page.tsx</code>。</p>
+<p><strong><code>core/</code> —— 业务域层（真正的心脏）</strong>。按域切分了 40+ 个子目录：<code>threads</code>（创建/流式/状态）、<code>api</code>（SDK 客户端单例）、<code>agents</code>、<code>auth</code>、<code>artifacts</code>、<code>channels</code>、<code>citations</code>、<code>features</code>、<code>i18n</code>、<code>integrations</code>、<code>knowledge</code>、<code>mcp</code>、<code>memory</code>、<code>messages</code>、<code>models</code>、<code>projects</code>、<code>scheduled-tasks</code>、<code>settings</code>、<code>sidecar</code>、<code>skills</code>、<code>streamdown</code>、<code>subagent-batches</code>、<code>subagents</code>、<code>suggestions</code>、<code>tasks</code>、<code>threads</code>、<code>todos</code>、<code>tools</code>、<code>trash</code>、<code>uploads</code>、<code>usage</code>、<code>utils</code>、<code>workspace-changes</code> 等。<strong>规则：业务状态与副作用写在 <code>core/</code>，组件只做渲染</strong>。这也是单元测试的组织单位——<code>tests/unit/</code> 目录树按 <code>src/</code> 镜像摆放（<code>frontend/AGENTS.md:30</code>）。</p>
+<p><strong><code>components/</code> —— 展示层</strong>。手写组件在 <code>workspace/</code>（聊天主界面）、<code>landing/</code>、<code>docs/</code>、<code>auth/</code>；而 <code>ui/</code>（约 40 个文件）与 <code>ai-elements/</code>（14 个文件）是<strong>注册表生成物</strong>，详见 18.3。</p>
+<p>一个值得记住的心智模型来自 <code>frontend/AGENTS.md:112-116</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Frontend (Next.js) ──▶ LangGraph SDK ──▶ LangGraph Backend (lead_agent)
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>                                              ├── Sub-Agents
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>                                              └── Tools &amp; Skills
+</code></pre></div>
+<h3 id="1813-nginx">18.1.3 后端连接方式：默认走 Nginx<a class="headerlink" href="#1813-nginx" title="Permanent link">&para;</a></h3>
+<p>前端有两个可选环境变量（<code>frontend/AGENTS.md:206-213</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>NEXT_PUBLIC_BACKEND_BASE_URL=http://localhost:8001
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>NEXT_PUBLIC_LANGGRAPH_BASE_URL=http://localhost:8001/api
+</code></pre></div>
+<p>但标准 <code>make dev</code> / Docker 流程下<strong>两者都留空</strong>：此时 LangGraph 请求打到同源的 <code>/api/langgraph</code>，由 Nginx 重写到 Gateway 的原生 <code>/api/*</code> 路由。只有直连后端调试时才需要设置它们。SDK 客户端的构造在 <code>core/api/api-client.ts</code>：每个请求动态注入 <code>X-CSRF-Token</code>（<code>frontend/src/core/api/api-client.ts:20-32</code> 的 <code>injectCsrfHeader</code> 文档注释明确说明：按请求读 cookie 而不是烘焙进 SDK 默认头，是为了透明处理登录/登出/改密后的 cookie 轮换）。</p>
+<hr />
+<h2 id="182">18.2 流式数据流：一次回复如何变成屏幕上的字<a class="headerlink" href="#182" title="Permanent link">&para;</a></h2>
+<h3 id="1821-usestream">18.2.1 订阅入口 <code>useStream</code><a class="headerlink" href="#1821-usestream" title="Permanent link">&para;</a></h3>
+<p><code>core/threads/hooks.ts</code> 是全前端最大的单文件（4264 行），其中 <code>useThreadStream</code>（<code>frontend/src/core/threads/hooks.ts:1980</code>）封装了 LangGraph SDK 的 <code>useStream</code>。核心调用在 <code>frontend/src/core/threads/hooks.ts:2180-2192</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1">// frontend/src/core/threads/hooks.ts:2180-2192（节选）</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">thread</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useStream</span><span class="o">&lt;</span><span class="nx">AgentThreadState</span><span class="o">&gt;</span><span class="p">({</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="nx">client</span><span class="o">:</span><span class="w"> </span><span class="kt">getAPIClient</span><span class="p">(</span><span class="nx">isMock</span><span class="p">),</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="nx">assistantId</span><span class="p">,</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="nx">threadId</span><span class="o">:</span><span class="w"> </span><span class="kt">onStreamThreadId</span><span class="p">,</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="nx">reconnectOnMount</span><span class="o">:</span><span class="w"> </span><span class="kt">true</span><span class="p">,</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">    </span><span class="nx">fetchStateHistory</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">limit</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="w"> </span><span class="p">},</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">    </span><span class="c1">// Batch stream updates received in the same macrotask without adding a</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">    </span><span class="c1">// fixed debounce interval that could delay a continuously active stream.</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">    </span><span class="c1">// Coalesce same-tick stream events into one React notification. Only the</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">    </span><span class="c1">// boolean tier is safe: the SDK's numeric tier is a trailing debounce that</span>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">    </span><span class="c1">// starves UI updates while chunks keep arriving faster than the window.</span>
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="w">    </span><span class="c1">// Keep explicit: SDK types claim @default true, but runtime uses throttle ?? false.</span>
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="w">    </span><span class="nx">throttle</span><span class="o">:</span><span class="w"> </span><span class="kt">true</span><span class="p">,</span>
+</code></pre></div>
+<p>三个要点：</p>
+<ol>
+<li><strong>泛型 <code>AgentThreadState</code></strong>：前端对后端 <code>ThreadState</code> 的投影（title / artifacts / tool_artifacts / todos / goal / messages 等），定义在 <code>core/threads/types.ts</code>。</li>
+<li><strong><code>reconnectOnMount: true</code> + <code>fetchStateHistory: { limit: 1 }</code></strong>：页面刷新或重连时先拉一次最新 checkpoint 快照再续订流，保证"断线重连不丢上下文"。</li>
+<li><strong><code>throttle: true</code> 的注释值得精读</strong>：它刻意只选布尔档——SDK 的数字档是"尾沿去抖"，在 chunk 高速到达时会饿死 UI 更新；布尔档只合并同一个宏任务里的事件，既省渲染又不引入固定延迟。</li>
+</ol>
+<h3 id="1822">18.2.2 三个事件回调的分工<a class="headerlink" href="#1822" title="Permanent link">&para;</a></h3>
+<p><code>useStream</code> 的状态归一化发生在三个回调里：</p>
+<p><strong><code>onCreated</code>（<code>frontend/src/core/threads/hooks.ts:2193-2230</code>）</strong>：run 创建即乐观更新——把新 thread 以 <code>status: "busy"</code> 写进搜索缓存与无限列表缓存，侧边栏立刻出现新会话，不用等列表接口返回。</p>
+<p><strong><code>onUpdateEvent</code>（<code>frontend/src/core/threads/hooks.ts:2231-2277</code>）</strong>：处理 <code>values</code> 帧。先经 <code>hasRenderedThreadStateUpdate</code>（<code>frontend/src/core/threads/stream-state.ts:34</code>）过滤，只有真正会被渲染的键才触发归并：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1">// frontend/src/core/threads/stream-state.ts:26-32</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="kd">const</span><span class="w"> </span><span class="nx">RENDERED_THREAD_STATE_KEYS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">  </span><span class="s2">"title"</span><span class="p">,</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span><span class="s2">"artifacts"</span><span class="p">,</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">  </span><span class="s2">"tool_artifacts"</span><span class="p">,</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">  </span><span class="s2">"todos"</span><span class="p">,</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">  </span><span class="s2">"goal"</span><span class="p">,</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="p">];</span>
+</code></pre></div>
+<p><code>stream-state.ts</code> 其余部分是防御性归并函数：<code>isGoalState</code>（<code>frontend/src/core/threads/stream-state.ts:18</code>）要求 <code>status === "active"</code> 才渲染 goal，避免历史残留或畸形数据把目标条画出来；<code>mergeArtifacts</code> 用 <code>Set</code> 去重追加；<code>mergeToolArtifacts</code>（<code>frontend/src/core/threads/stream-state.ts:69</code>）以 <code>handle</code> 为键替换元数据但不打乱首次出现顺序。<strong>这就是"归一化层"的本体：后端任何帧都先过一遍形状校验，不合格的数据被静默丢弃而不是污染 UI。</strong></p>
+<p><strong><code>onCustomEvent</code>（<code>frontend/src/core/threads/hooks.ts:2278</code> 起）</strong>：处理 <code>task_*</code> 自定义事件，即子代理进度：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1">// frontend/src/core/threads/hooks.ts:2278-2286（节选）</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">    </span><span class="nx">onCustomEvent</span><span class="p">(</span><span class="nx">event</span><span class="o">:</span><span class="w"> </span><span class="kt">unknown</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">      </span><span class="c1">// Narrow `event.type` once; taskEventToSubtaskUpdate already validated the</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">      </span><span class="c1">// task_* events, so the per-branch re-narrowing below reads this single</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">      </span><span class="c1">// source of truth instead of re-checking the object shape each time.</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">      </span><span class="kd">const</span><span class="w"> </span><span class="nx">eventType</span><span class="w"> </span><span class="o">=</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">        </span><span class="ow">typeof</span><span class="w"> </span><span class="nx">event</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">"object"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">event</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="s2">"type"</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nx">event</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">          </span><span class="o">?</span><span class="w"> </span><span class="p">(</span><span class="nx">event</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="kr">type</span><span class="o">:</span><span class="w"> </span><span class="nx">unknown</span><span class="w"> </span><span class="p">})</span><span class="nx">.type</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">          </span><span class="o">:</span><span class="w"> </span><span class="kt">undefined</span><span class="p">;</span>
+</code></pre></div>
+<p><code>task_running</code> / <code>task_completed</code> 等事件经 <code>core/tasks/lifecycle.ts</code> 的 <code>taskEventToSubtaskUpdate</code> 转成子任务卡片状态。</p>
+<h3 id="1823">18.2.3 为什么子代理进度走"根命名空间"<a class="headerlink" href="#1823" title="Permanent link">&para;</a></h3>
+<p>一个容易踩的认知坑：后端支持 <code>stream_subgraphs</code>（带 <code>values|&lt;ns&gt;</code> 命名空间帧，见第 6 章），但 <strong>Web 前端从不开启 subgraph 流</strong>（<code>backend/AGENTS.md:12</code>："The web frontend uses root <code>task_*</code> events without subgraph streaming"）。原因写在同文件：裸 <code>values</code> 帧会覆盖 SDK 的线程视图（#4399）。子代理的进度因此被网关转写为根命名空间的 <code>task_*</code> 自定义事件，前端只需要订阅一路流。你自己写消费端时同理：<strong>要么全量订阅命名空间帧，要么像 Web 前端一样只消费根命名空间 + 自定义事件，不要混用。</strong></p>
+<hr />
+<h2 id="183-ui-ai-elements">18.3 注册表红线：<code>ui/</code> 与 <code>ai-elements/</code> 不能手改<a class="headerlink" href="#183-ui-ai-elements" title="Permanent link">&para;</a></h2>
+<p><code>frontend/AGENTS.md:173</code> 一句话立规：</p>
+<blockquote>
+<p><strong>Components</strong>: <code>ui/</code> 和 <code>ai-elements/</code> are generated from registries (Shadcn, MagicUI, React Bits, Vercel AI SDK) — don't manually edit these.</p>
+</blockquote>
+<p>生成来源配置在 <code>frontend/components.json:21-25</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1">// frontend/components.json:21-25</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span><span class="nt">"registries"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">    </span><span class="nt">"@ai-elements"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://registry.ai-sdk.dev/{name}.json"</span><span class="p">,</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">    </span><span class="nt">"@magicui"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://magicui.design/r/{name}"</span><span class="p">,</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">    </span><span class="nt">"@react-bits"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://reactbits.dev/r/{name}.json"</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">  </span><span class="p">}</span>
+</code></pre></div>
+<p>如何从代码上辨认生成物？看两个真实例子：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1">// frontend/src/components/ai-elements/conversation.tsx:1-14（节选）</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="s2">"use client"</span><span class="p">;</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Button</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"@/components/ui/button"</span><span class="p">;</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">cn</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"@/lib/utils"</span><span class="p">;</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">ArrowDownIcon</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"lucide-react"</span><span class="p">;</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="k">import</span><span class="w"> </span><span class="kr">type</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">ComponentProps</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"react"</span><span class="p">;</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useCallback</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"react"</span><span class="p">;</span>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">StickToBottom</span><span class="p">,</span><span class="w"> </span><span class="nx">useStickToBottomContext</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"use-stick-to-bottom"</span><span class="p">;</span>
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>
+<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="k">export</span><span class="w"> </span><span class="kr">type</span><span class="w"> </span><span class="nx">ConversationProps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">ComponentProps</span><span class="p">&lt;</span><span class="nt">typeof</span><span class="w"> </span><span class="na">StickToBottom</span><span class="p">&gt;;</span>
+<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>
+<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a><span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">Conversation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">({</span><span class="w"> </span><span class="nx">className</span><span class="p">,</span><span class="w"> </span><span class="p">...</span><span class="nx">props</span><span class="w"> </span><span class="p">}</span><span class="o">:</span><span class="w"> </span><span class="nx">ConversationProps</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">(</span>
+<a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a><span class="w">  </span><span class="p">&lt;</span><span class="nt">StickToBottom</span>
+</code></pre></div>
+<p>这是典型的 Vercel AI Elements 产物形态：依赖 <code>use-stick-to-bottom</code> 这类注册表固定依赖、导出的是注册表文档里的原语组件。<code>ui/button.tsx</code> 则是标准 Shadcn <code>cva</code> 变体写法。<strong>实践准则</strong>：</p>
+<ul>
+<li>需要新原语 → 用 <code>pnpm dlx shadcn@latest add &lt;name&gt;</code> 或对应注册表 CLI 拉取，而不是手写进 <code>ui/</code>。</li>
+<li>需要定制外观 → 在 <code>workspace/</code> 等手写目录做包装组件，用 <code>cn()</code>（<code>@/lib/utils</code>）覆写类名，不改生成物本身。</li>
+<li>生成物升级后会整体替换，任何手改都会丢失且 review 时无法追溯。</li>
+</ul>
+<hr />
+<h2 id="184-workspacescheduled-tasks">18.4 新增页面实操：解剖 <code>/workspace/scheduled-tasks</code><a class="headerlink" href="#184-workspacescheduled-tasks" title="Permanent link">&para;</a></h2>
+<p>大纲把 <code>/workspace/scheduled-tasks</code> 定为"新增 workspace 页面"的参照实现。它的分层是本仓库的标准答案：</p>
+<h3 id="1841">18.4.1 页面层只做组合<a class="headerlink" href="#1841" title="Permanent link">&para;</a></h3>
+<p><code>frontend/src/app/workspace/scheduled-tasks/page.tsx</code>（407 行）的第一屏代码就展示了全部依赖关系：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1">// frontend/src/app/workspace/scheduled-tasks/page.tsx:45-67（节选）</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="kd">const</span><span class="w"> </span><span class="nx">TABS</span><span class="o">:</span><span class="w"> </span><span class="kt">StatusTab</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"all"</span><span class="p">,</span><span class="w"> </span><span class="s2">"active"</span><span class="p">,</span><span class="w"> </span><span class="s2">"paused"</span><span class="p">,</span><span class="w"> </span><span class="s2">"finished"</span><span class="p">];</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="kd">function</span><span class="w"> </span><span class="nx">inTab</span><span class="p">(</span><span class="nx">task</span><span class="o">:</span><span class="w"> </span><span class="kt">ScheduledTask</span><span class="p">,</span><span class="w"> </span><span class="nx">tab</span><span class="o">:</span><span class="w"> </span><span class="kt">StatusTab</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">tab</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">"all"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">statusTabOf</span><span class="p">(</span><span class="nx">task</span><span class="p">)</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="nx">tab</span><span class="p">;</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="p">}</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">ScheduledTasksPage</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">t</span><span class="p">,</span><span class="w"> </span><span class="nx">locale</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useI18n</span><span class="p">();</span>
+<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">st</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">t</span><span class="p">.</span><span class="nx">scheduledTasks</span><span class="p">;</span>
+<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">router</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useRouter</span><span class="p">();</span>
+<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a><span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">pathname</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">usePathname</span><span class="p">();</span>
+<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a><span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">searchParams</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useSearchParams</span><span class="p">();</span>
+<a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a><span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">threadId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">searchParams</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s2">"thread_id"</span><span class="p">);</span>
+<a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a><span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">taskIdParam</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">searchParams</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s2">"task_id"</span><span class="p">);</span>
+<a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a><span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">feature</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useScheduledTasksFeature</span><span class="p">();</span>
+<a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a><span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">createBlocked</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">!</span><span class="nx">feature</span><span class="p">.</span><span class="nx">running</span><span class="p">;</span>
+<a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a><span class="w">  </span><span class="c1">// Until /api/features answers, show what an enabled tool shows (as the chat</span>
+<a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a><span class="w">  </span><span class="c1">// card does) instead of flipping copy and "Stops when" once it loads.</span>
+<a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a><span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">toolEnabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">feature</span><span class="p">.</span><span class="nx">isLoading</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">feature</span><span class="p">.</span><span class="nx">toolEnabled</span><span class="p">;</span>
+<a id="__codelineno-8-21" name="__codelineno-8-21" href="#__codelineno-8-21"></a>
+<a id="__codelineno-8-22" name="__codelineno-8-22" href="#__codelineno-8-22"></a><span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">allTasksQuery</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useScheduledTasks</span><span class="p">();</span>
+<a id="__codelineno-8-23" name="__codelineno-8-23" href="#__codelineno-8-23"></a><span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">threadTasksQuery</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useThreadScheduledTasks</span><span class="p">(</span><span class="nx">threadId</span><span class="p">);</span>
+</code></pre></div>
+<p>观察四个模式：</p>
+<ol>
+<li><strong>页面不写 fetch 逻辑</strong>：数据来自 <code>core/scheduled-tasks/hooks.ts</code> 的 <code>useScheduledTasks()</code> / <code>useThreadScheduledTasks(threadId)</code>；<code>?thread_id=</code> 参数把列表收窄到某个会话，<code>?task_id=</code> 负责选中态（<code>frontend/AGENTS.md:64</code>）。</li>
+<li><strong>功能开关前置</strong>：<code>useScheduledTasksFeature()</code> 读 <code>/api/features</code>，<code>scheduler.tool_enabled</code> 关闭时按钮禁用，且 <code>/api/features</code> 未返回前不翻转文案（上面的英文注释）。</li>
+<li><strong>状态标签是纯函数</strong>：<code>statusTabOf(task)</code> 来自 <code>components/workspace/scheduled-tasks/shared.tsx</code>，<code>TABS</code> 驱动 <code>all / active / paused / finished</code> 四个页签。</li>
+<li><strong>i18n 必接</strong>：<code>t.scheduledTasks</code> 直接取词条，任何新页面都要在 <code>core/i18n</code> 的语言包里补键。</li>
+</ol>
+<h3 id="1842">18.4.2 组件族与纯函数域<a class="headerlink" href="#1842" title="Permanent link">&para;</a></h3>
+<p>页面组合的组件全部位于 <code>components/workspace/scheduled-tasks/</code>，共 12 个文件：<code>task-list.tsx</code>（列表 + 状态页签 + 搜索）、<code>task-detail.tsx</code>（Runs / Stops when / goal / History 详情）、<code>task-form-dialog.tsx</code>（创建/编辑/复制对话框，PATCH 只发改动字段、<code>null</code> 清除）、<code>renew-limits-dialog.tsx</code>（<code>limits_exhausted</code> 时 Resume 打开的续期对话框）、<code>task-outcome-notice.tsx</code>（结果横幅）、<code>scheduler-state-notice.tsx</code>、<code>bind-feishu-group.tsx</code>、<code>notification-group.tsx</code>、<code>run-row.tsx</code>、<code>delete-task-dialog.tsx</code>、<code>empty-state.tsx</code>、<code>shared.tsx</code>。</p>
+<p>对应的业务域 <code>core/scheduled-tasks/</code> 是<strong>纯函数优先</strong>：<code>status.ts</code>（"任务是否在跑"= <code>status === "running"</code> 或 <code>active_run_status</code>）、<code>actions.ts</code>、<code>format.ts</code>、<code>describeTaskSchedule</code>、<code>errors.ts</code>（按 <code>detail.code</code> 本地化错误）、<code>search.ts</code>（字面量过滤）、<code>goal-outcome.ts</code>、<code>events.ts</code>、<code>tool-result.ts</code>。<code>frontend/AGENTS.md:63</code> 明确要求列表、详情、聊天卡片三处 UI 都从这些纯 helper 读状态，<strong>这样三处显示永远一致，且每一处都能用 node 环境单测覆盖</strong>。<code>contracts/scheduled_task_errors_contract.json</code> 与 <code>contracts/scheduled_goal_notes_contract.json</code> 把错误码/结果文案钉成跨端契约（<code>frontend/AGENTS.md:62-63</code>）。</p>
+<h3 id="1843">18.4.3 抽象成公式<a class="headerlink" href="#1843" title="Permanent link">&para;</a></h3>
+<p>新增任意 workspace 页面的步骤：</p>
+<ol>
+<li><code>app/workspace/&lt;your-page&gt;/page.tsx</code>：只做参数解析、功能开关判断、组件组合。</li>
+<li><code>core/&lt;your-domain&gt;/</code>：<code>types.ts</code> + <code>hooks.ts</code>（TanStack Query 封装）+ 纯函数（状态推导、格式化、错误映射），能在 node 测试环境跑的都放这里。</li>
+<li><code>components/workspace/&lt;your-domain&gt;/</code>：展示组件，条件类名一律 <code>cn()</code>。</li>
+<li><code>core/i18n</code> 双语词条 + <code>contracts/</code>（若有跨端字符串）。</li>
+<li>测试：<code>tests/unit/&lt;镜像路径&gt;/*.test.ts</code>（逻辑）+ <code>*.dom.test.tsx</code>（组件渲染）。</li>
+</ol>
+<hr />
+<h2 id="185">18.5 工程工作流：从改代码到提交<a class="headerlink" href="#185" title="Permanent link">&para;</a></h2>
+<h3 id="1851">18.5.1 命令面<a class="headerlink" href="#1851" title="Permanent link">&para;</a></h3>
+<p><code>frontend/package.json:6-23</code> 是命令的唯一权威：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1">// frontend/package.json:6-23</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">  </span><span class="nt">"scripts"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">    </span><span class="nt">"catalog:sync"</span><span class="p">:</span><span class="w"> </span><span class="s2">"node scripts/sync-capability-catalog.mjs"</span><span class="p">,</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">    </span><span class="nt">"demo:save"</span><span class="p">:</span><span class="w"> </span><span class="s2">"node scripts/save-demo.js"</span><span class="p">,</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">    </span><span class="nt">"build"</span><span class="p">:</span><span class="w"> </span><span class="s2">"next build &amp;&amp; pnpm run search:index"</span><span class="p">,</span>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="w">    </span><span class="nt">"check"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eslint . --ext .ts,.tsx &amp;&amp; tsc --noEmit"</span><span class="p">,</span>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="w">    </span><span class="nt">"dev"</span><span class="p">:</span><span class="w"> </span><span class="s2">"node scripts/dev.mjs"</span><span class="p">,</span>
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="w">    </span><span class="nt">"format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"prettier --check ."</span><span class="p">,</span>
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="w">    </span><span class="nt">"format:write"</span><span class="p">:</span><span class="w"> </span><span class="s2">"prettier --write ."</span><span class="p">,</span>
+<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="w">    </span><span class="nt">"lint"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eslint . --ext .ts,.tsx"</span><span class="p">,</span>
+<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="w">    </span><span class="nt">"lint:fix"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eslint . --ext .ts,.tsx --fix"</span><span class="p">,</span>
+<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a><span class="w">    </span><span class="nt">"perf:check"</span><span class="p">:</span><span class="w"> </span><span class="s2">"node scripts/measure-route-assets.mjs --check"</span><span class="p">,</span>
+<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a><span class="w">    </span><span class="nt">"preview"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pnpm run build &amp;&amp; next start"</span><span class="p">,</span>
+<a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a><span class="w">    </span><span class="nt">"search:index"</span><span class="p">:</span><span class="w"> </span><span class="s2">"node scripts/build-search-index.mjs"</span><span class="p">,</span>
+<a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a><span class="w">    </span><span class="nt">"start"</span><span class="p">:</span><span class="w"> </span><span class="s2">"next start"</span><span class="p">,</span>
+<a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a><span class="w">    </span><span class="nt">"test"</span><span class="p">:</span><span class="w"> </span><span class="s2">"rstest"</span><span class="p">,</span>
+<a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a><span class="w">    </span><span class="nt">"test:e2e"</span><span class="p">:</span><span class="w"> </span><span class="s2">"playwright test"</span><span class="p">,</span>
+<a id="__codelineno-9-18" name="__codelineno-9-18" href="#__codelineno-9-18"></a><span class="w">    </span><span class="nt">"typecheck"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tsc --noEmit"</span>
+<a id="__codelineno-9-19" name="__codelineno-9-19" href="#__codelineno-9-19"></a><span class="w">  </span><span class="p">},</span>
+</code></pre></div>
+<p>日常循环：<code>pnpm dev</code> 开发（<strong>Webpack 默认</strong>；<code>DEER_FLOW_DEV_BUNDLER=turbo pnpm dev</code> 才是 Turbopack，<code>frontend/AGENTS.md:32</code>）、提交前 <code>pnpm check</code>（ESLint + <code>tsc --noEmit</code>）、<code>pnpm test</code> 跑单测、<code>pnpm test:e2e</code> 跑 Playwright。注意 host 上的 pnpm 调用统一走 <code>../scripts/pnpm.py</code>（<code>frontend/AGENTS.md:23</code>），它解决了 Windows 上 <code>pnpm.cmd</code> 与 Corepack 的顺序问题（附录 E）。</p>
+<p>另外两个容易被忽略的工程闸门：</p>
+<ul>
+<li><strong>性能预算</strong>：<code>pnpm perf:check</code> 度量 <code>/login</code> 生产构建与静态 demo 路由的唯一 JS/CSS 体积，对照 <code>performance-budgets.json</code>，超预算要拆分路由（<code>frontend/AGENTS.md:261-266</code>）。</li>
+<li><strong>文档搜索索引</strong>：<code>pnpm build</code> 末尾跑 <code>scripts/build-search-index.mjs</code> 重建 <code>public/_pagefind/</code>（<code>frontend/AGENTS.md:254-256</code>），改了 <code>content/</code> MDX 后文档站搜索才会更新。</li>
+</ul>
+<h3 id="1852-node-vs-happy-dom">18.5.2 测试环境切分：node vs happy-dom<a class="headerlink" href="#1852-node-vs-happy-dom" title="Permanent link">&para;</a></h3>
+<p><code>frontend/rstest.config.ts</code> 用两个 project 把单测切成两档：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1">// frontend/rstest.config.ts:22-35（节选）</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">  </span><span class="nx">projects</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">      </span><span class="p">...</span><span class="nx">shared</span><span class="p">,</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="w">      </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">"node"</span><span class="p">,</span>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="w">      </span><span class="nx">include</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"tests/unit/**/*.test.ts"</span><span class="p">,</span><span class="w"> </span><span class="s2">"tests/unit/**/*.test.tsx"</span><span class="p">],</span>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="w">      </span><span class="c1">// A DOM environment costs roughly 3x the runtime of this suite, so the</span>
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="w">      </span><span class="c1">// pure-logic tests that make up nearly all of it stay on node and only</span>
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="w">      </span><span class="c1">// `*.dom.test.*` pays for a document.</span>
+<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="w">      </span><span class="nx">exclude</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">patterns</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"**/*.dom.test.*"</span><span class="p">],</span><span class="w"> </span><span class="kd">override</span><span class="o">:</span><span class="w"> </span><span class="kc">false</span><span class="w"> </span><span class="p">},</span>
+<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="w">    </span><span class="p">},</span>
+<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="w">      </span><span class="p">...</span><span class="nx">shared</span><span class="p">,</span>
+<a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a><span class="w">      </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">"dom"</span><span class="p">,</span>
+<a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a><span class="w">      </span><span class="nx">testEnvironment</span><span class="o">:</span><span class="w"> </span><span class="s2">"happy-dom"</span><span class="p">,</span>
+<a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a><span class="w">      </span><span class="nx">include</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"tests/unit/**/*.dom.test.ts"</span><span class="p">,</span><span class="w"> </span><span class="s2">"tests/unit/**/*.dom.test.tsx"</span><span class="p">],</span>
+<a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a><span class="w">    </span><span class="p">},</span>
+<a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a><span class="w">  </span><span class="p">],</span>
+</code></pre></div>
+<p>规则：<strong>纯逻辑测试（<code>*.test.ts</code>）跑 node 环境；只有组件/hooks 渲染测试用 <code>*.dom.test.tsx</code> 命名进 happy-dom</strong>（<code>frontend/AGENTS.md:37-39</code>）。DOM 环境慢约 3 倍，这就是 18.4.2 强调"状态推导写进 core 纯函数"的测试动机。E2E 侧是 Playwright Chromium（<code>tests/e2e/</code>），CI 分四个 shard、只有 shard 1 跑认证恢复流程，用 <code>page.route()</code> mock 后端 API（<code>frontend/AGENTS.md:46-52</code>）。</p>
+<h3 id="1853-windows">18.5.3 Windows 与开发源限制<a class="headerlink" href="#1853-windows" title="Permanent link">&para;</a></h3>
+<p>两处平台相关设定要提前知道：</p>
+<ul>
+<li>Windows dev server 绑定 <code>127.0.0.1</code> 以避开 Hyper-V/winnat 的 <code>EACCES</code>（#2870，<code>frontend/AGENTS.md:34</code>）；要给局域网访问用 <code>pnpm dev -- --hostname 0.0.0.0</code>。</li>
+<li>非本机访问 dev server 需要 <code>DEER_FLOW_DEV_ALLOWED_ORIGINS</code> 列出允许的主机，否则 Next 的 <code>allowedDevOrigins</code> 会让 <code>/_next/*</code>、HMR、甚至登录请求 403（<code>frontend/AGENTS.md:224-227</code>）。生产构建忽略该设置。</li>
+</ul>
+<hr />
+<h2 id="artifacts">动手实验：为 artifacts 新增一种自定义预览卡片<a class="headerlink" href="#artifacts" title="Permanent link">&para;</a></h2>
+<p>本实验按 TDD 顺序给产物面板加一个"纯文本大文件行数统计"预览卡（不触碰后端，离线可复现）。</p>
+<p><strong>第 0 步：认清现状。</strong> 产物预览体系在两处：<code>core/artifacts/</code>（<code>preview.ts</code> 决定预览模式、<code>delimited-preview.ts</code> + <code>delimited-preview.worker.ts</code> + <code>use-delimited-preview.ts</code> 是 CSV/TSV 的 worker 预览链路）、<code>components/workspace/artifacts/</code>（<code>artifact-file-preview.tsx</code> 按 <code>preview.ts</code> 的结论分发到 <code>artifact-table-preview.tsx</code> 等具体渲染器）。<code>frontend/AGENTS.md:282-289</code> 记录了表格预览的边界约束（最多 202 条逻辑记录、50 列、5 秒超时）——你的新卡片要遵守同样的"先限定输入再进 worker"纪律。</p>
+<p><strong>第 1 步：先写失败测试。</strong> 新建 <code>frontend/tests/unit/core/artifacts/preview.test.ts</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">describe</span><span class="p">,</span><span class="w"> </span><span class="nx">expect</span><span class="p">,</span><span class="w"> </span><span class="nx">it</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"rstest"</span><span class="p">;</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">resolvePreviewMode</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"@/core/artifacts/preview"</span><span class="p">;</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="nx">describe</span><span class="p">(</span><span class="s2">"resolvePreviewMode"</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s2">"returns line-count mode for plain text over the size threshold"</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">resolvePreviewMode</span><span class="p">({</span><span class="w"> </span><span class="nx">mime</span><span class="o">:</span><span class="w"> </span><span class="s2">"text/plain"</span><span class="p">,</span><span class="w"> </span><span class="nx">size</span><span class="o">:</span><span class="w"> </span><span class="kt">3_000_000</span><span class="w"> </span><span class="p">})).</span><span class="nx">toBe</span><span class="p">(</span>
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="w">      </span><span class="s2">"line-count"</span><span class="p">,</span>
+<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="w">    </span><span class="p">);</span>
+<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="w">  </span><span class="p">});</span>
+<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a>
+<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a><span class="w">  </span><span class="nx">it</span><span class="p">(</span><span class="s2">"keeps existing modes untouched"</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a><span class="w">    </span><span class="nx">expect</span><span class="p">(</span><span class="nx">resolvePreviewMode</span><span class="p">({</span><span class="w"> </span><span class="nx">mime</span><span class="o">:</span><span class="w"> </span><span class="s2">"text/csv"</span><span class="p">,</span><span class="w"> </span><span class="nx">size</span><span class="o">:</span><span class="w"> </span><span class="kt">10</span><span class="w"> </span><span class="p">})).</span><span class="nx">toBe</span><span class="p">(</span><span class="s2">"table"</span><span class="p">);</span>
+<a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a><span class="w">  </span><span class="p">});</span>
+<a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a><span class="p">});</span>
+</code></pre></div>
+<p>跑 <code>pnpm rstest run preview</code> —— 应当失败（<code>line-count</code> 模式尚不存在），这就是 TDD 的红灯。</p>
+<p><strong>第 2 步：最小实现。</strong> 在 <code>core/artifacts/preview.ts</code> 中扩展模式解析（保持纯函数），随后新增 <code>components/workspace/artifacts/artifact-line-count-preview.tsx</code>，在 <code>artifact-file-preview.tsx</code> 的分发 <code>switch</code> 里加一个 case。所有异步/大输入处理沿用 <code>use-delimited-preview.ts</code> 的模式：<strong>在主线程先做尺寸上限判断再决定是否加载解析器，组件卸载时取消未完成的工作</strong>。</p>
+<p><strong>第 3 步：补组件测试（可选但推荐）。</strong> 新建 <code>artifact-line-count-preview.dom.test.tsx</code>，用 <code>@testing-library/react</code> 渲染并断言行数文案；记得以 <code>.dom.test.</code> 命名，它才会进 happy-dom project。</p>
+<p><strong>第 4 步：全量门禁。</strong> 依次跑 <code>pnpm check</code>、<code>pnpm test</code>；若改动了被 E2E 覆盖的产物面板交互，再跑相关 <code>pnpm test:e2e</code> spec。绿灯后，你就完整走了一遍本仓库的前端变更闭环：纯函数域 + 组件 + 双环境测试 + lint/type 闸门。</p>
+<hr />
+<h2 id="_1">常见坑<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>手改 <code>ui/</code> / <code>ai-elements/</code></strong>：下次从注册表同步时被整体覆盖，改动无声丢失。要定制就写包装组件（<code>cn()</code> 覆写类名），要新原语就走 CLI 拉取（见 18.3）。</li>
+<li><strong>环境变量指错地方</strong>：把 <code>NEXT_PUBLIC_LANGGRAPH_BASE_URL</code> 设成 <code>http://localhost:8001/api</code> 又跑标准 <code>make dev</code>，会绕过 Nginx 的 <code>/api/langgraph</code> 重写，出现跨域与 CSRF 行为不一致。默认留空走同源代理，仅在直连调试时设置（18.1.3）。</li>
+<li><strong>指望前端订阅 subgraph 流</strong>：前端只有根命名空间一路流 + <code>task_*</code> 自定义事件；自己另开 <code>stream_subgraphs</code> 会拿到 <code>values|&lt;ns&gt;</code> 帧，与 <code>AgentThreadState</code> 归一化逻辑不兼容（18.2.3）。</li>
+<li><strong>Windows 上 dev server 起不来</strong>：报 <code>EACCES</code> 多半是绑了 <code>0.0.0.0</code> 撞上 Hyper-V/winnat 保留端口；默认绑定是 <code>127.0.0.1</code>（#2870），局域网需求用 <code>--hostname</code> 参数显式开启（18.5.3）。</li>
+<li><strong>测试环境用错</strong>：组件渲染测试忘了 <code>.dom.test.</code> 命名，<code>@testing-library/react</code> 在 node 环境直接报 <code>document is not defined</code>；反过来把纯逻辑塞进 DOM 环境则白白拖慢 3 倍（18.5.2）。</li>
+<li><strong>字符长度按 UTF-16 数</strong>：自定义 Agent <code>display_name</code> 的 100 上限按 Unicode 码点计（<code>[...value.trim()].length</code>，与后端 Pydantic 对齐），用 HTML <code>maxLength</code> 会把 emoji 算成两个（<code>frontend/AGENTS.md:142-145</code>）。</li>
+</ol>
+<hr />
+<h2 id="_2">下一步<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<p>到这里，你已经能在前端把"看得见的部分"改到位。但一个变更要真正合入，还要过全仓库的质量闸门：后端四分片测试、Blockbuster 阻塞 IO 门禁、基准测试纪律、CI 工作流。下一章（第 19 章 可观测性、测试与质量保障）把这套质量体系拆开讲透——你会看到 <code>make test</code> 的分片算法为什么是"按耗时均衡"，以及 <code>trace_id</code> 是如何从 HTTP 请求一路流进日志的。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      教程基于开源项目 <a href='https://github.com/bytedance/deer-flow'>bytedance/deer-flow</a> 的真实源码编写
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.sections", "navigation.expand", "navigation.top", "navigation.indexes", "search.suggest", "search.highlight", "content.code.copy", "toc.follow"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.a5f9d56c.min.js"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

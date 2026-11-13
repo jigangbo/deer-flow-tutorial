@@ -1,0 +1,2107 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="基于 DeerFlow 真实源码的中文系统教程：21 章 + 附录，覆盖环境配置、核心组件拆解、二次开发与 MCP 集成">
+      
+      
+      
+        <link rel="canonical" href="https://jigangbo.github.io/deer-flow-tutorial/04-frontend-tour/">
+      
+      
+        <link rel="prev" href="../03-configuration/">
+      
+      
+        <link rel="next" href="../05-run-modes/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
+    
+    
+      
+        <title>第 4 章 前端界面与基本功能导览 - DeerFlow 从入门到精通 · 源码教程</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#4" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href=".." title="DeerFlow 从入门到精通 · 源码教程" class="md-header__button md-logo" aria-label="DeerFlow 从入门到精通 · 源码教程" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            DeerFlow 从入门到精通 · 源码教程
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              第 4 章 前端界面与基本功能导览
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jigangbo/deer-flow-tutorial" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="DeerFlow 从入门到精通 · 源码教程" class="md-nav__button md-logo" aria-label="DeerFlow 从入门到精通 · 源码教程" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    DeerFlow 从入门到精通 · 源码教程
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jigangbo/deer-flow-tutorial" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    导读
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    导读
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 0 章 全景鸟瞰
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第一篇 入门篇
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第一篇 入门篇
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-environment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 1 章 准备环境（Environment Setup）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 2 章 一键启动（Quick Start）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 3 章 配置系统入门
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 4 章 前端界面与基本功能导览
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 4 章 前端界面与基本功能导览
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#40" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.0 学习目标
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        本章源码锚点
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#41-workspacechatsthread_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 会话页 /workspace/chats/[thread_id]
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.1 会话页 /workspace/chats/[thread_id]">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        消息区
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#composer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        输入区（Composer）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#artifacts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        右侧/侧栏 artifacts 面板
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#todos-goal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        todos 与 goal 卡片
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        会话管理
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#42-agent-workspaceagentsagent_name" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 自定义 Agent 页 /workspace/agents/[agent_name]
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#43-showcasethread_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 公开演示页 /showcase/[thread_id]
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#44-workspacescheduled-tasks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 定时任务页 /workspace/scheduled-tasks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#45" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.5 其他工作区页面速览
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#46" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.6 国际化与双语用户手册
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.6 国际化与双语用户手册">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        界面语言
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mdx" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MDX 用户手册
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        动手实验 4-1：十分钟页面巡检
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        常见坑
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        下一步
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-run-modes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 5 章 更多运行方式
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第二篇 进阶篇
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第二篇 进阶篇
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-request-lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 6 章 一次请求的一生：Agent 运行时全链路
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-tools-and-skills/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 7 章 工具系统与 Skills
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-sandbox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 8 章 沙箱与代码执行
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-multi-agent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 9 章 Multi-Agent 路由与子代理委派
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10-memory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 10 章 记忆系统（Memory / DeerMem）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../11-context-engineering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 11 章 上下文工程与长对话治理
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../12-scheduled-tasks-and-im/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 12 章 定时任务与 IM 渠道
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../13-gateway-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 13 章 Gateway API 与编程接入
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第三篇 精通篇
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第三篇 精通篇
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../14-architecture-layers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 14 章 架构分层与开发规范（二次开发前必读）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../15-mcp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 15 章 MCP 集成（重点）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../16-extensions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 16 章 扩展（Extensions）开发
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../17-business-cases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 17 章 业务二次开发实战（综合案例）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../18-frontend-dev/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 18 章 前端二次开发
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../19-testing-quality/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 19 章 可观测性、测试与质量保障
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../20-production/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 20 章 生产部署与运维
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    附录
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    附录
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../appendices/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    附录
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#40" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.0 学习目标
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        本章源码锚点
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#41-workspacechatsthread_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 会话页 /workspace/chats/[thread_id]
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.1 会话页 /workspace/chats/[thread_id]">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        消息区
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#composer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        输入区（Composer）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#artifacts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        右侧/侧栏 artifacts 面板
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#todos-goal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        todos 与 goal 卡片
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        会话管理
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#42-agent-workspaceagentsagent_name" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 自定义 Agent 页 /workspace/agents/[agent_name]
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#43-showcasethread_id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 公开演示页 /showcase/[thread_id]
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#44-workspacescheduled-tasks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 定时任务页 /workspace/scheduled-tasks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#45" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.5 其他工作区页面速览
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#46" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.6 国际化与双语用户手册
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.6 国际化与双语用户手册">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        界面语言
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mdx" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MDX 用户手册
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        动手实验 4-1：十分钟页面巡检
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        常见坑
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        下一步
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="4">第 4 章 前端界面与基本功能导览<a class="headerlink" href="#4" title="Permanent link">&para;</a></h1>
+<h2 id="40">4.0 学习目标<a class="headerlink" href="#40" title="Permanent link">&para;</a></h2>
+<p>读完本章，你应该能够：</p>
+<ol>
+<li>说清 <code>/workspace</code> 下每个页面的用途与入口：会话页、自定义 Agent 页、能力中心、
+   定时任务页、用量页、项目/回收站；</li>
+<li>熟练使用会话页的用户可见功能：上传、artifacts 面板、todos、<code>/goal</code>、<code>@</code> 技能引用、
+   归档与未读标记；</li>
+<li>区分普通用户与管理员可见的界面（模型管理、用户管理、技能诊断）；</li>
+<li>知道双语用户手册（<code>frontend/src/content/{en,zh}/</code>）在哪里、怎么被渲染成 <code>/docs</code> 页面。</li>
+</ol>
+<blockquote>
+<p>本章只讲<strong>页面与用户可见功能</strong>，不深入前端代码实现——组件、数据流与二次开发留给第 18 章。</p>
+</blockquote>
+<h2 id="_1">本章源码锚点<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>主题</th>
+<th>锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>路由结构</td>
+<td><code>frontend/src/app/</code>（本章节按目录逐个对应）</td>
+</tr>
+<tr>
+<td>页面/域职责速查</td>
+<td><code>frontend/AGENTS.md:64</code>（scheduled-tasks）、<code>frontend/AGENTS.md:321</code>（capabilities）</td>
+</tr>
+<tr>
+<td>前端总体介绍</td>
+<td><code>docs/ARCHITECTURE.md:117</code>（Source Layout）</td>
+</tr>
+<tr>
+<td>用户手册内容</td>
+<td><code>frontend/src/content/en/</code>、<code>frontend/src/content/zh/</code></td>
+</tr>
+<tr>
+<td>静态演示构建</td>
+<td><code>frontend/AGENTS.md:215</code>（<code>make build-static</code>）</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="41-workspacechatsthread_id">4.1 会话页 <code>/workspace/chats/[thread_id]</code><a class="headerlink" href="#41-workspacechatsthread_id" title="Permanent link">&para;</a></h2>
+<p>会话页是整个产品的主战场。所有功能围绕"一个 thread = 一次可隔离的对话"展开。</p>
+<h3 id="_2">消息区<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>流式回复</strong>：模型输出逐块渲染；支持思考内容的独立展示（取决于模型能力位）；</li>
+<li><strong>子任务卡片</strong>：Agent 委派子代理时，进度通过根命名空间的 <code>task_*</code> 事件驱动卡片展示
+  （<code>docs/ARCHITECTURE.md:131</code>——"Subtask progress rides root-namespace <code>task_*</code> custom
+  events"）；</li>
+<li><strong>引用与证据</strong>：知识检索的 ToolMessage 会被解析为可展开的来源面板与
+  <code>#knowledge-source-ID</code> 引用链接（<code>frontend/AGENTS.md:95</code>）；</li>
+<li><strong>历史事件线</strong>：定时任务触发的会话会显示任务生命周期事件行（创建/启动/完成），
+  按 <code>after_run_id</code> 插入对应轮次末尾（<code>frontend/AGENTS.md:77</code>）。</li>
+</ul>
+<h3 id="composer">输入区（Composer）<a class="headerlink" href="#composer" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>上传</strong>：拖拽或点击上传，走 <code>POST /api/threads/{thread_id}/uploads</code>（第 2 章已演示）；</li>
+<li><strong>斜杠命令</strong>：<code>/</code> 面板只有两个——<code>/goal</code>（设定完成条件）与 <code>/compact</code>（手动压缩上下文）
+  （<code>frontend/AGENTS.md:439</code>）；旧版纯文本斜杠输入依然兼容；</li>
+<li><strong><code>@</code> 技能引用</strong>：<code>@</code> 唤起技能选择器，选中的技能以 <code>additional_kwargs.skill_references</code>
+  随消息提交（最多 16 个），后端校验技能对当前用户与 Agent 的可用性
+  （<code>frontend/AGENTS.md:437</code>）；<code>@</code> 与附件按钮共用同一个选择器；</li>
+<li><strong>模型控件</strong>：模型选择、思考模式与推理力度档位都在输入区卡片上
+  （<code>core/models/use-model-control</code> + HumanInputCard，<code>frontend/AGENTS.md:93</code>）；
+  必须思考的模型不提供"关闭"档（<code>frontend/AGENTS.md:406</code> 的 reasoning 契约）。</li>
+</ul>
+<h3 id="artifacts">右侧/侧栏 artifacts 面板<a class="headerlink" href="#artifacts" title="Permanent link">&para;</a></h3>
+<p>Agent 在沙箱中写出的文件会作为 artifacts 展示：代码、Markdown、图片、CSV/TSV 表格预览
+（分页、最多 202 行的逻辑记录与 50 列，见 <code>frontend/AGENTS.md:282</code>）。artifacts 也有
+独立查看页 <code>/artifacts/view</code>（<code>frontend/src/app/artifacts/view/</code>）。</p>
+<h3 id="todos-goal">todos 与 goal 卡片<a class="headerlink" href="#todos-goal" title="Permanent link">&para;</a></h3>
+<ul>
+<li>打开 Plan Mode 后，Agent 用 <code>write_todos</code> 维护任务清单，会话页渲染实时更新的 todos
+  卡片（<code>backend/AGENTS.md:296</code>）；</li>
+<li><code>/goal</code> 设置的完成条件属于<strong>当前线程</strong>；运行结束后系统评估目标是否满足并展示状态
+  （<code>docs/ARCHITECTURE.md:112</code>）。</li>
+</ul>
+<h3 id="_3">会话管理<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>归档</strong>：归档是线程元数据标志（<code>deerflow_archived === true</code>），与运行状态无关；侧栏与
+  Chats 列表可按归档过滤（<code>frontend/AGENTS.md:268</code>）；</li>
+<li><strong>未读与来源图标</strong>：服务端创建的线程（IM/定时任务发起）在列表行显示来源图标与未读圆点
+  （<code>frontend/AGENTS.md:78</code>）；</li>
+<li><strong>删除</strong>：删除经确认对话框执行，先远端后本地清理，远端 404 视为已删除
+  （<code>frontend/AGENTS.md:299</code>）。</li>
+</ul>
+<hr />
+<h2 id="42-agent-workspaceagentsagent_name">4.2 自定义 Agent 页 <code>/workspace/agents/[agent_name]</code><a class="headerlink" href="#42-agent-workspaceagentsagent_name" title="Permanent link">&para;</a></h2>
+<p>入口：工作区侧栏 Agents 区；新建走 <code>/workspace/agents/new</code>。一个自定义 Agent 可以绑定
+专属模型、系统提示、工具访问与知识范围：</p>
+<ul>
+<li><strong>工具访问</strong>：从 <code>GET /api/agent-tool-groups</code> 返回的目录中勾选，保存的是
+  <code>null</code> / <code>[]</code> / 显式列表三种契约——继承全部 / 全部禁用 / 白名单
+  （<code>frontend/AGENTS.md:147</code>）；</li>
+<li><strong>知识范围</strong>：当工具白名单不再包含 <code>knowledge</code> 时，同一请求会把 <code>knowledge_scope</code>
+  置空，避免遗留的检索默认值导致 run 被拒（<code>frontend/AGENTS.md:153</code>）；</li>
+<li><strong>显示名</strong>：<code>display_name</code> 是可选的 Unicode 界面标签（上限 100 码点），运行时身份仍用
+  <code>name</code>（<code>frontend/AGENTS.md:141</code>）；</li>
+<li><strong>可移植性</strong>：Agent 可导出/导入版本化的 <code>deerflow.custom-agent</code> JSON 文档；
+  导入预览只在浏览器端解析文件名，校验以 Gateway 为准（<code>frontend/AGENTS.md:159</code>）。</li>
+</ul>
+<p>自定义 Agent 创建后，会话页模型选择器与 <code>/workspace/agents/[agent_name]</code> 顶栏都可以
+以该 Agent 身份发起对话。</p>
+<hr />
+<h2 id="43-showcasethread_id">4.3 公开演示页 <code>/showcase/[thread_id]</code><a class="headerlink" href="#43-showcasethread_id" title="Permanent link">&para;</a></h2>
+<p><code>/showcase/[thread_id]</code> 是<strong>allowlist 只读</strong>演示页（<code>docs/ARCHITECTURE.md:120</code>）：
+把某个 thread 加入允许列表后，访客无需账号即可只读回放该对话——适合对外展示 Demo。
+它复用与会话页相同的渲染组件，但没有输入区，也没有任何写操作。</p>
+<p>与之同族的还有一个纯静态只读变体：<code>make build-static</code> 产出 standalone 静态演示站，
+Gateway 读取由打包进站内的 <code>/mock/api</code> fixtures 提供，写操作本地直接失败
+（<code>frontend/AGENTS.md:215</code>）。</p>
+<hr />
+<h2 id="44-workspacescheduled-tasks">4.4 定时任务页 <code>/workspace/scheduled-tasks</code><a class="headerlink" href="#44-workspacescheduled-tasks" title="Permanent link">&para;</a></h2>
+<p>前置条件：<code>config.yaml</code> 中 <code>scheduler.enabled: true</code>（重启 Gateway 生效），
+且你的账号具备相应能力准入（<code>scheduler.tool_enabled</code> 只影响会话内工具）。页面结构
+（<code>frontend/AGENTS.md:64</code>）：</p>
+<ul>
+<li><strong>列表</strong>：带状态 Tab（进行中/已暂停等）、按标题或提示词搜索、可叠加类型过滤；</li>
+<li><strong>详情</strong>：Runs（运行历史）/ 何时运行 / goal / 做什么 / 备注 / History 六块信息；</li>
+<li><strong>创建/编辑/复制对话框</strong>：支持一次性（once）、cron、间隔（interval）三种计划；
+  编辑只提交变更字段，<code>null</code> 表示清除；</li>
+<li><strong>续期对话框</strong>：一次性任务或次数耗尽（<code>limits_exhausted</code>）时恢复任务会要求续期
+  上限（<code>max_runs</code>/<code>end_at</code>）；</li>
+<li><strong>URL 参数</strong>：<code>?task_id=</code> 直达某个任务；<code>?thread_id=</code> 把列表限定到某个会话
+  （<code>frontend/AGENTS.md:64</code>）。</li>
+</ul>
+<p>运行历史语义值得记住：<code>unmet</code> 状态表示"这次运行完成了，但计划目标没达成"，
+它<strong>不是</strong>执行失败（<code>frontend/AGENTS.md:61</code>）；三次未达标会自动暂停任务。
+聊天里的 <code>schedule_task</code> 工具结果会渲染成定时任务卡片（轮询仅在卡片可见时进行，
+<code>frontend/AGENTS.md:76</code>）。</p>
+<hr />
+<h2 id="45">4.5 其他工作区页面速览<a class="headerlink" href="#45" title="Permanent link">&para;</a></h2>
+<p>以下页面按 <code>frontend/src/app/workspace/</code> 实际目录列出：</p>
+<table>
+<thead>
+<tr>
+<th>路由</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/workspace</code>（<code>page.tsx</code>）</td>
+<td>工作区首页，重定向/汇总视图</td>
+</tr>
+<tr>
+<td><code>/workspace/chats</code></td>
+<td>会话列表</td>
+</tr>
+<tr>
+<td><code>/workspace/agents</code>、<code>/agents/new</code></td>
+<td>自定义 Agent 管理与新建（见 4.2）</td>
+</tr>
+<tr>
+<td><code>/workspace/capabilities</code></td>
+<td><strong>能力中心</strong>：Plugins（MCP）与 Skills 两个导航（<code>frontend/AGENTS.md:321</code>）；MCP 管理器、集成配置对话框都在这里</td>
+</tr>
+<tr>
+<td><code>/workspace/extensions/[namespace]</code></td>
+<td>全栈插件页面挂载点</td>
+</tr>
+<tr>
+<td><code>/workspace/projects</code>、<code>/projects/[id]</code></td>
+<td>项目：文档架（document shelf）、归档读取语义（<code>README.md:3746</code> 起）</td>
+</tr>
+<tr>
+<td><code>/workspace/scheduled-tasks</code></td>
+<td>定时任务（见 4.4）</td>
+</tr>
+<tr>
+<td><code>/workspace/trash</code></td>
+<td>回收站</td>
+</tr>
+<tr>
+<td><code>/workspace/usage</code></td>
+<td>Token 用量控制台：按 owner/周期/时区查询，门禁在 <code>runs:read</code> 权限（<code>frontend/AGENTS.md:84</code>）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>管理员可见</strong>（普通用户不显示入口）：</p>
+<ul>
+<li>设置 → Models（<code>?settings=models</code>）：经 <code>/api/managed-models</code> 的目录管理；YAML 里的
+  条目只读，草稿凭据不落浏览器存储（<code>frontend/AGENTS.md:370</code>）；</li>
+<li>设置 → Users（<code>?settings=users</code>）：账号停用/恢复，经 <code>/api/v1/admin/users</code>
+  （<code>frontend/AGENTS.md:379</code>）；</li>
+<li>技能诊断（<code>skill-diagnostics</code>）：仅管理员、非静态演示站可见（<code>frontend/AGENTS.md:311</code>）。</li>
+</ul>
+<hr />
+<h2 id="46">4.6 国际化与双语用户手册<a class="headerlink" href="#46" title="Permanent link">&para;</a></h2>
+<h3 id="_4">界面语言<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h3>
+<p>界面支持 <code>zh-CN</code> 与 <code>en-US</code> 双语（<code>docs/ARCHITECTURE.md:124</code> 的 <code>core/i18n/</code>）。
+语言偏好会作为 <code>locale</code> 用户偏好保存，并影响后续定时任务通知的语言
+（<code>frontend/AGENTS.md:77</code>：UI 语言每会话保存一次）。</p>
+<h3 id="mdx">MDX 用户手册<a class="headerlink" href="#mdx" title="Permanent link">&para;</a></h3>
+<p><code>frontend/src/content/{en,zh}/</code> 下是完整的双语手册源文件，目录对称：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>frontend/src/content/en/
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>├── _meta.ts
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├── application/
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>├── harness/
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>├── index.mdx
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>├── introduction/
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>├── posts/
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>├── reference/
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>└── tutorials/
+</code></pre></div>
+<p>（<code>zh/</code> 结构完全一致。）它们经 <code>/[lang]/docs/[[...mdxPath]]</code> 路由渲染成站内文档页
+（<code>frontend/src/app/[lang]/docs/</code>），构建时 <code>scripts/build-search-index.mjs</code> 会生成
+<code>public/_pagefind/</code> 搜索索引，页面头部提供全文搜索
+（<code>frontend/AGENTS.md:253</code>）。</p>
+<p><strong>阅读建议</strong>：<code>harness/</code> 与 <code>application/</code> 两个分区对应"平台运维/使用者"两种视角，
+与本教程第 12 章（定时任务与 IM）、第 16 章（扩展）的官方对照文档都在其中；查功能时
+先搜手册，再回到 <code>backend/docs/</code> 查机制。</p>
+<hr />
+<h2 id="4-1">动手实验 4-1：十分钟页面巡检<a class="headerlink" href="#4-1" title="Permanent link">&para;</a></h2>
+<p>保持 <code>make dev</code> 运行，用浏览器依次访问并记录（无需任何代码修改）：</p>
+<ol>
+<li><code>http://localhost:2026/workspace</code> —— 新建一个会话，发一条消息，观察流式渲染与
+   自动标题；</li>
+<li>输入 <code>/</code> —— 确认斜杠面板只有 <code>/goal</code> 与 <code>/compact</code>；输入 <code>@</code> —— 确认技能选择器
+   能列出 <code>skills/public/</code> 下的技能（如 <code>deep-research</code>）；</li>
+<li>上传一个小 CSV 并让 Agent "统计每列的平均值并生成图表" —— 观察 artifacts 面板
+   的表格/图片预览；</li>
+<li>访问 <code>/workspace/agents/new</code> —— 走一遍新建自定义 Agent 的表单（模型、工具访问、
+   显示名），保存后用它发起一次对话；</li>
+<li>访问 <code>/workspace/capabilities</code> —— 确认 Plugins/Skills 两个导航；在 Skills 页
+   看到公共技能列表；</li>
+<li>访问 <code>/workspace/usage</code> —— 查看刚才几轮对话的 token 用量；</li>
+<li>切换界面语言（右下角/设置中）—— 确认 <code>zh-CN</code> 与 <code>en-US</code> 切换即时生效，然后访问
+   <code>/zh/docs</code> 与 <code>/en/docs</code>，确认双语手册渲染正常；</li>
+<li>（若已开启 scheduler）访问 <code>/workspace/scheduled-tasks</code> —— 确认状态 Tab 与
+   新建对话框可用；未开启 scheduler 时记录页面提示。</li>
+</ol>
+<p>预期产出：一张"页面 × 功能 × 你看到的状态"对照表；任何与本章描述不符的地方，
+先检查 <code>config.yaml</code> 对应开关，再查官方手册。</p>
+<hr />
+<h2 id="_5">常见坑<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>找不到某功能入口就怀疑版本</strong>：管理员功能（模型/用户管理、技能诊断）对普通用户
+   隐藏；先确认账号角色，再看 <code>?settings=</code> 深链。</li>
+<li><strong>在 <code>showcase</code> 里想输入</strong>：演示页是只读回放（allowlist 控制），没有输入区；
+   要互动请登录后进 <code>/workspace</code>。</li>
+<li><strong><code>@</code> 引用的技能带不动</strong>：技能引用会经后端按用户注册表与 Agent 白名单双重校验
+   （<code>frontend/AGENTS.md:437</code>）；自定义 Agent 的工具白名单可能排除了它。</li>
+<li><strong>定时任务页空白</strong>：<code>scheduler.enabled: false</code> 时页面没有数据且创建会报
+   <code>409 scheduler_not_running</code>（<code>backend/docs/CONFIGURATION.md:766</code>）；先开总闸并重启。</li>
+<li><strong>语言切换不保存</strong>：<code>locale</code> 偏好只在 Gateway 偏好服务可用时保存
+   （<code>frontend/AGENTS.md:77</code>）；静态演示站或后端不可达时切换仅当次有效。</li>
+<li><strong>文档搜索无结果</strong>：搜索索引在 <code>pnpm build</code> 时生成（<code>frontend/AGENTS.md:254</code>）；
+   dev 模式或未跑过构建时站内搜索可能为空。</li>
+<li><strong>把 <code>ui/</code>、<code>ai-elements/</code> 当普通组件改样式</strong>：它们是注册表生成物，改动会被覆盖；
+   定制入口在 <code>components/workspace/</code> 等自有目录（第 18 章展开）。</li>
+</ol>
+<hr />
+<h2 id="_6">下一步<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
+<p>界面已经走遍，但你现在只能在"本机前台"跑 DeerFlow。下一章《第 5 章 更多运行方式》覆盖
+本地生产模式、守护进程、Docker 开发/生产栈与 Helm 部署，并给出四种模式的对比表——见
+<code>05-run-modes.md</code>。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      教程基于开源项目 <a href='https://github.com/bytedance/deer-flow'>bytedance/deer-flow</a> 的真实源码编写
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.sections", "navigation.expand", "navigation.top", "navigation.indexes", "search.suggest", "search.highlight", "content.code.copy", "toc.follow"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.a5f9d56c.min.js"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,2516 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="基于 DeerFlow 真实源码的中文系统教程：21 章 + 附录，覆盖环境配置、核心组件拆解、二次开发与 MCP 集成">
+      
+      
+      
+        <link rel="canonical" href="https://jigangbo.github.io/deer-flow-tutorial/13-gateway-api/">
+      
+      
+        <link rel="prev" href="../12-scheduled-tasks-and-im/">
+      
+      
+        <link rel="next" href="../14-architecture-layers/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
+    
+    
+      
+        <title>第 13 章 Gateway API 与编程接入 - DeerFlow 从入门到精通 · 源码教程</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#13-gateway-api" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href=".." title="DeerFlow 从入门到精通 · 源码教程" class="md-header__button md-logo" aria-label="DeerFlow 从入门到精通 · 源码教程" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            DeerFlow 从入门到精通 · 源码教程
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              第 13 章 Gateway API 与编程接入
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jigangbo/deer-flow-tutorial" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="DeerFlow 从入门到精通 · 源码教程" class="md-nav__button md-logo" aria-label="DeerFlow 从入门到精通 · 源码教程" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    DeerFlow 从入门到精通 · 源码教程
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jigangbo/deer-flow-tutorial" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    导读
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    导读
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 0 章 全景鸟瞰
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第一篇 入门篇
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第一篇 入门篇
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-environment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 1 章 准备环境（Environment Setup）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 2 章 一键启动（Quick Start）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 3 章 配置系统入门
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-frontend-tour/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 4 章 前端界面与基本功能导览
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-run-modes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 5 章 更多运行方式
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第二篇 进阶篇
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第二篇 进阶篇
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-request-lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 6 章 一次请求的一生：Agent 运行时全链路
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-tools-and-skills/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 7 章 工具系统与 Skills
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-sandbox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 8 章 沙箱与代码执行
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-multi-agent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 9 章 Multi-Agent 路由与子代理委派
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10-memory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 10 章 记忆系统（Memory / DeerMem）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../11-context-engineering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 11 章 上下文工程与长对话治理
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../12-scheduled-tasks-and-im/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 12 章 定时任务与 IM 渠道
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 13 章 Gateway API 与编程接入
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 13 章 Gateway API 与编程接入
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        本章源码锚点
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#130" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.0 学习目标
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#131-rest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.1 REST 路由全景
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="13.1 REST 路由全景">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1311-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.1.1 两套 API、一个入口
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1312" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.1.2 三种认证身份
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1313-run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.1.3 run 创建：幂等键与兼容性
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1314-content-location" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.1.4 无状态流式端点与 Content-Location
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#132-langgraph-sdk" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.2 LangGraph 兼容层：标准 SDK 直连
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#133" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.3 文件上传协议
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="13.3 文件上传协议">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1331" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.3.1 端点与规模限制
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1332-upload-part" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.3.2 原子发布：.upload-*.part
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1333" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.3.3 文档转换与命名
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1334" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.3.4 三套路径与"线程目录优先"
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#134-websocket-nginx" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.4 浏览器 WebSocket 与 nginx 正则顺序
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#135-deerflowclient" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.5 源码走读：DeerFlowClient（内嵌客户端）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="13.5 源码走读：DeerFlowClient（内嵌客户端）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1351" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.5.1 为什么要第二条路径
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1352-agent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.5.2 构造与懒加载 agent
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1353-streamchat" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.5.3 stream/chat 与事件归一
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1354" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.5.4 上传与产物回收
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        动手实验
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        常见坑
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        下一步
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第三篇 精通篇
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第三篇 精通篇
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../14-architecture-layers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 14 章 架构分层与开发规范（二次开发前必读）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../15-mcp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 15 章 MCP 集成（重点）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../16-extensions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 16 章 扩展（Extensions）开发
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../17-business-cases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 17 章 业务二次开发实战（综合案例）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../18-frontend-dev/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 18 章 前端二次开发
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../19-testing-quality/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 19 章 可观测性、测试与质量保障
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../20-production/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 20 章 生产部署与运维
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    附录
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    附录
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../appendices/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    附录
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        本章源码锚点
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#130" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.0 学习目标
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#131-rest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.1 REST 路由全景
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="13.1 REST 路由全景">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1311-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.1.1 两套 API、一个入口
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1312" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.1.2 三种认证身份
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1313-run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.1.3 run 创建：幂等键与兼容性
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1314-content-location" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.1.4 无状态流式端点与 Content-Location
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#132-langgraph-sdk" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.2 LangGraph 兼容层：标准 SDK 直连
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#133" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.3 文件上传协议
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="13.3 文件上传协议">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1331" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.3.1 端点与规模限制
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1332-upload-part" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.3.2 原子发布：.upload-*.part
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1333" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.3.3 文档转换与命名
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1334" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.3.4 三套路径与"线程目录优先"
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#134-websocket-nginx" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.4 浏览器 WebSocket 与 nginx 正则顺序
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#135-deerflowclient" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.5 源码走读：DeerFlowClient（内嵌客户端）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="13.5 源码走读：DeerFlowClient（内嵌客户端）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1351" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.5.1 为什么要第二条路径
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1352-agent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.5.2 构造与懒加载 agent
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1353-streamchat" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.5.3 stream/chat 与事件归一
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1354" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.5.4 上传与产物回收
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        动手实验
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        常见坑
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        下一步
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="13-gateway-api">第 13 章 Gateway API 与编程接入<a class="headerlink" href="#13-gateway-api" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>第 12 章里，IM 渠道和定时任务都是 Gateway API 的"内部用户"。本章把你——外部
+开发者——变成同类用户：REST 路由全景、LangGraph 兼容层、文件上传协议、浏览器
+WebSocket，最后用内嵌 <code>deerflow.client.DeerFlowClient</code> 在自己的 Python 程序里
+驱动同一条 run 生命周期。</p>
+</blockquote>
+<h2 id="_1">本章源码锚点<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>主题</th>
+<th>锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>API 官方参考</td>
+<td><code>backend/docs/API.md</code></td>
+</tr>
+<tr>
+<td>Gateway 路由目录</td>
+<td><code>backend/app/gateway/routers/</code>（40 个路由模块）</td>
+</tr>
+<tr>
+<td>run 启动核心</td>
+<td><code>backend/app/gateway/services.py:2206</code>（<code>start_run</code>）、<code>services.py:2876</code>（<code>launch_scheduled_thread_run</code>）</td>
+</tr>
+<tr>
+<td>文件上传路由</td>
+<td><code>backend/app/gateway/routers/uploads.py:394</code></td>
+</tr>
+<tr>
+<td>上传协议文档</td>
+<td><code>backend/docs/FILE_UPLOAD.md</code></td>
+</tr>
+<tr>
+<td>流式设计（两条路径）</td>
+<td><code>backend/docs/STREAMING.md</code></td>
+</tr>
+<tr>
+<td>内嵌客户端</td>
+<td><code>backend/packages/harness/deerflow/client.py:177</code></td>
+</tr>
+<tr>
+<td>nginx LangGraph 重写</td>
+<td><code>docker/nginx/nginx.conf:107</code></td>
+</tr>
+<tr>
+<td>nginx 浏览器 WebSocket</td>
+<td><code>docker/nginx/nginx.conf:254</code></td>
+</tr>
+<tr>
+<td>nginx 配置测试</td>
+<td><code>backend/tests/test_nginx_browser_websocket.py</code></td>
+</tr>
+<tr>
+<td>前端连接约定</td>
+<td><code>docs/ARCHITECTURE.md</code> §4（<code>NEXT_PUBLIC_LANGGRAPH_BASE_URL=/api/langgraph</code>）</td>
+</tr>
+</tbody>
+</table>
+<h2 id="130">13.0 学习目标<a class="headerlink" href="#130" title="Permanent link">&para;</a></h2>
+<p>读完本章，你应该能够：</p>
+<ol>
+<li>在 40 个路由模块中快速定位需要的能力，并说出 thread/run 生命周期与
+   PAT 权限 allowlist 的关系；</li>
+<li>用标准 LangGraph SDK 或裸 HTTP 直连 DeerFlow（不需要单独的 LangGraph Server），
+   解释 <code>/api/langgraph/*</code> → <code>/api/*</code> 的重写契约；</li>
+<li>走通文件上传协议：<code>.upload-*.part</code> 原子发布、markitdown 转换、重复文件 <code>_N</code>
+   后缀与虚拟路径映射；</li>
+<li>说明为什么 nginx 必须把 <code>/browser/stream</code> 的 WebSocket 正则放在通用 threads
+   正则之前；</li>
+<li>用 <code>DeerFlowClient</code> 完成一次带文件上传与产物回收的完整 run。</li>
+</ol>
+<h2 id="131-rest">13.1 REST 路由全景<a class="headerlink" href="#131-rest" title="Permanent link">&para;</a></h2>
+<p>Gateway 是一个 FastAPI 应用（<code>backend/app/gateway/</code>），路由按业务域拆成 40 个模块
+（<code>ls backend/app/gateway/routers/</code>）。按用途分组：</p>
+<table>
+<thead>
+<tr>
+<th>分组</th>
+<th>模块</th>
+<th>覆盖能力</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>对话核心</strong></td>
+<td><code>threads.py</code>、<code>thread_runs.py</code>、<code>runs.py</code>、<code>thread_activity.py</code>、<code>trash.py</code>、<code>suggestions.py</code></td>
+<td>thread CRUD/search/state/history/branches/compact/goal、run 创建/流式/等待/取消/join</td>
+</tr>
+<tr>
+<td><strong>LangGraph 兼容</strong></td>
+<td><code>assistants_compat.py</code></td>
+<td>LangGraph SDK 的 assistants 语义</td>
+</tr>
+<tr>
+<td><strong>文件</strong></td>
+<td><code>uploads.py</code>、<code>artifacts.py</code></td>
+<td>上传、列表、删除、产物读取</td>
+</tr>
+<tr>
+<td><strong>记忆与知识</strong></td>
+<td><code>memory.py</code>、<code>knowledge.py</code>、<code>project_documents.py</code>、<code>project_thread_files.py</code></td>
+<td>记忆 CRUD/导入导出、只读知识检索、项目资料库</td>
+</tr>
+<tr>
+<td><strong>模型/MCP/技能</strong></td>
+<td><code>models.py</code>、<code>managed_models.py</code>、<code>mcp.py</code>、<code>mcp_tasks.py</code>、<code>personal_mcp.py</code>、<code>skills.py</code>、<code>skill_mutations.py</code>、<code>plugins.py</code>、<code>integrations.py</code></td>
+<td>模型列表、MCP 配置热编辑、长任务、技能管理</td>
+</tr>
+<tr>
+<td><strong>自动化</strong></td>
+<td><code>scheduled_tasks.py</code>、<code>subagents.py</code>、<code>subagent_batches.py</code></td>
+<td>第 12 章的定时任务、子代理</td>
+</tr>
+<tr>
+<td><strong>IM</strong></td>
+<td><code>channels.py</code>、<code>channel_connections.py</code>、<code>im_notification_preferences.py</code>、<code>github_webhooks.py</code></td>
+<td>渠道运行时、用户连接绑定、通知偏好、GitHub webhook</td>
+</tr>
+<tr>
+<td><strong>平台</strong></td>
+<td><code>auth.py</code>、<code>admin_users.py</code>、<code>features.py</code>、<code>capabilities.py</code>、<code>console.py</code>、<code>config.py</code>（gateway 根）</td>
+<td>登录/PAT、特性开关、能力查询</td>
+</tr>
+</tbody>
+</table>
+<p><code>backend/docs/API.md</code> 是权威参考（2300+ 行），本节只讲"接入视角"必须知道的四件事。</p>
+<h3 id="1311-api">13.1.1 两套 API、一个入口<a class="headerlink" href="#1311-api" title="Permanent link">&para;</a></h3>
+<p><code>backend/docs/API.md</code> §Overview：</p>
+<blockquote>
+<ol>
+<li><strong>LangGraph-compatible API</strong> — Agent interactions, threads, and streaming (<code>/api/langgraph/*</code>)</li>
+<li><strong>Gateway API</strong> — Models, MCP, skills, uploads, and artifacts (<code>/api/*</code>)</li>
+</ol>
+</blockquote>
+<p>所有流量统一走 Nginx 的 2026 端口（<code>docs/ARCHITECTURE.md</code> §2：Nginx 是唯一公网
+入口，Gateway 的 8001 从不发布）。对外编程接入也请走 2026——直连 8001 只适合
+本机调试。</p>
+<h3 id="1312">13.1.2 三种认证身份<a class="headerlink" href="#1312" title="Permanent link">&para;</a></h3>
+<p><code>backend/docs/API.md</code> §Authentication：</p>
+<table>
+<thead>
+<tr>
+<th>身份</th>
+<th>凭证</th>
+<th>适用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>浏览器会话</td>
+<td>登录签发的 <code>access_token</code> cookie</td>
+<td>前端</td>
+</tr>
+<tr>
+<td><strong>PAT（个人访问令牌）</strong></td>
+<td><code>Authorization: Bearer dfp_...</code></td>
+<td>CI、脚本、集成</td>
+</tr>
+<tr>
+<td>内部认证</td>
+<td>内部 owner 头（<code>AUTH_SOURCE_INTERNAL</code>）</td>
+<td>scheduler、IM 渠道（第 12 章的信任边界）</td>
+</tr>
+</tbody>
+</table>
+<p>PAT 的关键约束（<code>API.md:69-161</code>）：</p>
+<ul>
+<li>管理 PAT 必须用<strong>交互会话</strong>（PAT 不能造 PAT），raw token 只在创建响应里出现
+  一次，服务端只存 SHA-256 摘要；</li>
+<li><code>scopes</code> 是 route 权限的子集：<code>threads:read/write/delete</code>、
+  <code>runs:create/read/cancel</code>——PAT 只能<strong>收窄</strong>所属用户的权限，不能放大；</li>
+<li><strong>路由级默认拒绝</strong>：PAT 只被准入 thread/run 生命周期路由（<code>API.md:140-151</code>
+  列出了精确清单，含 <code>/compact</code>、<code>/runs/{run_id}/cancel</code>、<code>POST /api/runs/stream|wait</code>
+  等）；memory、agents、MCP/skills 配置、uploads 等其余路由对 PAT 一律 403——
+  这是外层边界，scope 只约束带权限装饰器的路由；</li>
+<li>带 <code>Authorization</code> 头但校验失败的请求是硬 401，<strong>永不回退到 session cookie</strong>；
+  PAT 永远不携带 admin 能力；</li>
+<li>细粒度到"取消能力"：<code>?action=interrupt|rollback</code>、<code>multitask_strategy=interrupt|rollback</code>
+  也要求 <code>runs:cancel</code>（<code>API.md:134-139</code>）。</li>
+</ul>
+<h3 id="1313-run">13.1.3 run 创建：幂等键与兼容性<a class="headerlink" href="#1313-run" title="Permanent link">&para;</a></h3>
+<p><code>POST /api/langgraph/threads/{thread_id}/runs</code>（<code>API.md:254</code>）接受可选
+<code>Idempotency-Key</code> 头：同一用户 + thread + key 重试复用已存在的 run 而不是再次执行；
+key 跨 <code>/runs</code>、<code>/runs/stream</code>、<code>/runs/wait</code> 共享，改动 <code>input</code>/<code>assistant_id</code>
+的重试返回 409。<strong>每个有意的用户动作生成新 key，只在不确定的 HTTP 结果后重试时复用</strong>
+——第 12 章 IM 渠道的"平台重投递拿到同一条已准入 run"正是靠它实现。</p>
+<p>兼容性方面的硬规则（<code>API.md:347-357</code>）：</p>
+<ul>
+<li>支持的 <code>stream_mode</code>：<code>values</code>、<code>messages-tuple</code>、<code>custom</code>、<code>updates</code>、<code>debug</code>、
+  <code>tasks</code>、<code>checkpoints</code>；<code>messages</code>、<code>events</code>、<code>tools</code> 等不支持模式在 run 创建前
+  返回 422，DeerFlow <strong>不会</strong>用 <code>values</code> 顶替；</li>
+<li>支持的并发策略：<code>reject</code>/<code>rollback</code>/<code>interrupt</code>；不支持直接 422 的选项：
+  <code>webhook</code>、<code>stream_resumable=true</code>、<code>after_seconds</code>、<code>feedback_keys</code>、非空
+  <code>on_completion</code>、<code>if_not_exists="reject"</code>、<code>multitask_strategy="enqueue"</code>，
+  以及未声明的 SDK 选项（<code>checkpoint_during</code>、<code>durability</code>）——<strong>显式拒绝而非
+  静默丢弃</strong>。</li>
+</ul>
+<h3 id="1314-content-location">13.1.4 无状态流式端点与 Content-Location<a class="headerlink" href="#1314-content-location" title="Permanent link">&para;</a></h3>
+<p>最快接入路径不需要预建 thread（<code>API.md</code> §Stateless Stream Run，<code>API.md:619</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="err">POST /api/langgraph/runs/stream</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="err">Content-Type: application/json</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="err">Accept: text/event-stream</span>
+</code></pre></div>
+<p>Gateway 自动建 thread，并在响应头返回两个标识符：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="err">Content-Location: /api/threads/{thread_id}/runs/{run_id}</span>
+</code></pre></div>
+<p>客户端应解析此头的 <code>thread_id</code>（路径以 <code>/runs/{run_id}</code> 结尾），下一轮通过
+<code>config.configurable.thread_id</code> 带回来延续会话。SSE 事件协议本身（<code>messages-tuple</code>、
+有界 <code>values</code> 快照、<code>task_*</code> 自定义事件、<code>stream_subgraphs</code> 命名空间）第 6 章已
+详拆，本章不重复；API 调用者只需记住两点：<code>stream_mode</code> 要显式列出想要的模式，
+且断线恢复依赖 SSE <code>Last-Event-ID</code>（<code>backend/docs/STREAMING.md</code> 消费者对比表）。</p>
+<h2 id="132-langgraph-sdk">13.2 LangGraph 兼容层：标准 SDK 直连<a class="headerlink" href="#132-langgraph-sdk" title="Permanent link">&para;</a></h2>
+<p><code>docs/ARCHITECTURE.md</code> §2 的入口契约：</p>
+<blockquote>
+<p><code>/api/langgraph/*</code> → Gateway's LangGraph-compatible runtime (rewritten to native <code>/api/*</code>)</p>
+</blockquote>
+<p>nginx 侧的实现（<code>docker/nginx/nginx.conf:106-109</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="w">        </span><span class="c1"># LangGraph-compatible API routes served by Gateway.</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">        </span><span class="c1"># Rewrites /api/langgraph/* to /api/* before proxying to Gateway.</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">        </span><span class="k">location</span><span class="w"> </span><span class="s">/api/langgraph/</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">            </span><span class="kn">rewrite</span><span class="w"> </span><span class="s">^/api/langgraph/(.*)</span><span class="w"> </span><span class="s">/api/</span><span class="nv">$1</span><span class="w"> </span><span class="s">break</span><span class="p">;</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">            </span><span class="kn">proxy_pass</span><span class="w"> </span><span class="s">http://</span><span class="nv">$gateway_upstream</span><span class="p">;</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">            </span><span class="kn">proxy_http_version</span><span class="w"> </span><span class="mi">1</span><span class="s">.1</span><span class="p">;</span>
+</code></pre></div>
+<p>这一条 rewrite 意味着：<strong>标准 <code>@langchain/langgraph-sdk</code>（前端同款）或任何
+LangGraph 客户端把 <code>base_url</code> 指到 <code>http://localhost:2026/api/langgraph</code> 即可
+直连 DeerFlow</strong>——不需要单独部署 LangGraph Server。其余代理参数都是为长请求
+服务的：<code>proxy_buffering off</code> + <code>X-Accel-Buffering no</code>（SSE 不缓冲）、
+<code>client_max_body_size 20M</code> + <code>proxy_request_buffering off</code>（超长粘贴的 prompt
+不再撞 nginx 默认 1M 限制，issue #3952）、三个 600s 超时（长 run 不被 504）。</p>
+<p>前端的默认连接正是这条路径：<code>NEXT_PUBLIC_LANGGRAPH_BASE_URL=/api/langgraph</code>、
+<code>NEXT_PUBLIC_BACKEND_BASE_URL=</code>（空），都经 nginx 同源转发（<code>docs/ARCHITECTURE.md</code> §4）。</p>
+<h2 id="133">13.3 文件上传协议<a class="headerlink" href="#133" title="Permanent link">&para;</a></h2>
+<h3 id="1331">13.3.1 端点与规模限制<a class="headerlink" href="#1331" title="Permanent link">&para;</a></h3>
+<p><code>backend/app/gateway/routers/uploads.py</code> 暴露四个端点：</p>
+<table>
+<thead>
+<tr>
+<th>端点</th>
+<th>行号</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>POST /api/threads/{thread_id}/uploads</code></td>
+<td><code>uploads.py:394</code></td>
+<td>multipart 上传，一个或多个文件</td>
+</tr>
+<tr>
+<td><code>GET /api/threads/{thread_id}/uploads/limits</code></td>
+<td><code>uploads.py:494</code></td>
+<td>查询限制（前端选择文件前提示）</td>
+</tr>
+<tr>
+<td><code>GET /api/threads/{thread_id}/uploads/list</code></td>
+<td><code>uploads.py:505</code></td>
+<td>列出已上传文件</td>
+</tr>
+<tr>
+<td><code>DELETE /api/threads/{thread_id}/uploads/{filename}</code></td>
+<td><code>uploads.py:517</code></td>
+<td>删除</td>
+</tr>
+</tbody>
+</table>
+<p>应用层限制默认 <code>uploads.max_files: 10</code>、<code>max_file_size: 52428800</code>（50 MiB）、
+<code>max_total_size: 104857600</code>（100 MiB），超限返回 <code>413</code>
+（<code>config.example.yaml:1705-1710</code>）。</p>
+<h3 id="1332-upload-part">13.3.2 原子发布：.upload-*.part<a class="headerlink" href="#1332-upload-part" title="Permanent link">&para;</a></h3>
+<p><code>backend/AGENTS.md</code> File Upload 段（第 288 行）：</p>
+<blockquote>
+<p>Gateway HTTP uploads stage <code>.upload-*.part</code> files hidden from upload listings,
+agent context, and sandbox listings/searches; publication is atomic after size
+validation.</p>
+</blockquote>
+<p>即上传先写成隐藏的 <code>.upload-*.part</code> 暂存文件——上传列表、agent 上下文、沙箱
+列表/搜索都看不见它——大小校验通过后<strong>原子重命名</strong>发布。这套设计保证并发/中断
+场景不会留下半截可见文件；启动清扫会把超过 24 小时的孤立 <code>.part</code> 清掉（可能是
+另一副本仍在写入），<code>st_nlink &gt; 1</code> 的别名（已发布文件的多链接）任何年龄都移除。
+<code>FILE_UPLOAD.md:32-34</code> 同时说明反方向：用户<strong>上传</strong>名为 <code>.upload-*.part</code> 的文件
+会被 400 拒绝（含 Windows 去尾点/空格/大小写变体），整批先检查再写入，不会留下
+部分上传。</p>
+<h3 id="1333">13.3.3 文档转换与命名<a class="headerlink" href="#1333" title="Permanent link">&para;</a></h3>
+<p>PDF/PPT/Excel/Word 经 <code>markitdown</code> 转为 Markdown（<code>backend/AGENTS.md:286</code>：
+"one conversion worker per request"），同名占用追加 <code>_N</code> 后缀，转换伴随文件
+（companion）带原文件 mtime/ctime 归属记录，大纲只读记录指定的 Markdown。
+注意安全默认值（<code>config.example.yaml:1711-1714</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="w">  </span><span class="c1"># Automatic Office/PDF conversion runs on the backend host before sandbox</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="c1"># isolation applies. Keep this disabled unless uploads come from a fully</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span><span class="c1"># trusted source and you intentionally accept host-side parser risk.</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span><span class="nt">auto_convert_documents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+</code></pre></div>
+<p>自动转换发生在<strong>沙箱隔离之前的主机上</strong>，所以默认关闭——这是解析器风险的
+明确取舍。</p>
+<h3 id="1334">13.3.4 三套路径与"线程目录优先"<a class="headerlink" href="#1334" title="Permanent link">&para;</a></h3>
+<p><code>FILE_UPLOAD.md</code> 的路径映射表：</p>
+<table>
+<thead>
+<tr>
+<th>视角</th>
+<th>路径</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Agent（沙箱内）</td>
+<td><code>/mnt/user-data/uploads/document.pdf</code>（虚拟路径）</td>
+</tr>
+<tr>
+<td>实际存储</td>
+<td><code>backend/.deer-flow/threads/{thread_id}/user-data/uploads/document.pdf</code></td>
+</tr>
+<tr>
+<td>前端/HTTP</td>
+<td><code>/api/threads/{thread_id}/artifacts/mnt/user-data/uploads/document.pdf</code></td>
+</tr>
+</tbody>
+</table>
+<p>上传流程是"线程目录优先"：先写权威存储，本地沙箱直接用线程目录；非本地沙箱
+默认 <code>acquire_async</code> 后同步到 <code>/mnt/user-data/uploads/*</code>；若 Gateway 与远端沙箱
+挂载同一份线程 user-data（共享 PVC/NFS/hostPath），可设
+<code>sandbox.thread_data_mounts: true</code> 跳过逐文件同步——<strong>不确定时省略并保留自动
+检测</strong>，错误设 true 会导致文件在沙箱内不可见（<code>FILE_UPLOAD.md</code> 上传流程节）。
+上传/列表/删除的文件系统操作经 <code>deerflow.utils.file_io.run_file_io</code> 卸载
+（backend <code>AGENTS.md:289</code>），保持事件循环畅通。</p>
+<h2 id="134-websocket-nginx">13.4 浏览器 WebSocket 与 nginx 正则顺序<a class="headerlink" href="#134-websocket-nginx" title="Permanent link">&para;</a></h2>
+<p><code>/api/threads/{thread_id}/browser/stream</code> 是浏览器实时能力（Live 流）的
+WebSocket 端点。nginx 侧（<code>docker/nginx/nginx.conf:254-269</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="w">        </span><span class="k">location</span><span class="w"> </span><span class="p">~</span><span class="w"> </span><span class="sr">^/api/threads/[^/]+/browser/stream</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">            </span><span class="kn">proxy_pass</span><span class="w"> </span><span class="s">http://</span><span class="nv">$gateway_upstream</span><span class="p">;</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">            </span><span class="kn">proxy_http_version</span><span class="w"> </span><span class="mi">1</span><span class="s">.1</span><span class="p">;</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">            </span><span class="kn">...</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">            </span><span class="s">proxy_set_header</span><span class="w"> </span><span class="s">Upgrade</span><span class="w"> </span><span class="nv">$http_upgrade</span><span class="p">;</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">            </span><span class="kn">proxy_set_header</span><span class="w"> </span><span class="s">Connection</span><span class="w"> </span><span class="s">'upgrade'</span><span class="p">;</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">            </span><span class="kn">proxy_cache_bypass</span><span class="w"> </span><span class="nv">$http_upgrade</span><span class="p">;</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">            </span><span class="c1"># Long-lived Live stream: keep the upgraded connection open.</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">            </span><span class="kn">proxy_connect_timeout</span><span class="w"> </span><span class="s">600s</span><span class="p">;</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">            </span><span class="kn">proxy_send_timeout</span><span class="w"> </span><span class="s">600s</span><span class="p">;</span>
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="w">            </span><span class="kn">proxy_read_timeout</span><span class="w"> </span><span class="s">600s</span><span class="p">;</span>
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="w">        </span><span class="p">}</span>
+<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>
+<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="w">        </span><span class="c1"># Custom API: Other endpoints under /api/threads</span>
+<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="w">        </span><span class="k">location</span><span class="w"> </span><span class="p">~</span><span class="w"> </span><span class="sr">^/api/threads</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="w">            </span><span class="kn">...</span>
+<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="w">        </span><span class="err">}</span>
+</code></pre></div>
+<p><strong>顺序是硬约束</strong>：nginx 匹配正则 location 时取<strong>第一个命中</strong>的。若通用的
+<code>^/api/threads</code> 写在前面，WebSocket 升级请求会被它截走——没有 <code>Upgrade</code> 头，
+连接降级为普通 HTTP，浏览器流静默失效。根 <code>AGENTS.md</code> 明确要求
+"Keep the dedicated <code>/api/threads/{thread_id}/browser/stream</code> WebSocket regex
+before the generic threads regex in Docker, local and Helm nginx configs"，
+并由 <code>backend/tests/test_nginx_browser_websocket.py</code> 把这条约束钉进 CI——
+改动 nginx 配置时这个测试会拦住顺序回退。</p>
+<h2 id="135-deerflowclient">13.5 源码走读：DeerFlowClient（内嵌客户端）<a class="headerlink" href="#135-deerflowclient" title="Permanent link">&para;</a></h2>
+<h3 id="1351">13.5.1 为什么要第二条路径<a class="headerlink" href="#1351" title="Permanent link">&para;</a></h3>
+<p><code>backend/docs/STREAMING.md</code> TL;DR 给出定位：</p>
+<blockquote>
+<p>DeerFlow 有<strong>两条并行</strong>的流式路径：<strong>Gateway 路径</strong>（async / HTTP SSE / JSON
+序列化）服务浏览器和 IM 渠道；<strong>DeerFlowClient 路径</strong>（sync / in-process /
+原生 LangChain 对象）服务 Jupyter、脚本、测试。它们<strong>无法合并</strong>——消费者模型
+不同。</p>
+</blockquote>
+<p>Gateway 的 RunManager、StreamBridge、JSON 序列化全部是为了跨网络边界送事件；
+生产者与消费者同进程时这套东西是纯开销。文档还记录了三个被否决的复用方案
+（async 化 break 生态、线程池桥接引入复杂度、给 worker.py 加死分支），结论是
+<strong>两条路径的事件处理相似但不共享是刻意设计</strong>。</p>
+<p><code>backend/packages/harness/deerflow/client.py:1</code> 的模块 docstring：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="sd">"""DeerFlowClient — Embedded Python client for DeerFlow agent system.</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="sd">Provides direct programmatic access to DeerFlow's agent capabilities</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="sd">without requiring LangGraph Server or Gateway API processes.</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="sd">Usage:</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="sd">    from deerflow.client import DeerFlowClient</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="sd">    client = DeerFlowClient()</span>
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="sd">    response = client.chat("Analyze this paper for me", thread_id="my-thread")</span>
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="sd">    print(response)</span>
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>
+<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="sd">    # Streaming</span>
+<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="sd">    for event in client.stream("hello"):</span>
+<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="sd">        print(event)</span>
+<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="sd">"""</span>
+</code></pre></div>
+<p>它在 harness 包里（不在 <code>app/</code>），所以不依赖 FastAPI：<code>docs/ARCHITECTURE.md</code> §3
+说"embedded Python client used by scheduled tasks and tests to drive the same
+run lifecycle programmatically"——注意它组装的是<strong>同一个</strong> <code>build_middlewares()</code>
+中间件链与工具集（<code>client.py:36</code> 导入了 <code>build_middlewares</code>），行为与 Gateway run
+一致，只是没有 HTTP/RunManager 层。</p>
+<h3 id="1352-agent">13.5.2 构造与懒加载 agent<a class="headerlink" href="#1352-agent" title="Permanent link">&para;</a></h3>
+<p>构造函数（<code>client.py:211</code>）的关键参数与行为：</p>
+<ul>
+<li><code>config_path</code>：指定 <code>config.yaml</code>（None 用默认解析）；</li>
+<li><code>checkpointer</code>：<strong>多轮对话的前提</strong>——<code>client.py:184-186</code> 的 Note 写明，没有
+  checkpointer 时每次 <code>stream()</code>/<code>chat()</code> 都是无状态的，<code>thread_id</code> 只用于文件
+  隔离（上传/产物）；</li>
+<li><code>model_name</code> / <code>thinking_enabled</code> / <code>subagent_enabled</code> / <code>plan_mode</code> /
+  <code>agent_name</code> / <code>available_skills</code> / <code>middlewares</code> / <code>environment</code>：与 Gateway
+  <code>config.configurable</code> 语义一一对应的开关；</li>
+<li>agent <strong>懒创建</strong>：第一次调用才构建，配置键（模型、技能等）变化时自动重建
+  （<code>client.py:275-280</code>）；长驻进程里记忆更新、技能安装后用 <code>reset_agent()</code>
+  （<code>client.py:282</code>）强制刷新系统提示词。</li>
+</ul>
+<h3 id="1353-streamchat">13.5.3 stream/chat 与事件归一<a class="headerlink" href="#1353-streamchat" title="Permanent link">&para;</a></h3>
+<p><code>stream()</code>（<code>client.py:859</code>）是同步生成器，产出 <code>StreamEvent</code>
+（<code>client.py:135</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">StreamEventType</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">"values"</span><span class="p">,</span> <span class="s2">"messages-tuple"</span><span class="p">,</span> <span class="s2">"custom"</span><span class="p">,</span> <span class="s2">"end"</span><span class="p">]</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="nd">@dataclass</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="k">class</span><span class="w"> </span><span class="nc">StreamEvent</span><span class="p">:</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">    </span><span class="sd">"""A single event from the streaming agent response.</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="sd">    Event types align with the LangGraph SSE protocol:</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="sd">        - ``"values"``: State snapshot (title, messages, artifacts, summary_text).</span>
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="sd">        - ``"messages-tuple"``: Per-message update (AI text, tool calls, tool results).</span>
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="sd">        - ``"end"``: Stream finished.</span>
+<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="sd">    """</span>
+</code></pre></div>
+<p>事件类型与 SSE 协议对齐——消费者可以在 HTTP 流式与内嵌模式之间切换而不改事件
+处理逻辑（<code>_stream_turn</code> 的 docstring 明确了这一契约）。token 级细节：
+<code>messages-tuple</code> 对 AI 文本以 <strong>delta</strong> 形式发出，每条带稳定 <code>id</code>。
+<code>stream()</code> 还有两个值得注意的实现细节（<code>client.py:877-899</code>）：trace id 只在每次
+<code>next()</code> 步骤周围绑定（sync generator 与调用者共享上下文，跨 <code>yield</code> 绑定会泄漏
+ContextVar）；generator 被放弃时 <code>close()</code> 仍会在绑定 id 下完成日志与回调清理。</p>
+<p><code>chat()</code>（<code>client.py:1314</code>）是便捷封装：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">chat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">thread_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">        </span><span class="sd">"""Send a message and return the final text response.</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="sd">        Convenience wrapper around :meth:`stream` that accumulates delta</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="sd">        ``messages-tuple`` events per ``id`` and returns the text of the</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="sd">        **last** AI message to complete.  Intermediate AI messages (e.g.</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="sd">        planner drafts) are discarded — only the final id's accumulated</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="sd">        text is returned.</span>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="sd">        """</span>
+</code></pre></div>
+<p>累加规则由 <code>_AIMessageAccumulator</code>（<code>client.py:153</code>）实现：按消息 id 分桶拼接，
+"metadata-only 更新不选新 id"，最后取最后一个 content-bearing AI 消息 id 的全文。
+无头 CLI 也用同一规则挑最终答案。</p>
+<h3 id="1354">13.5.4 上传与产物回收<a class="headerlink" href="#1354" title="Permanent link">&para;</a></h3>
+<p><code>upload_files()</code>（<code>client.py:1754</code>）与 Gateway <code>POST /uploads</code> 行为对齐：</p>
+<ul>
+<li><strong>先整批验证再落盘</strong>（"Validate all files upfront to avoid partial uploads"）：
+  不存在抛 <code>FileNotFoundError</code>，非普通文件、不安全或保留名（<code>.upload-*.part</code>）
+  抛 <code>ValueError</code>；同批重复名走 <code>claim_unique_filename</code> 的 <code>_N</code> 后缀逻辑；</li>
+<li>PDF/PPT/Excel/Word 转 Markdown（转换 worker 复用，已在事件循环内时不新建线程池）；</li>
+<li>返回结构匹配 Gateway <code>UploadResponse</code> schema（含 <code>skipped_files</code>）——
+  目标名是符号链接或其他非常规文件时跳过并列出，绝不经符号链接写入。</li>
+</ul>
+<p><code>get_artifact()</code>（<code>client.py:1973</code>）回收产物：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_artifact</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">thread_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bytes</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">        </span><span class="sd">"""Read an artifact file produced by the agent.</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="sd">        Args:</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="sd">            path: Virtual path (e.g. "mnt/user-data/outputs/file.txt").</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="sd">        Returns:</span>
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="sd">            Tuple of (file_bytes, mime_type).</span>
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="sd">        """</span>
+<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>        <span class="n">validate_thread_id</span><span class="p">(</span><span class="n">thread_id</span><span class="p">)</span>
+<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>        <span class="k">try</span><span class="p">:</span>
+<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a>            <span class="n">actual</span> <span class="o">=</span> <span class="n">get_paths</span><span class="p">()</span><span class="o">.</span><span class="n">resolve_virtual_path</span><span class="p">(</span><span class="n">thread_id</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">user_id</span><span class="o">=</span><span class="n">get_effective_user_id</span><span class="p">())</span>
+<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+<a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a>            <span class="k">if</span> <span class="s2">"traversal"</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">):</span>
+<a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a>                <span class="kn">from</span><span class="w"> </span><span class="nn">deerflow.uploads.manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">PathTraversalError</span>
+<a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a>
+<a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a>                <span class="k">raise</span> <span class="n">PathTraversalError</span><span class="p">(</span><span class="s2">"Path traversal detected"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+<a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a>            <span class="k">raise</span>
+</code></pre></div>
+<p>入参是<strong>虚拟路径</strong>（<code>mnt/user-data/outputs/...</code>），解析到真实线程目录，路径穿越
+显式转成 <code>PathTraversalError</code>——与 Gateway artifacts 路由同一套 <code>get_paths()</code>
+解析器。</p>
+<p>其余常用方法：<code>list_models()</code>（<code>client.py:1342</code>，返回结构对齐 Gateway
+<code>ModelsListResponse</code>）、<code>list_skills()</code>（<code>client.py:1369</code>）、<code>get_memory()</code> /
+<code>import_memory()</code>（<code>client.py:1393</code>、<code>1409</code>）、<code>list_threads()</code>（<code>client.py:762</code>）。</p>
+<h2 id="_2">动手实验<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<p>写一个 Python 脚本，用 <code>DeerFlowClient</code> 完成"上传 CSV → 让 agent 生成图表脚本
+并产出结果文件 → 回收产物"的完整闭环。在 <code>backend/</code> 目录下运行（依赖已由
+<code>make install</code> 装好）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># run_embedded.py -- 放在 backend/ 目录外任意位置，或 backend/ 下均可</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">deerflow.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">DeerFlowClient</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.checkpoint.memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">MemorySaver</span>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="c1"># 1) 构造客户端：MemorySaver 提供多轮上下文（生产可换 SqliteSaver）</span>
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="n">client</span> <span class="o">=</span> <span class="n">DeerFlowClient</span><span class="p">(</span>
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>    <span class="n">thinking_enabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>    <span class="n">plan_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>          <span class="c1"># 观察第 11 章的 write_todos</span>
+<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>    <span class="n">checkpointer</span><span class="o">=</span><span class="n">MemorySaver</span><span class="p">(),</span>
+<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a><span class="p">)</span>
+<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a>
+<a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a><span class="n">thread_id</span> <span class="o">=</span> <span class="s2">"tutorial-embedded-run"</span>
+<a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a>
+<a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a><span class="c1"># 2) 上传本地 CSV（自动获得 _N 后缀与可选 Markdown 转换）</span>
+<a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a><span class="n">csv_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"sample.csv"</span><span class="p">)</span>          <span class="c1"># 自备一个小 CSV</span>
+<a id="__codelineno-9-18" name="__codelineno-9-18" href="#__codelineno-9-18"></a><span class="n">result</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">upload_files</span><span class="p">(</span><span class="n">thread_id</span><span class="p">,</span> <span class="p">[</span><span class="n">csv_path</span><span class="p">])</span>
+<a id="__codelineno-9-19" name="__codelineno-9-19" href="#__codelineno-9-19"></a><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s2">"message"</span><span class="p">])</span>
+<a id="__codelineno-9-20" name="__codelineno-9-20" href="#__codelineno-9-20"></a><span class="n">virtual</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s2">"files"</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">"virtual_path"</span><span class="p">]</span>   <span class="c1"># /mnt/user-data/uploads/sample.csv</span>
+<a id="__codelineno-9-21" name="__codelineno-9-21" href="#__codelineno-9-21"></a>
+<a id="__codelineno-9-22" name="__codelineno-9-22" href="#__codelineno-9-22"></a><span class="c1"># 3) 流式驱动一次 run</span>
+<a id="__codelineno-9-23" name="__codelineno-9-23" href="#__codelineno-9-23"></a><span class="n">events</span> <span class="o">=</span> <span class="p">[]</span>
+<a id="__codelineno-9-24" name="__codelineno-9-24" href="#__codelineno-9-24"></a><span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">client</span><span class="o">.</span><span class="n">stream</span><span class="p">(</span>
+<a id="__codelineno-9-25" name="__codelineno-9-25" href="#__codelineno-9-25"></a>    <span class="sa">f</span><span class="s2">"请用 Python 分析 </span><span class="si">{</span><span class="n">virtual</span><span class="si">}</span><span class="s2">，把统计摘要写进 outputs/summary.txt 并画一张分布图"</span><span class="p">,</span>
+<a id="__codelineno-9-26" name="__codelineno-9-26" href="#__codelineno-9-26"></a>    <span class="n">thread_id</span><span class="o">=</span><span class="n">thread_id</span><span class="p">,</span>
+<a id="__codelineno-9-27" name="__codelineno-9-27" href="#__codelineno-9-27"></a><span class="p">):</span>
+<a id="__codelineno-9-28" name="__codelineno-9-28" href="#__codelineno-9-28"></a>    <span class="n">events</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+<a id="__codelineno-9-29" name="__codelineno-9-29" href="#__codelineno-9-29"></a>    <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">"messages-tuple"</span> <span class="ow">and</span> <span class="n">event</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"type"</span><span class="p">)</span> <span class="o">==</span> <span class="s2">"ai"</span><span class="p">:</span>
+<a id="__codelineno-9-30" name="__codelineno-9-30" href="#__codelineno-9-30"></a>        <span class="nb">print</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"content"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<a id="__codelineno-9-31" name="__codelineno-9-31" href="#__codelineno-9-31"></a><span class="nb">print</span><span class="p">()</span>
+<a id="__codelineno-9-32" name="__codelineno-9-32" href="#__codelineno-9-32"></a>
+<a id="__codelineno-9-33" name="__codelineno-9-33" href="#__codelineno-9-33"></a><span class="c1"># 4) 产物回收：按虚拟路径读取 outputs 下的文件</span>
+<a id="__codelineno-9-34" name="__codelineno-9-34" href="#__codelineno-9-34"></a><span class="k">for</span> <span class="n">artifact</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"mnt/user-data/outputs/summary.txt"</span><span class="p">,):</span>
+<a id="__codelineno-9-35" name="__codelineno-9-35" href="#__codelineno-9-35"></a>    <span class="k">try</span><span class="p">:</span>
+<a id="__codelineno-9-36" name="__codelineno-9-36" href="#__codelineno-9-36"></a>        <span class="n">data</span><span class="p">,</span> <span class="n">mime</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_artifact</span><span class="p">(</span><span class="n">thread_id</span><span class="p">,</span> <span class="n">artifact</span><span class="p">)</span>
+<a id="__codelineno-9-37" name="__codelineno-9-37" href="#__codelineno-9-37"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">--- </span><span class="si">{</span><span class="n">artifact</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">mime</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="si">}</span><span class="s2"> bytes) ---"</span><span class="p">)</span>
+<a id="__codelineno-9-38" name="__codelineno-9-38" href="#__codelineno-9-38"></a>        <span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">"replace"</span><span class="p">)[:</span><span class="mi">500</span><span class="p">])</span>
+<a id="__codelineno-9-39" name="__codelineno-9-39" href="#__codelineno-9-39"></a>    <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+<a id="__codelineno-9-40" name="__codelineno-9-40" href="#__codelineno-9-40"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="si">{</span><span class="n">artifact</span><span class="si">}</span><span class="s2"> 不存在（agent 未产出）"</span><span class="p">)</span>
+<a id="__codelineno-9-41" name="__codelineno-9-41" href="#__codelineno-9-41"></a>
+<a id="__codelineno-9-42" name="__codelineno-9-42" href="#__codelineno-9-42"></a><span class="c1"># 5) 配置查询（与 Gateway API 同构）</span>
+<a id="__codelineno-9-43" name="__codelineno-9-43" href="#__codelineno-9-43"></a><span class="nb">print</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">list_models</span><span class="p">()[</span><span class="s2">"models"</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">"name"</span><span class="p">])</span>
+<a id="__codelineno-9-44" name="__codelineno-9-44" href="#__codelineno-9-44"></a><span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">list_skills</span><span class="p">()[</span><span class="s2">"skills"</span><span class="p">]))</span>
+</code></pre></div>
+<p>观察点：</p>
+<ol>
+<li><code>events</code> 里 <code>values</code> 事件的 <code>summary_text</code> 是否为空（短对话不触发摘要），
+   <code>artifacts</code> 字段是否随 run 更新；</li>
+<li>打开 <code>backend/.deer-flow/threads/tutorial-embedded-run/user-data/uploads/</code>，
+   对照上传响应里的 <code>path</code> / <code>virtual_path</code> / <code>artifact_url</code> 三套路径；</li>
+<li>把 <code>checkpointer</code> 去掉再跑一次——第二轮对话 agent 不再记得第一轮，验证
+   <code>client.py:184</code> 的"无 checkpointer 即无状态"；</li>
+<li>想走 HTTP 路径对照？用同一 prompt 打
+   <code>POST http://localhost:2026/api/langgraph/runs/stream</code>（先 <code>curl</code> 上传文件到
+   <code>/api/threads/{thread_id}/uploads</code>），从 <code>Content-Location</code> 头取 <code>thread_id</code>，
+   事件形状与 <code>StreamEvent</code> 一一对应。</li>
+</ol>
+<h2 id="_3">常见坑<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>多轮对话没传 checkpointer</strong>——每次 <code>chat()</code> 都是全新会话（thread_id 只隔离
+   文件）。嵌入式用法必须自己提供 checkpointer；Gateway 路径则由 <code>database:</code> 配置
+   自动装配，两者行为差异常让从 HTTP 切到内嵌的开发者困惑。</li>
+<li><strong>内嵌客户端配置"不生效"</strong>——agent 在首次调用时构建并按配置键缓存；运行中途
+   改了 <code>config.yaml</code> / 装了新技能后，长驻进程要显式 <code>reset_agent()</code>（<code>client.py:282</code>）。</li>
+<li><strong>PAT 调 uploads 返回 403</strong>——PAT 是路由级默认拒绝加 scope 双重约束，
+   uploads/memory/MCP 配置等不在 allowlist 里（<code>API.md:140-156</code>）。上传文件请用
+   session cookie 或内嵌客户端，PAT 只管 thread/run 生命周期。</li>
+<li><strong>直连 8001 端口绕过 nginx</strong>——功能上多数可用，但会丢失 <code>/api/langgraph</code> 重写
+   之外的代理语义（20M body、600s 超时、WebSocket 升级头），且违背回环默认绑定
+   的部署模型。编程接入请走 <code>http://localhost:2026</code>。</li>
+<li><strong>自己改 nginx 把 browser/stream 正则挪到后面</strong>——WebSocket 静默降级，前端
+   Live 流失效；<code>backend/tests/test_nginx_browser_websocket.py</code> 会拦住这类改动，
+   CI 红了先检查 location 顺序。</li>
+<li><strong>给 run 传不支持的选项期待静默忽略</strong>——DeerFlow 对不支持的 <code>stream_mode</code>、
+   <code>webhook</code>、<code>after_seconds</code>、未声明 SDK 选项一律 422（<code>API.md:347-357</code>）。
+   这是"显式失败优于静默偏离"的设计，写 SDK 封装时要把 422 当作参数错误而不是
+   服务端故障。</li>
+<li><strong><code>thread_data_mounts: true</code> 设错环境</strong>——Gateway 与沙箱没有真挂载同一份
+   user-data 时，上传文件在沙箱内不可见且不报错。拿不准就省略，保留自动检测
+   （<code>FILE_UPLOAD.md</code> 上传流程节）。</li>
+</ol>
+<h2 id="_4">下一步<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<p>你已经能从任何 Python 程序、任何 LangGraph SDK 客户端驱动 DeerFlow。接下来是
+"改它"：harness 与 app 的分层边界、TDD 门禁、版本锁步——动手改核心之前必读的
+工程规范，见第三篇《第 14 章 架构分层与开发规范（二次开发前必读）》
+（<code>docs/TUTORIAL_OUTLINE.md</code> 第 14 章小节）。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      教程基于开源项目 <a href='https://github.com/bytedance/deer-flow'>bytedance/deer-flow</a> 的真实源码编写
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.sections", "navigation.expand", "navigation.top", "navigation.indexes", "search.suggest", "search.highlight", "content.code.copy", "toc.follow"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.a5f9d56c.min.js"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

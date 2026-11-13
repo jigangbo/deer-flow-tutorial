@@ -1,0 +1,2770 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="基于 DeerFlow 真实源码的中文系统教程：21 章 + 附录，覆盖环境配置、核心组件拆解、二次开发与 MCP 集成">
+      
+      
+      
+        <link rel="canonical" href="https://jigangbo.github.io/deer-flow-tutorial/appendices/">
+      
+      
+        <link rel="prev" href="../20-production/">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
+    
+    
+      
+        <title>附录 - DeerFlow 从入门到精通 · 源码教程</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href=".." title="DeerFlow 从入门到精通 · 源码教程" class="md-header__button md-logo" aria-label="DeerFlow 从入门到精通 · 源码教程" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            DeerFlow 从入门到精通 · 源码教程
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              附录
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jigangbo/deer-flow-tutorial" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="DeerFlow 从入门到精通 · 源码教程" class="md-nav__button md-logo" aria-label="DeerFlow 从入门到精通 · 源码教程" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    DeerFlow 从入门到精通 · 源码教程
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jigangbo/deer-flow-tutorial" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    导读
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    导读
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 0 章 全景鸟瞰
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第一篇 入门篇
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第一篇 入门篇
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-environment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 1 章 准备环境（Environment Setup）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 2 章 一键启动（Quick Start）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 3 章 配置系统入门
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-frontend-tour/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 4 章 前端界面与基本功能导览
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-run-modes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 5 章 更多运行方式
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第二篇 进阶篇
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第二篇 进阶篇
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-request-lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 6 章 一次请求的一生：Agent 运行时全链路
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-tools-and-skills/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 7 章 工具系统与 Skills
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-sandbox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 8 章 沙箱与代码执行
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-multi-agent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 9 章 Multi-Agent 路由与子代理委派
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10-memory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 10 章 记忆系统（Memory / DeerMem）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../11-context-engineering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 11 章 上下文工程与长对话治理
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../12-scheduled-tasks-and-im/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 12 章 定时任务与 IM 渠道
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../13-gateway-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 13 章 Gateway API 与编程接入
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第三篇 精通篇
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第三篇 精通篇
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../14-architecture-layers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 14 章 架构分层与开发规范（二次开发前必读）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../15-mcp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 15 章 MCP 集成（重点）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../16-extensions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 16 章 扩展（Extensions）开发
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../17-business-cases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 17 章 业务二次开发实战（综合案例）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../18-frontend-dev/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 18 章 前端二次开发
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../19-testing-quality/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 19 章 可观测性、测试与质量保障
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../20-production/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 20 章 生产部署与运维
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    附录
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    附录
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    附录
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    附录
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#a" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        附录 A 命令速查
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="附录 A 命令速查">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a1-makefile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A.1 根目录 Makefile（仓库根执行）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a2-cd-backend" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A.2 后端（cd backend 后执行）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a3-cd-frontend-host-scriptspnpmpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A.3 前端（cd frontend 后执行；host 调用经 ../scripts/pnpm.py）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#b" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        附录 B 配置项速查
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="附录 B 配置项速查">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#b1-configyaml-grep-a-z_-configexampleyaml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B.1 config.yaml 顶层键（grep "^[a-z_]*:" config.example.yaml 实测行号）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b2-extensions_configexamplejson" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B.2 extensions_config.example.json 四键
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        附录 C 术语表
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        附录 D 学习验收清单
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="附录 D 学习验收清单">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#d1-05" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D.1 入门篇（第 0–5 章）——你应该能
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#d2-613" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D.2 进阶篇（第 6–13 章）——你应该能
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#d3-1420" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D.3 精通篇（第 14–20 章）——你应该能
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#e-faq" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        附录 E 常见问题 FAQ
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#f-docs-backenddocs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        附录 F 官方文档索引（docs/ 与 backend/docs/ → 教程章节映射）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="附录 F 官方文档索引（docs/ 与 backend/docs/ → 教程章节映射）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#f1-docs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        F.1 仓库根 docs/
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#f2-backenddocs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        F.2 backend/docs/
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#f3-docs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        F.3 其他专题文档（非 docs/ 目录）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#a" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        附录 A 命令速查
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="附录 A 命令速查">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a1-makefile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A.1 根目录 Makefile（仓库根执行）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a2-cd-backend" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A.2 后端（cd backend 后执行）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a3-cd-frontend-host-scriptspnpmpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A.3 前端（cd frontend 后执行；host 调用经 ../scripts/pnpm.py）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#b" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        附录 B 配置项速查
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="附录 B 配置项速查">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#b1-configyaml-grep-a-z_-configexampleyaml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B.1 config.yaml 顶层键（grep "^[a-z_]*:" config.example.yaml 实测行号）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b2-extensions_configexamplejson" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B.2 extensions_config.example.json 四键
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        附录 C 术语表
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#d" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        附录 D 学习验收清单
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="附录 D 学习验收清单">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#d1-05" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D.1 入门篇（第 0–5 章）——你应该能
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#d2-613" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D.2 进阶篇（第 6–13 章）——你应该能
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#d3-1420" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D.3 精通篇（第 14–20 章）——你应该能
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#e-faq" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        附录 E 常见问题 FAQ
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#f-docs-backenddocs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        附录 F 官方文档索引（docs/ 与 backend/docs/ → 教程章节映射）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="附录 F 官方文档索引（docs/ 与 backend/docs/ → 教程章节映射）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#f1-docs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        F.1 仓库根 docs/
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#f2-backenddocs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        F.2 backend/docs/
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#f3-docs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        F.3 其他专题文档（非 docs/ 目录）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="_1">附录<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>本附录汇总全书散落的命令、配置、术语与排查经验。所有引用均指向当前仓库真实文件，
+行号以源文件实际内容为准。</p>
+</blockquote>
+<hr />
+<h2 id="a">附录 A 命令速查<a class="headerlink" href="#a" title="Permanent link">&para;</a></h2>
+<h3 id="a1-makefile">A.1 根目录 Makefile（仓库根执行）<a class="headerlink" href="#a1-makefile" title="Permanent link">&para;</a></h3>
+<p>来源：<code>Makefile:26-69</code>（help 全表）。完整 target 定义见 <code>Makefile:71-246</code>。</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>作用</th>
+<th>锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>make setup</code></td>
+<td>交互式安装向导（新用户推荐）</td>
+<td><code>Makefile:72-73</code></td>
+</tr>
+<tr>
+<td><code>make doctor</code></td>
+<td>配置 + 系统要求健康检查</td>
+<td><code>Makefile:75-76</code></td>
+</tr>
+<tr>
+<td><code>make support-bundle</code></td>
+<td>生成脱敏 issue 摘要、AI 草稿与证据包（含 <code>--include-doctor</code>）</td>
+<td><code>Makefile:78-79</code></td>
+</tr>
+<tr>
+<td><code>make config</code></td>
+<td>从 example 生成两份 gitignored 配置（已存在则中止）</td>
+<td><code>Makefile:87-88</code></td>
+</tr>
+<tr>
+<td><code>make config-upgrade</code></td>
+<td>把 example 的新字段合并进现有 config.yaml</td>
+<td><code>Makefile:90-91</code></td>
+</tr>
+<tr>
+<td><code>make check</code></td>
+<td>检查必备工具链</td>
+<td><code>Makefile:97-98</code></td>
+</tr>
+<tr>
+<td><code>make check-agent-guidance</code></td>
+<td>校验 scoped AGENTS.md 与链路预算</td>
+<td><code>Makefile:100-101</code></td>
+</tr>
+<tr>
+<td><code>make detect-thread-boundaries</code></td>
+<td>盘点后端 executor/线程/事件循环边界</td>
+<td><code>Makefile:81-82</code></td>
+</tr>
+<tr>
+<td><code>make detect-blocking-io</code></td>
+<td>静态盘点可能阻塞事件循环的 IO</td>
+<td><code>Makefile:84-85</code></td>
+</tr>
+<tr>
+<td><code>make install</code></td>
+<td>安装前后端依赖 + pre-commit 钩子</td>
+<td><code>Makefile:104-112</code></td>
+</tr>
+<tr>
+<td><code>make extension-install SOURCE=...</code></td>
+<td>安装并启用受信 Python 扩展</td>
+<td><code>Makefile:122-125</code></td>
+</tr>
+<tr>
+<td><code>make extension-upgrade SOURCE=...</code></td>
+<td>替换扩展并保留其配置</td>
+<td><code>Makefile:127-130</code></td>
+</tr>
+<tr>
+<td><code>make extension-list</code></td>
+<td>列出已配置扩展</td>
+<td><code>Makefile:132-133</code></td>
+</tr>
+<tr>
+<td><code>make extension-enable NAME=...</code> / <code>disable</code> / <code>remove</code></td>
+<td>启用 / 停用 / 卸载（均需重启 Gateway）</td>
+<td><code>Makefile:135-148</code></td>
+</tr>
+<tr>
+<td><code>make setup-sandbox</code></td>
+<td>预拉取沙箱容器镜像</td>
+<td><code>Makefile:151-152</code></td>
+</tr>
+<tr>
+<td><code>make dev</code> / <code>make dev-daemon</code></td>
+<td>全栈开发模式（热重载）/ 后台守护</td>
+<td><code>Makefile:155-169</code></td>
+</tr>
+<tr>
+<td><code>make start</code> / <code>make start-daemon</code></td>
+<td>本地生产模式（<code>SKIP_FRONTEND_BUILD=1</code> 复用上次构建）/ 守护</td>
+<td><code>Makefile:162-174</code></td>
+</tr>
+<tr>
+<td><code>make nginx</code></td>
+<td>仅前台启动 nginx（本地配置）</td>
+<td><code>Makefile:177-178</code></td>
+</tr>
+<tr>
+<td><code>make stop</code></td>
+<td>停止本地全部服务</td>
+<td><code>Makefile:181-182</code></td>
+</tr>
+<tr>
+<td><code>make dev-multi</code> / <code>dev-multi-check</code> / <code>dev-multi-down</code></td>
+<td>双 Gateway 多实例演练：启动 / 跨实例检查 / 拆除</td>
+<td><code>Makefile:185-192</code></td>
+</tr>
+<tr>
+<td><code>make clean</code></td>
+<td>停服务并<strong>删除</strong> <code>backend/.deer-flow</code> 运行时数据与日志</td>
+<td><code>Makefile:196-202</code></td>
+</tr>
+<tr>
+<td><code>make docker-init</code> / <code>docker-start</code> / <code>docker-stop</code></td>
+<td>Docker 开发栈初始化 / 启动 / 停止</td>
+<td><code>Makefile:209-218</code></td>
+</tr>
+<tr>
+<td><code>make docker-logs</code>（<code>-frontend</code> / <code>-gateway</code> / <code>-redis</code>）</td>
+<td>Docker 开发栈日志（可按服务）</td>
+<td><code>Makefile:221-230</code></td>
+</tr>
+<tr>
+<td><code>make up</code> / <code>down</code> / <code>prod-logs</code></td>
+<td>生产 Docker 栈构建启动（localhost:2026）/ 停止移除 / 跟日志</td>
+<td><code>Makefile:237-246</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="a2-cd-backend">A.2 后端（<code>cd backend</code> 后执行）<a class="headerlink" href="#a2-cd-backend" title="Permanent link">&para;</a></h3>
+<p>来源：<code>backend/Makefile</code>。</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>作用</th>
+<th>锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>make install</code></td>
+<td><code>uv sync --locked</code> 安装依赖</td>
+<td><code>backend/Makefile:5-6</code></td>
+</tr>
+<tr>
+<td><code>make dev</code></td>
+<td>Gateway 热重载（8001；预建并排除 <code>.deer-flow</code> 与 <code>sandbox</code> 的 reload 监听）</td>
+<td><code>backend/Makefile:8-17</code></td>
+</tr>
+<tr>
+<td><code>make gateway</code></td>
+<td>Gateway 不带 reload</td>
+<td><code>backend/Makefile:19-20</code></td>
+</tr>
+<tr>
+<td><code>make test</code></td>
+<td>四个耗时均衡分片并行（<code>TEST_JOBS=1</code> 串行）</td>
+<td><code>backend/Makefile:22-27</code></td>
+</tr>
+<tr>
+<td><code>make test-live</code></td>
+<td>live 测试（真实 API，<code>DEER_FLOW_RUN_LIVE_TESTS=1</code>）</td>
+<td><code>backend/Makefile:32-33</code></td>
+</tr>
+<tr>
+<td><code>make test-blocking-io</code></td>
+<td>Blockbuster 严格门禁（<code>tests/blocking_io/</code>）</td>
+<td><code>backend/Makefile:35-36</code></td>
+</tr>
+<tr>
+<td><code>make test-shard SPLITS=4 GROUP=2</code></td>
+<td>跑第 2/4 分片（<code>least_duration</code> 算法，读 <code>.test_durations</code>）</td>
+<td><code>backend/Makefile:49-52</code></td>
+</tr>
+<tr>
+<td><code>make test-shard-durations</code></td>
+<td>重建耗时基线并提交</td>
+<td><code>backend/Makefile:57-58</code></td>
+</tr>
+<tr>
+<td><code>make lint</code> / <code>make format</code></td>
+<td><code>ruff check</code> + <code>ruff format --check</code> / 修复并格式化</td>
+<td><code>backend/Makefile:60-65</code></td>
+</tr>
+<tr>
+<td><code>make detect-blocking-io</code></td>
+<td>静态扫描输出 JSON 清单</td>
+<td><code>backend/Makefile:67-68</code></td>
+</tr>
+<tr>
+<td><code>make migrate-rev MSG="..."</code></td>
+<td>自动生成 Alembic 迁移（升级在 Gateway 启动时自动跑）</td>
+<td><code>backend/Makefile:77-79</code></td>
+</tr>
+<tr>
+<td><code>python -m pytest tests/test_x.py::test_y -q</code></td>
+<td>跑单个测试文件/函数</td>
+<td>根 AGENTS.md</td>
+</tr>
+<tr>
+<td><code>PYTHONPATH=. uv run python -m scripts.benchmark.deermem_eviction validate-contracts</code></td>
+<td>记忆淘汰基准离线校验</td>
+<td><code>backend/AGENTS.md:71-78</code></td>
+</tr>
+<tr>
+<td><code>uv run python scripts/benchmark/concurrency/run_concurrency_bench.py --backend sqlite --workers 2,4,8,16 --ops-per-worker 50 --read-ratio 0.7</code></td>
+<td>SQLite/Postgres 并发争用基准</td>
+<td><code>backend/AGENTS.md:94-97</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="a3-cd-frontend-host-scriptspnpmpy">A.3 前端（<code>cd frontend</code> 后执行；host 调用经 <code>../scripts/pnpm.py</code>）<a class="headerlink" href="#a3-cd-frontend-host-scriptspnpmpy" title="Permanent link">&para;</a></h3>
+<p>来源：<code>frontend/package.json:6-23</code>。</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pnpm dev</code></td>
+<td>开发服务器（Webpack 默认；<code>DEER_FLOW_DEV_BUNDLER=turbo</code> 切 Turbopack）</td>
+</tr>
+<tr>
+<td><code>pnpm build</code> / <code>pnpm start</code></td>
+<td>生产构建（含文档搜索索引）/ 生产服务器</td>
+</tr>
+<tr>
+<td><code>pnpm check</code></td>
+<td>ESLint + <code>tsc --noEmit</code>（提交前必跑）</td>
+</tr>
+<tr>
+<td><code>pnpm lint</code> / <code>pnpm lint:fix</code></td>
+<td>单独 lint / 自动修复</td>
+</tr>
+<tr>
+<td><code>pnpm typecheck</code></td>
+<td>仅 <code>tsc --noEmit</code></td>
+</tr>
+<tr>
+<td><code>pnpm format</code> / <code>pnpm format:write</code></td>
+<td>Prettier 检查 / 写入</td>
+</tr>
+<tr>
+<td><code>pnpm test</code></td>
+<td>Rstest 单元测试（node + happy-dom 双 project）</td>
+</tr>
+<tr>
+<td><code>pnpm rstest run &lt;pattern&gt;</code></td>
+<td>跑匹配的单测</td>
+</tr>
+<tr>
+<td><code>pnpm test:e2e</code></td>
+<td>Playwright Chromium E2E</td>
+</tr>
+<tr>
+<td><code>pnpm perf:check</code></td>
+<td>路由资源体积对照性能预算</td>
+</tr>
+<tr>
+<td><code>pnpm catalog:sync</code></td>
+<td>变更能力目录后刷新静态 demo 快照</td>
+</tr>
+<tr>
+<td><code>pnpm search:index</code></td>
+<td>重建文档搜索索引（<code>pnpm build</code> 末尾自动跑）</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="b">附录 B 配置项速查<a class="headerlink" href="#b" title="Permanent link">&para;</a></h2>
+<h3 id="b1-configyaml-grep-a-z_-configexampleyaml">B.1 <code>config.yaml</code> 顶层键（<code>grep "^[a-z_]*:" config.example.yaml</code> 实测行号）<a class="headerlink" href="#b1-configyaml-grep-a-z_-configexampleyaml" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>段</th>
+<th>行号</th>
+<th>管什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>config_version</code></td>
+<td>23</td>
+<td>配置 schema 版本（升级合并用）</td>
+</tr>
+<tr>
+<td><code>log_level</code> / <code>logging</code></td>
+<td>46 / 52</td>
+<td>日志级别；<code>enhance.enabled</code> 日志带 trace_id（重启生效）</td>
+</tr>
+<tr>
+<td><code>token_usage</code> / <code>token_budget</code></td>
+<td>96 / 106</td>
+<td>计量显示 / 每 run 硬预算（warn 0.8、hard_stop 1.0）</td>
+</tr>
+<tr>
+<td><code>recursion_limit</code> / <code>max_recursion_limit</code></td>
+<td>120 / 125</td>
+<td>每 run 超步上限（100）/ 服务端硬顶（1000）</td>
+</tr>
+<tr>
+<td><code>models</code></td>
+<td>157</td>
+<td>模型供应商与能力位（vision / 深度思考 / context_window）</td>
+</tr>
+<tr>
+<td><code>knowledge_base</code></td>
+<td>825</td>
+<td>知识库（只读检索契约）</td>
+</tr>
+<tr>
+<td><code>tool_groups</code> / <code>tools</code> / <code>tool_search</code> / <code>tool_output</code> / <code>tool_artifacts</code></td>
+<td>836 / 849 / 1396 / 1422 / 1462</td>
+<td>工具组、工具行为、搜索、输出、产物</td>
+</tr>
+<tr>
+<td><code>suggestions</code> / <code>input_polish</code></td>
+<td>1480 / 1490</td>
+<td>建议与输入润色</td>
+</tr>
+<tr>
+<td><code>loop_detection</code> / <code>pii_redaction</code> / <code>read_before_write</code> / <code>harness_guard</code> / <code>safety_finish_reason</code></td>
+<td>1505 / 1538 / 1586 / 1604 / 1680</td>
+<td>防护体系（第 11 章）</td>
+</tr>
+<tr>
+<td><code>projects</code> / <code>uploads</code> / <code>sandbox</code></td>
+<td>1625 / 1705 / 1732</td>
+<td>项目、上传、沙箱（第 8 章）</td>
+</tr>
+<tr>
+<td><code>subagent_runtime</code> / <code>subagent_batches</code></td>
+<td>2011 / 2102</td>
+<td>子代理运行时与批处理（第 9 章）</td>
+</tr>
+<tr>
+<td><code>verification</code></td>
+<td>2122</td>
+<td>结果校验</td>
+</tr>
+<tr>
+<td><code>skills</code> / <code>skill_scan</code></td>
+<td>2173 / 2205</td>
+<td>技能与扫描（第 7 章）</td>
+</tr>
+<tr>
+<td><code>title</code> / <code>task_continuity</code></td>
+<td>2223 / 2236</td>
+<td>自动标题 / 任务连续性</td>
+</tr>
+<tr>
+<td><code>summarization</code></td>
+<td>2242</td>
+<td>上下文摘要触发与保留（第 11 章）</td>
+</tr>
+<tr>
+<td><code>memory</code></td>
+<td>2353</td>
+<td>DeerMem 记忆（第 10 章）</td>
+</tr>
+<tr>
+<td><code>blob_storage</code> / <code>agents_api</code> / <code>skill_evolution</code></td>
+<td>2586 / 2603 / 2610</td>
+<td>对象存储 / Agents API / 技能演化</td>
+</tr>
+<tr>
+<td><code>database</code> / <code>run_events</code> / <code>agent_storage</code></td>
+<td>2733 / 2805 / 2844</td>
+<td>三大持久化段（第 20 章）</td>
+</tr>
+<tr>
+<td><code>scheduler</code></td>
+<td>2895</td>
+<td>定时任务（enabled / tool_enabled / multi_instance / 预算）</td>
+</tr>
+<tr>
+<td><code>mcp_tasks</code></td>
+<td>2925</td>
+<td>长任务 MCP 运行时（第 15 章）</td>
+</tr>
+<tr>
+<td><code>deployment</code> / <code>run_ownership</code></td>
+<td>2956 / 2981</td>
+<td>多实例声明 / run 租约心跳</td>
+</tr>
+<tr>
+<td><code>stream_bridge</code>（注释示例）</td>
+<td>2999-3015</td>
+<td><code>memory | redis</code> 事件桥（多 worker 必须 redis）</td>
+</tr>
+<tr>
+<td><code>authorization</code></td>
+<td>3478</td>
+<td>授权</td>
+</tr>
+<tr>
+<td><code>plugins</code>（operator 专属）</td>
+<td>——</td>
+<td>第三方扩展导入列表，只允许 operator 手改，永不进 API 可写文件</td>
+</tr>
+</tbody>
+</table>
+<p>重启策略速记：<code>scheduler</code> 的 poller 字段、<code>run_ownership</code>、<code>agent_storage</code>、<code>logging.enhance</code>、<code>stream_bridge</code>、<code>checkpoint_channel_mode</code> 为 restart-required；<code>scheduler.recursion_limit</code> 在分发时读取（下次 run 生效，无需重启，<code>backend/AGENTS.md:14</code>）。</p>
+<h3 id="b2-extensions_configexamplejson">B.2 <code>extensions_config.example.json</code> 四键<a class="headerlink" href="#b2-extensions_configexamplejson" title="Permanent link">&para;</a></h3>
+<p>文件路径：<code>extensions_config.example.json</code>。四键语义见大纲附录 B 与第 15/16 章。</p>
+<table>
+<thead>
+<tr>
+<th>键</th>
+<th>示例内容</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>middlewares</code></td>
+<td><code>[]</code></td>
+<td>API 可写的 AgentMiddleware 类列表</td>
+</tr>
+<tr>
+<td><code>mcpInterceptors</code></td>
+<td><code>["my_package.mcp.auth:build_auth_interceptor"]</code></td>
+<td><code>模块路径:工厂函数</code> 形式的拦截器</td>
+</tr>
+<tr>
+<td><code>mcpServers</code></td>
+<td><code>github</code>（stdio，<code>command/args/env</code>，<code>$GITHUB_TOKEN</code> 运行时解析）、<code>parallel-search</code>（http，<code>url/headers</code>）、<code>postgres</code>（含 <code>routing</code> 关键词路由）、<code>long-running-reports</code>（含 <code>task_toolsets</code> 长任务契约）</td>
+<td>每服务器独立启停；公共字段 <code>enabled</code>、<code>tool_name_prefix</code>、<code>session_init_timeout</code>、<code>tool_call_timeout</code></td>
+</tr>
+<tr>
+<td><code>skills</code></td>
+<td><code>{}</code></td>
+<td>API 可写的技能配置</td>
+</tr>
+</tbody>
+</table>
+<p>两个文件的通道差异（第 16 章）：<code>config.yaml → plugins:</code> 触发代码导入、必须 operator 控制；<code>extensions_config.json</code> 由 Gateway API 运行时热写（双锁 + 原子替换），Compose 中前者只读、后者可写。</p>
+<hr />
+<h2 id="c">附录 C 术语表<a class="headerlink" href="#c" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>术语</th>
+<th>释义</th>
+<th>详见</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>thread</strong></td>
+<td>会话线程：一次对话的容器，拥有隔离的数据目录 <code>backend/.deer-flow/threads/{thread_id}/</code></td>
+<td>第 2、6 章</td>
+</tr>
+<tr>
+<td><strong>run</strong></td>
+<td>对 thread 的一次执行（agent loop 调用）；run 历史的状态过滤是"发生态"不是任务态</td>
+<td>第 6、12 章</td>
+</tr>
+<tr>
+<td><strong>checkpoint</strong></td>
+<td>LangGraph 在每个超步后持久化的图状态快照；承载 <code>sandbox/artifacts/todos/goal</code> 等扩展字段</td>
+<td>第 6 章</td>
+</tr>
+<tr>
+<td><strong>harness</strong></td>
+<td>可发布的 agent 框架包 <code>deerflow-harness</code>（import 前缀 <code>deerflow.*</code>），App 永不反向依赖</td>
+<td>第 14 章</td>
+</tr>
+<tr>
+<td><strong>App（Gateway）</strong></td>
+<td>未发布的应用层 <code>backend/app/</code>：FastAPI Gateway + IM 渠道</td>
+<td>第 0、14 章</td>
+</tr>
+<tr>
+<td><strong>lead agent</strong></td>
+<td>由 <code>make_lead_agent()</code> 组装的主 agent，LangGraph Server 图工厂入口</td>
+<td>第 6、9 章</td>
+</tr>
+<tr>
+<td><strong>subagent</strong></td>
+<td>由 <code>SubagentExecutor</code> 后台委派的子代理；<code>execution_id</code> ↔ <code>tool_call_id</code> 关联链贯穿 ToolMessage/SSE/持久化</td>
+<td>第 9 章</td>
+</tr>
+<tr>
+<td><strong>sandbox</strong></td>
+<td>沙箱执行抽象：<code>LocalSandboxProvider</code>（开发）与 <code>AioSandboxProvider</code>（Docker 生产隔离）</td>
+<td>第 8 章</td>
+</tr>
+<tr>
+<td><strong>skill</strong></td>
+<td><code>SKILL.md</code> frontmatter + 资源目录的领域技能；public/custom/集成三来源</td>
+<td>第 7 章</td>
+</tr>
+<tr>
+<td><strong>extension</strong></td>
+<td>通过贡献点（middleware/observer/service/router）装进平台的打包扩展</td>
+<td>第 16 章</td>
+</tr>
+<tr>
+<td><strong>MCP</strong></td>
+<td>Model Context Protocol：外部工具接入协议，每 server 独立进程</td>
+<td>第 15 章</td>
+</tr>
+<tr>
+<td><strong>artifact</strong></td>
+<td>agent 产出的文件/代码产物，经 <code>present_files</code> 呈现、前端面板预览</td>
+<td>第 2、7、18 章</td>
+</tr>
+<tr>
+<td><strong>lease</strong></td>
+<td>租约：带心跳续期的认领凭据，覆盖 run 所有权、调度认领、渠道 leader、MCP 任务</td>
+<td>第 12、20 章</td>
+</tr>
+<tr>
+<td><strong>SSE</strong></td>
+<td>Server-Sent Events：run 流的传输形态（<code>messages-tuple</code> + 有界 <code>values</code> + 自定义事件）</td>
+<td>第 6 章</td>
+</tr>
+<tr>
+<td><strong>stream bridge</strong></td>
+<td>Gateway worker 与 SSE 客户端之间的事件桥（<code>memory</code> 单进程 / <code>redis</code> 多进程）</td>
+<td>第 20 章</td>
+</tr>
+<tr>
+<td><strong>middleware</strong></td>
+<td>模型调用前依次执行的中间件链（ThreadData → Uploads → Sandbox → Summarization → …）</td>
+<td>第 6 章</td>
+</tr>
+<tr>
+<td><strong>provisioner</strong></td>
+<td>8002 端口的可选服务，K8s 沙箱模式下供给容器与 PVC</td>
+<td>第 8、20 章</td>
+</tr>
+<tr>
+<td><strong>DEER_FLOW_HOME</strong></td>
+<td>运行时主目录（默认 <code>backend/.deer-flow/</code>），存线程数据、数据库、secrets</td>
+<td>第 6 章</td>
+</tr>
+<tr>
+<td><strong>Blockbuster</strong></td>
+<td>检测异步上下文中阻塞 IO 的运行时工具；<code>tests/blocking_io/</code> 的严格门禁</td>
+<td>第 19 章</td>
+</tr>
+<tr>
+<td><strong>Alembic</strong></td>
+<td>后端 schema 迁移工具；Gateway 启动自动 <code>upgrade head</code></td>
+<td>第 20 章</td>
+</tr>
+<tr>
+<td><strong>run-context 信任边界</strong></td>
+<td><code>non_interactive</code> 等服务端键只认内部认证调用方，客户端副本一律剥离</td>
+<td>第 12、20 章</td>
+</tr>
+<tr>
+<td><strong>trace id</strong></td>
+<td>请求级关联 ID（<code>X-Trace-Id</code>），ContextVar 为唯一来源，派生载体只写不读</td>
+<td>第 19 章</td>
+</tr>
+<tr>
+<td><strong>TanStack Query</strong></td>
+<td>前端服务端状态管理器；线程状态归一化后的归属地</td>
+<td>第 18 章</td>
+</tr>
+<tr>
+<td><strong>registry 生成物</strong></td>
+<td><code>ui/</code> 与 <code>ai-elements/</code>：Shadcn / MagicUI / React Bits / Vercel AI SDK 注册表拉取的组件，禁止手改</td>
+<td>第 18 章</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="d">附录 D 学习验收清单<a class="headerlink" href="#d" title="Permanent link">&para;</a></h2>
+<h3 id="d1-05">D.1 入门篇（第 0–5 章）——你应该能<a class="headerlink" href="#d1-05" title="Permanent link">&para;</a></h3>
+<ol>
+<li>不看文档说出四个服务的端口与角色，并解释为什么浏览器入口是 2026 而不是 3000/8001。</li>
+<li>从 <code>make config</code> 到 <code>make dev</code> 完成首次启动，并指出两份运行时配置文件的路径与 gitignored 属性。</li>
+<li>在 <code>logs/gateway.log</code> 与 <code>logs/frontend.log</code> 中定位一次报错。</li>
+<li>切换默认模型供应商并验证新会话生效；写坏配置后能读懂启动报错并恢复。</li>
+<li>分别用 <code>make dev</code> 与 <code>make up</code> 跑通，对比进程结构与日志获取方式。</li>
+<li>说出 <code>BIND_HOST</code> 的默认值与 <code>test_compose_default_bind_host.py</code> 钉住的约定。</li>
+</ol>
+<h3 id="d2-613">D.2 进阶篇（第 6–13 章）——你应该能<a class="headerlink" href="#d2-613" title="Permanent link">&para;</a></h3>
+<ol>
+<li>画出一次请求的端到端时序（前端 → Nginx → RunManager/run_agent/StreamBridge → SSE 回流），并标注八个中间件的生效点。</li>
+<li>说清工具三来源的合并逻辑，并解释 <code>stream_subgraphs</code> 的 <code>values|&lt;ns&gt;</code> 帧与根命名空间 <code>task_*</code> 事件的区别。</li>
+<li>在 local 与 docker 两种沙箱下追踪同一个 Python 脚本的虚拟路径映射与落盘位置。</li>
+<li>配置"研究员 + 评审员"双子代理流水线，观察委派、验收与回写全链路。</li>
+<li>构造长对话触发自动摘要，对比前后 checkpoint 的 <code>messages</code>/<code>summary_text</code>。</li>
+<li>创建一个定时任务并解释 <code>queued → launching → running</code> 生命周期与 <code>uq_scheduled_task_run_active</code> 约束。</li>
+<li>用 <code>DeerFlowClient</code> 写脚本完成一次带上传与产物回收的 run。</li>
+<li>接入一个 GitHub MCP server 并解释 <code>$GITHUB_TOKEN</code> 的运行时解析与工具名前缀。</li>
+</ol>
+<h3 id="d3-1420">D.3 精通篇（第 14–20 章）——你应该能<a class="headerlink" href="#d3-1420" title="Permanent link">&para;</a></h3>
+<ol>
+<li>说出 harness/app 的依赖方向由哪个测试强制（<code>backend/tests/test_harness_boundary.py</code>），并解释为什么 <code>deerflow.agents</code> 包根要保持懒加载。</li>
+<li>自建一个 stdio MCP server 并走通"配置注入 → 工具调用 → 长任务取消"闭环。</li>
+<li>为一个新功能做出 Skill / MCP / 扩展 / 核心的分流决策，并给出理由。</li>
+<li>在前端新增一个 workspace 页面（页面组合 + core 纯函数域 + 组件族 + 双环境测试）。</li>
+<li>解释 <code>make test</code> 的分片为什么按耗时均衡、Blockbuster 门禁包住哪些阶段、live 测试如何 opt-in。</li>
+<li>配置一套 Postgres + 心跳 + DB 事件的多实例 scheduler，并说出 <code>max_concurrent_runs</code> 如何成为全局共享预算。</li>
+<li>用 <code>bump_version.sh</code> 升版本并解释 <code>v*</code> tag CI 的阻断逻辑。</li>
+<li>生成一份 support bundle，指出其中哪些字段被 <code>SECRET_KEY_RE</code> 脱敏。</li>
+</ol>
+<hr />
+<h2 id="e-faq">附录 E 常见问题 FAQ<a class="headerlink" href="#e-faq" title="Permanent link">&para;</a></h2>
+<p><strong>Q1：端口冲突——2026/3000/8001 被占用怎么办？</strong>
+先 <code>make stop</code>（本地栈）或 <code>make down</code>（生产栈）释放。Docker 入口端口由根 <code>PORT</code> 环境变量控制（仅影响 Compose 发布端口）；本地 Next.js 固定 3000、Gateway 固定 8001，<code>.env</code> 改动不会影响 <code>make dev</code> 的端口等待（根 <code>AGENTS.md</code>）。注意 Windows 上 <code>0.0.0.0</code> 绑定可能撞 Hyper-V/winnat 保留段（见 Q6）。</p>
+<p><strong>Q2：模型 API Key 报错如何排查？</strong>
+确认 <code>config.yaml → models:</code> 段对应供应商的 <code>api_key</code> 已填、供应商未 disable；跑 <code>make doctor</code>，它专门检查 LLM provider 连通性（<code>scripts/doctor.py:3-8</code>）。密钥类环境变量看 <code>.env.example</code>。模型能力位（<code>supports_vision</code>、深度思考、<code>context_window</code>）错配的症状是功能静默降级而非报错（<code>config.example.yaml:132-143</code>）。</p>
+<p><strong>Q3：沙箱启动失败？</strong>
+三步：确认 Docker daemon 在跑；<code>make setup-sandbox</code> 预拉镜像（<code>Makefile:151-152</code>）；确认 <code>config.yaml → sandbox:</code> 选择的 provider 与运行形态匹配（local 直执行仅开发用，Docker 生产用 <code>AioSandboxProvider</code>，K8s 模式才需要 8002 Provisioner）。Compose 默认不挂 Docker socket，DooD 沙箱要显式加 overlay（<code>docker/docker-compose.yaml:161-166</code>）。</p>
+<p><strong>Q4：pnpm 版本不对 / Corepack 不生效？</strong>
+仓库锁定 <code>pnpm@10.26.2</code>（<code>frontend/package.json:133</code>），要求 Node 22+。host 调用统一走 <code>scripts/pnpm.py</code>：native Windows 先试 <code>pnpm.cmd</code>、POSIX 先试 <code>pnpm</code>，Corepack 回退按同序尝试 <code>corepack.cmd</code>/<code>corepack</code>，并从 <code>frontend/</code> 目录运行以对齐锁定的包管理器版本（根 <code>AGENTS.md</code>）。</p>
+<p><strong>Q5：改了配置不生效？</strong>
+分三类：① 经 Gateway API 改的两份配置立即生效；② 直接改 <code>config.yaml</code>，<code>make dev</code> 的 uvicorn 监听 <code>*.yaml</code> 会自动重启（<code>backend/Makefile:12-13</code>）；③ <strong>restart-required 字段</strong>（<code>scheduler</code> poller 字段、<code>run_ownership</code>、<code>agent_storage</code>、<code>logging.enhance</code>、<code>stream_bridge</code>、<code>checkpoint_channel_mode</code>）必须重启 Gateway，且多实例下所有 Pod 一起重启（<code>CONFIGURATION.md:777-781</code>）。<code>scheduler.recursion_limit</code> 例外：分发时读取，下次 run 生效（<code>backend/AGENTS.md:14</code>）。</p>
+<p><strong>Q6：Windows 特有问题合集？</strong>
+① 前端 dev server 绑定 <code>127.0.0.1</code> 避开 Hyper-V/winnat <code>EACCES</code>（#2870，<code>frontend/AGENTS.md:34</code>）；② root Makefile 在 Windows 用 <code>cmd.exe</code> 执行并借 <code>scripts/run-with-git-bash.cmd</code> 跑 shell 脚本（<code>Makefile:9-13</code>），所以需要安装 Git Bash；③ 后端进程统一注入 <code>PYTHONIOENCODING=utf-8 PYTHONUTF8=1</code> 防控制台乱码（<code>backend/Makefile:33-36</code>）；④ POSIX-only 的 live 测试用 <code>os.name</code> 守护收集（<code>backend/AGENTS.md:226-227</code>）；⑤ 技能文本一律显式 UTF-8（读 <code>utf-8-sig</code>、写 <code>utf-8</code>），别依赖系统 locale。</p>
+<p><strong>Q7：非本机访问 dev server 登录页 403？</strong>
+Next 的 <code>allowedDevOrigins</code> 会挡住未声明来源的 <code>/_next/*</code>、字体与 HMR 请求，症状是 403 且页面无法交互（含登录）。设置 <code>DEER_FLOW_DEV_ALLOWED_ORIGINS</code> 为逗号分隔主机列表；生产构建忽略此设置（<code>frontend/AGENTS.md:224-227</code>）。</p>
+<p><strong>Q8：<code>uv lock --check</code> 失败 / CI 报版本漂移？</strong>
+改过 <code>backend/pyproject.toml</code> 或 harness pyproject 但没刷新 <code>backend/uv.lock</code>。补跑 <code>uv lock</code>；若是发版，直接用 <code>scripts/bump_version.sh &lt;ver&gt;</code>（它会顺带刷新锁并自检，<code>bump_version.sh:108-113</code>）。pre-commit 的 <code>uv-lock-check</code> 钩子本来能本地拦住，别用 <code>--no-verify</code> 绕过（<code>.pre-commit-config.yaml:17-22</code>）。</p>
+<p><strong>Q9：Docker 里 <code>extensions_config.json</code> 写不进 / 更新丢失？</strong>
+生产 Compose 故意以读写挂载该文件（<code>config.yaml</code> 只读）；Gateway 写它时持双锁（进程锁 + sidecar advisory 文件锁）并临时文件原子替换。挂载点 <code>EBUSY</code> 才允许非原子原地覆盖（可能因崩溃截断）——出现这种情况要检查挂载方式（<code>backend/AGENTS.md:22</code>）。</p>
+<p><strong>Q10：跑 <code>make test-shard</code> 报 <code>.test_durations</code> 缺失？</strong>
+分片基线文件不在就拒绝运行（防并发写竞争）。执行 <code>make test-shard-durations</code> 重建并提交（<code>backend/Makefile:50-58</code>）。日常全量测试直接 <code>make test</code>。</p>
+<p><strong>Q11：live 测试意外调用了真实 API？</strong>
+<code>DEER_FLOW_RUN_LIVE_TESTS=1</code> 是全局开关，跑完记得取消；离线分片本身带 <code>-m "not live"</code> 排除（<code>backend/Makefile:52</code>）。同理，基准评测命令永不静默下载数据集，数据集路径由你提供（第 19 章 19.4）。</p>
+<p><strong>Q12：上传 Excel/Word 后 agent 读不到内容？</strong>
+文档转换走 markitdown、每请求单转换 worker；目录会被拒绝（上传全有或全无），同请求重名文件自动加 <code>_N</code> 后缀（<code>backend/AGENTS.md:286</code>）。先看 Gateway 日志里该上传请求的转换错误，再确认文件类型在支持列表内。</p>
+<p><strong>Q13：定时任务的队列里的 run 一直不动？</strong>
+查三个预算：全局 <code>max_concurrent_runs: 3</code>、每属主 <code>max_concurrent_runs_per_user: 2</code>、排队上限 <code>queue_timeout_seconds: 3600</code>（超时的发生被跳过且不发通知，<code>config.example.yaml:2859-2867</code>）。多实例下这些是跨 Pod 共享预算；单实例则是本进程预算。</p>
+<hr />
+<h2 id="f-docs-backenddocs">附录 F 官方文档索引（docs/ 与 backend/docs/ → 教程章节映射）<a class="headerlink" href="#f-docs-backenddocs" title="Permanent link">&para;</a></h2>
+<h3 id="f1-docs">F.1 仓库根 <code>docs/</code><a class="headerlink" href="#f1-docs" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>文档</th>
+<th>内容</th>
+<th>对应章节</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>docs/ARCHITECTURE.md</code></td>
+<td>顶层架构总览（拓扑/分层/安全模型）</td>
+<td>第 0、6、14 章</td>
+</tr>
+<tr>
+<td><code>docs/capability-center.md</code></td>
+<td>能力中心完整契约与扩展示例</td>
+<td>第 4、18 章</td>
+</tr>
+<tr>
+<td><code>docs/full-stack-plugins.md</code></td>
+<td>实验性全栈插件（前端不变量）</td>
+<td>第 16 章</td>
+</tr>
+<tr>
+<td><code>docs/task-continuity.md</code></td>
+<td>任务连续性</td>
+<td>第 11、12 章</td>
+</tr>
+<tr>
+<td><code>docs/database-forward-revision-recovery.md</code></td>
+<td>数据库前向版本恢复</td>
+<td>第 20 章</td>
+</tr>
+<tr>
+<td><code>docs/RELEASE_SOP.md</code></td>
+<td>发布 SOP</td>
+<td>第 20 章</td>
+</tr>
+<tr>
+<td><code>docs/skill-usage-ui.md</code></td>
+<td>技能使用 UI</td>
+<td>第 7、18 章</td>
+</tr>
+<tr>
+<td><code>docs/skill-evolution-host.md</code></td>
+<td>技能演化宿主</td>
+<td>第 7、16 章</td>
+</tr>
+<tr>
+<td><code>docs/OPENVIKING.md</code></td>
+<td>OpenViking 记忆/资源后端</td>
+<td>第 10、15 章</td>
+</tr>
+<tr>
+<td><code>docs/tui/</code></td>
+<td>终端 UI 文档目录</td>
+<td>第 5 章</td>
+</tr>
+<tr>
+<td><code>docs/agents/</code>、<code>docs/plans/</code>、<code>docs/experiments/</code>、<code>docs/superpowers/</code></td>
+<td>过程文档与设计笔记</td>
+<td>——</td>
+</tr>
+<tr>
+<td><code>docs/tutorials/</code></td>
+<td>本教程</td>
+<td>全书</td>
+</tr>
+</tbody>
+</table>
+<h3 id="f2-backenddocs">F.2 <code>backend/docs/</code><a class="headerlink" href="#f2-backenddocs" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>文档</th>
+<th>内容</th>
+<th>对应章节</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>API.md</code></td>
+<td>REST API 参考</td>
+<td>第 13 章</td>
+</tr>
+<tr>
+<td><code>ARCHITECTURE.md</code></td>
+<td>后端架构细节</td>
+<td>第 6、14 章</td>
+</tr>
+<tr>
+<td><code>CONFIGURATION.md</code></td>
+<td>配置项权威手册（database/多实例/deployment topology…）</td>
+<td>第 3、20 章</td>
+</tr>
+<tr>
+<td><code>SETUP.md</code></td>
+<td>安装指南</td>
+<td>第 1 章</td>
+</tr>
+<tr>
+<td><code>FILE_UPLOAD.md</code></td>
+<td>文件上传协议</td>
+<td>第 13 章</td>
+</tr>
+<tr>
+<td><code>PATH_EXAMPLES.md</code></td>
+<td>路径类型与用法</td>
+<td>第 8 章</td>
+</tr>
+<tr>
+<td><code>SANDBOX_MEMORY_PROFILING.md</code></td>
+<td>沙箱内存画像</td>
+<td>第 8 章</td>
+</tr>
+<tr>
+<td><code>RUN_EVENT_STREAM.md</code></td>
+<td>run 事件流协议</td>
+<td>第 6 章</td>
+</tr>
+<tr>
+<td><code>STREAMING.md</code></td>
+<td>流式协议细节</td>
+<td>第 6 章</td>
+</tr>
+<tr>
+<td><code>THREAD_LIFECYCLE.md</code></td>
+<td>线程生命周期</td>
+<td>第 6 章</td>
+</tr>
+<tr>
+<td><code>middleware-execution-flow.md</code></td>
+<td>中间件执行流</td>
+<td>第 6 章</td>
+</tr>
+<tr>
+<td><code>runtime-guidance-details.md</code></td>
+<td>运行时引导细节</td>
+<td>第 6 章</td>
+</tr>
+<tr>
+<td><code>AUTO_TITLE_GENERATION.md</code> / <code>TITLE_GENERATION_IMPLEMENTATION.md</code></td>
+<td>自动标题</td>
+<td>第 6 章</td>
+</tr>
+<tr>
+<td><code>RUN_INTERACTION_POLICY.md</code></td>
+<td>run 交互策略</td>
+<td>第 6、12 章</td>
+</tr>
+<tr>
+<td><code>summarization.md</code></td>
+<td>上下文摘要契约</td>
+<td>第 11 章</td>
+</tr>
+<tr>
+<td><code>plan_mode_usage.md</code></td>
+<td>Plan Mode 用法</td>
+<td>第 11 章</td>
+</tr>
+<tr>
+<td><code>GUARDRAILS.md</code> / <code>LOOP_DETECTION.md</code></td>
+<td>防护栏 / 循环检测</td>
+<td>第 11 章</td>
+</tr>
+<tr>
+<td><code>MEMORY_COGNITIVE_STYLE.md</code>、<code>MEMORY_IMPROVEMENTS*.md</code>、<code>MEMORY_SETTINGS_REVIEW.md</code>、<code>memory-settings-sample.json</code></td>
+<td>记忆系统专题</td>
+<td>第 10 章</td>
+</tr>
+<tr>
+<td><code>TASK_TOOL_IMPROVEMENTS</code>（<code>task_tool_improvements.md</code>）与 <code>BATCH_CONTINUATION.md</code></td>
+<td>子代理任务工具与批处理续跑</td>
+<td>第 9 章</td>
+</tr>
+<tr>
+<td><code>MCP_SERVER.md</code> / <code>mcp-control-leases.md</code></td>
+<td>MCP 服务端 / 控制租约</td>
+<td>第 15 章</td>
+</tr>
+<tr>
+<td><code>KNOWLEDGE.md</code></td>
+<td>只读知识契约</td>
+<td>第 17 章</td>
+</tr>
+<tr>
+<td><code>IM_CHANNEL_CONNECTIONS.md</code></td>
+<td>IM 渠道连接</td>
+<td>第 12 章</td>
+</tr>
+<tr>
+<td><code>TUI.md</code></td>
+<td>终端 UI</td>
+<td>第 5 章</td>
+</tr>
+<tr>
+<td><code>BLOCKING_IO_DETECTION.md</code></td>
+<td>阻塞 IO 检测机制</td>
+<td>第 19 章</td>
+</tr>
+<tr>
+<td><code>REPLAY_E2E.md</code></td>
+<td>回放式 E2E</td>
+<td>第 19 章</td>
+</tr>
+<tr>
+<td><code>AUTH_DESIGN.md</code> / <code>AUTH_UPGRADE.md</code> / <code>AUTH_TEST_PLAN.md</code> / <code>AUTH_TEST_DOCKER_GAP.md</code></td>
+<td>认证设计/升级/测试</td>
+<td>第 20 章</td>
+</tr>
+<tr>
+<td><code>SSO.md</code></td>
+<td>OIDC 单点登录</td>
+<td>第 20 章</td>
+</tr>
+<tr>
+<td><code>blob-storage.md</code> / <code>checkpoint-retention-contract.md</code></td>
+<td>对象存储 / checkpoint 保留契约</td>
+<td>第 11、20 章</td>
+</tr>
+<tr>
+<td><code>extension-agent-runs.md</code> / <code>extension-model-invocation.md</code></td>
+<td>扩展的 AgentRuns / 模型调用契约</td>
+<td>第 16 章</td>
+</tr>
+<tr>
+<td><code>GITHUB_AGENTS.md</code></td>
+<td>GitHub 集成代理</td>
+<td>第 16 章</td>
+</tr>
+<tr>
+<td><code>APPLE_CONTAINER.md</code></td>
+<td>Apple 容器适配</td>
+<td>第 5 章</td>
+</tr>
+<tr>
+<td><code>TODO.md</code> / <code>README.md</code> / 各 <code>rfc-*.md</code></td>
+<td>待办与历史设计</td>
+<td>——</td>
+</tr>
+</tbody>
+</table>
+<h3 id="f3-docs">F.3 其他专题文档（非 docs/ 目录）<a class="headerlink" href="#f3-docs" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>文档</th>
+<th>对应章节</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AGENTS.md</code>（根）/ <code>backend/AGENTS.md</code> / <code>frontend/AGENTS.md</code> / <code>src/AGENTS.md</code> 等 scoped 指南</td>
+<td>全书随时参照</td>
+</tr>
+<tr>
+<td><code>backend/packages/harness/deerflow/extensions/AGENTS.md</code>、<code>.../mcp/AGENTS.md</code>、<code>.../subagents/AGENTS.md</code>、<code>.../persistence/AGENTS.md</code>、<code>.../config/AGENTS.md</code>、<code>.../skills/AGENTS.md</code></td>
+<td>第 7、9、12、15、16 章</td>
+</tr>
+<tr>
+<td><code>contracts/</code>（子代理状态、技能评审、语言环境、调度错误等跨端契约）</td>
+<td>第 9、7、18 章</td>
+</tr>
+<tr>
+<td><code>RELEASING.md</code> / <code>CONTRIBUTING.md</code> / <code>Install.md</code> / <code>SECURITY.md</code></td>
+<td>第 1、20 章</td>
+</tr>
+<tr>
+<td><code>examples/deerflow-extension-*/AGENTS.md</code></td>
+<td>第 16 章</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><em>全书完。教程基于仓库当前源码撰写；若源码演进导致行号漂移，请以 <code>grep</code> 与各 <code>AGENTS.md</code> 的最新内容为准。</em></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      教程基于开源项目 <a href='https://github.com/bytedance/deer-flow'>bytedance/deer-flow</a> 的真实源码编写
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.sections", "navigation.expand", "navigation.top", "navigation.indexes", "search.suggest", "search.highlight", "content.code.copy", "toc.follow"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.a5f9d56c.min.js"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

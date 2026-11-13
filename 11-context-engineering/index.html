@@ -1,0 +1,2572 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="基于 DeerFlow 真实源码的中文系统教程：21 章 + 附录，覆盖环境配置、核心组件拆解、二次开发与 MCP 集成">
+      
+      
+      
+        <link rel="canonical" href="https://jigangbo.github.io/deer-flow-tutorial/11-context-engineering/">
+      
+      
+        <link rel="prev" href="../10-memory/">
+      
+      
+        <link rel="next" href="../12-scheduled-tasks-and-im/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
+    
+    
+      
+        <title>第 11 章 上下文工程与长对话治理 - DeerFlow 从入门到精通 · 源码教程</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#11" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href=".." title="DeerFlow 从入门到精通 · 源码教程" class="md-header__button md-logo" aria-label="DeerFlow 从入门到精通 · 源码教程" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            DeerFlow 从入门到精通 · 源码教程
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              第 11 章 上下文工程与长对话治理
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jigangbo/deer-flow-tutorial" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="DeerFlow 从入门到精通 · 源码教程" class="md-nav__button md-logo" aria-label="DeerFlow 从入门到精通 · 源码教程" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    DeerFlow 从入门到精通 · 源码教程
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jigangbo/deer-flow-tutorial" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    导读
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    导读
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 0 章 全景鸟瞰
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第一篇 入门篇
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第一篇 入门篇
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-environment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 1 章 准备环境（Environment Setup）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 2 章 一键启动（Quick Start）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 3 章 配置系统入门
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-frontend-tour/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 4 章 前端界面与基本功能导览
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-run-modes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 5 章 更多运行方式
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第二篇 进阶篇
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第二篇 进阶篇
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-request-lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 6 章 一次请求的一生：Agent 运行时全链路
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-tools-and-skills/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 7 章 工具系统与 Skills
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-sandbox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 8 章 沙箱与代码执行
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-multi-agent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 9 章 Multi-Agent 路由与子代理委派
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10-memory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 10 章 记忆系统（Memory / DeerMem）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 11 章 上下文工程与长对话治理
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 11 章 上下文工程与长对话治理
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        本章源码锚点
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#110" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.0 学习目标
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#111" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.1 概念：一次模型调用前发生什么
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#112-summarizationmiddleware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.2 源码走读：自动摘要 SummarizationMiddleware
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="11.2 源码走读：自动摘要 SummarizationMiddleware">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1121-or" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.2.1 触发条件：三选一即触发（OR 逻辑）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1122-deerflow-deerflowsummarizationmiddleware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.2.2 DeerFlow 扩展层：DeerFlowSummarizationMiddleware
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1123" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.2.3 摘要前钩子：与记忆系统的交接
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1124-durable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.2.4 压缩后：三条"durable"通道
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1125" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.2.5 配置建议速查
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#113-post-apithreadsthread_idcompact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.3 源码走读：手动压缩 POST /api/threads/{thread_id}/compact
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#114" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.4 防护体系：六层确定性中间件
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="11.4 防护体系：六层确定性中间件">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1141-loop_detection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.4.1 loop_detection：循环检测
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1142-guardrails" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.4.2 guardrails：工具调用前的策略授权
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1143-pii_redaction-pii" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.4.3 pii_redaction：模型可见上下文中的 PII 脱敏
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1144-read_before_write" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.4.4 read_before_write：先读后写门
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1145-harness_guard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.4.5 harness_guard：语法验证与错误模式治理
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1146-safety_finish_reason" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.4.6 safety_finish_reason：供应商安全中断
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1147" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.4.7 防护体系的共同哲学
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#115-plan-modewrite_todos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.5 Plan Mode：write_todos 与多步任务跟踪
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        动手实验
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="动手实验">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#checkpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        实验一：触发自动摘要并对比 checkpoint
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#guardrail" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        实验二：接一个零依赖 guardrail
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        常见坑
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        下一步
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../12-scheduled-tasks-and-im/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 12 章 定时任务与 IM 渠道
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../13-gateway-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 13 章 Gateway API 与编程接入
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第三篇 精通篇
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第三篇 精通篇
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../14-architecture-layers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 14 章 架构分层与开发规范（二次开发前必读）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../15-mcp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 15 章 MCP 集成（重点）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../16-extensions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 16 章 扩展（Extensions）开发
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../17-business-cases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 17 章 业务二次开发实战（综合案例）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../18-frontend-dev/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 18 章 前端二次开发
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../19-testing-quality/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 19 章 可观测性、测试与质量保障
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../20-production/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 20 章 生产部署与运维
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    附录
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    附录
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../appendices/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    附录
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        本章源码锚点
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#110" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.0 学习目标
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#111" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.1 概念：一次模型调用前发生什么
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#112-summarizationmiddleware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.2 源码走读：自动摘要 SummarizationMiddleware
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="11.2 源码走读：自动摘要 SummarizationMiddleware">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1121-or" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.2.1 触发条件：三选一即触发（OR 逻辑）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1122-deerflow-deerflowsummarizationmiddleware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.2.2 DeerFlow 扩展层：DeerFlowSummarizationMiddleware
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1123" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.2.3 摘要前钩子：与记忆系统的交接
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1124-durable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.2.4 压缩后：三条"durable"通道
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1125" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.2.5 配置建议速查
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#113-post-apithreadsthread_idcompact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.3 源码走读：手动压缩 POST /api/threads/{thread_id}/compact
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#114" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.4 防护体系：六层确定性中间件
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="11.4 防护体系：六层确定性中间件">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1141-loop_detection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.4.1 loop_detection：循环检测
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1142-guardrails" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.4.2 guardrails：工具调用前的策略授权
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1143-pii_redaction-pii" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.4.3 pii_redaction：模型可见上下文中的 PII 脱敏
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1144-read_before_write" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.4.4 read_before_write：先读后写门
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1145-harness_guard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.4.5 harness_guard：语法验证与错误模式治理
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1146-safety_finish_reason" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.4.6 safety_finish_reason：供应商安全中断
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1147" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.4.7 防护体系的共同哲学
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#115-plan-modewrite_todos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.5 Plan Mode：write_todos 与多步任务跟踪
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        动手实验
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="动手实验">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#checkpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        实验一：触发自动摘要并对比 checkpoint
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#guardrail" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        实验二：接一个零依赖 guardrail
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        常见坑
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        下一步
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="11">第 11 章 上下文工程与长对话治理<a class="headerlink" href="#11" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>第 10 章解决了"跨会话记住用户"，本章解决"单会话内的上下文治理"。随着对话变长，
+三个问题依次出现：<strong>窗口压力</strong>（token 逼近上限）、<strong>上下文丢失</strong>（摘要把关键
+引用也压没了）、<strong>行为失控</strong>（循环调用、危险工具、PII 泄漏、供应商安全中断）。
+DeerFlow 用一个 <code>SummarizationMiddleware</code> 加一整套 guardrail 中间件回答它们。</p>
+</blockquote>
+<h2 id="_1">本章源码锚点<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>主题</th>
+<th>锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>摘要中间件扩展层</td>
+<td><code>backend/packages/harness/deerflow/agents/middlewares/summarization_middleware.py:123</code></td>
+</tr>
+<tr>
+<td>摘要官方文档</td>
+<td><code>backend/docs/summarization.md</code></td>
+</tr>
+<tr>
+<td>config.yaml summarization 段</td>
+<td><code>config.example.yaml:2242</code></td>
+</tr>
+<tr>
+<td>手动压缩端点</td>
+<td><code>backend/app/gateway/routers/threads.py:1567</code></td>
+</tr>
+<tr>
+<td>手动压缩实现</td>
+<td><code>backend/packages/harness/deerflow/runtime/context_compaction.py:146</code></td>
+</tr>
+<tr>
+<td>检查点写边界</td>
+<td><code>backend/app/gateway/services.py:142</code></td>
+</tr>
+<tr>
+<td>循环检测</td>
+<td><code>backend/packages/harness/deerflow/agents/middlewares/loop_detection_middleware.py:1</code>、<code>backend/docs/LOOP_DETECTION.md</code></td>
+</tr>
+<tr>
+<td>config.yaml loop_detection 段</td>
+<td><code>config.example.yaml:1505</code></td>
+</tr>
+<tr>
+<td>工具调用前授权</td>
+<td><code>backend/packages/harness/deerflow/guardrails/middleware.py:25</code></td>
+</tr>
+<tr>
+<td>Guardrails 文档</td>
+<td><code>backend/docs/GUARDRAILS.md</code></td>
+</tr>
+<tr>
+<td>config.yaml guardrails 段（注释模板）</td>
+<td><code>config.example.yaml:3305</code></td>
+</tr>
+<tr>
+<td>PII 脱敏配置</td>
+<td><code>config.example.yaml:1538</code></td>
+</tr>
+<tr>
+<td>先读后写门</td>
+<td><code>config.example.yaml:1586</code></td>
+</tr>
+<tr>
+<td>harness_guard 配置</td>
+<td><code>config.example.yaml:1604</code></td>
+</tr>
+<tr>
+<td>供应商安全中断配置</td>
+<td><code>config.example.yaml:1680</code></td>
+</tr>
+<tr>
+<td>Plan Mode</td>
+<td><code>backend/docs/plan_mode_usage.md</code>、<code>backend/packages/harness/deerflow/agents/middlewares/todo_middleware.py:124</code></td>
+</tr>
+<tr>
+<td>中间件链装配</td>
+<td><code>backend/packages/harness/deerflow/agents/lead_agent/agent.py:485</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="110">11.0 学习目标<a class="headerlink" href="#110" title="Permanent link">&para;</a></h2>
+<p>读完本章，你应该能够：</p>
+<ol>
+<li>解释 <code>SummarizationMiddleware</code> 的三种触发条件（tokens / messages / fraction）、
+   <code>keep</code> 保留策略与分块摘要协议，以及"模型归属"（model ownership）规则；</li>
+<li>走读手动压缩端点 <code>POST /api/threads/{thread_id}/compact</code>，说明它如何复用同一
+   中间件并通过 <code>reserve_checkpoint_write()</code> 与运行中的 run 互斥；</li>
+<li>列出 DeerFlow 的六层防护（loop_detection、guardrails、pii_redaction、
+   read_before_write、harness_guard、safety_finish_reason）各自的检测对象与失败方向；</li>
+<li>用 <code>guardrails:</code> 配置接入四种 GuardrailProvider（Allowlist / OAP / Custom / TypeSafe）；</li>
+<li>理解 Plan Mode 如何通过 <code>config.configurable.is_plan_mode</code> 注入 <code>write_todos</code>。</li>
+</ol>
+<h2 id="111">11.1 概念：一次模型调用前发生什么<a class="headerlink" href="#111" title="Permanent link">&para;</a></h2>
+<p>第 6 章给过中间件链全景。本章聚焦其中"上下文治理"相关的环节。<code>build_middlewares()</code>
+（<code>backend/packages/harness/deerflow/agents/lead_agent/agent.py:485</code>）在 lead agent
+组装时按顺序挂载，与本章相关的片段（<code>agent.py:723-725</code> 与 773-775）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>    <span class="c1"># LoopDetectionMiddleware — detect and break repetitive tool call loops</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">loop_detection_config</span> <span class="o">=</span> <span class="n">resolved_app_config</span><span class="o">.</span><span class="n">loop_detection</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="k">if</span> <span class="n">loop_detection_config</span><span class="o">.</span><span class="n">enabled</span><span class="p">:</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>        <span class="n">middlewares</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">LoopDetectionMiddleware</span><span class="o">.</span><span class="n">from_config</span><span class="p">(</span><span class="n">loop_detection_config</span><span class="p">))</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="o">...</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="c1"># SafetyFinishReasonMiddleware — suppress tool execution when the provider</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="c1"># safety-terminated the response. Registered after the terminal-response</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="c1"># and custom/configured middlewares so LangChain's reverse-order after_model</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="c1"># dispatch runs Safety first; cleared tool_calls then flow through the</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="c1"># remaining accounting/terminal guards without firing extra alarms.</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="n">safety_config</span> <span class="o">=</span> <span class="n">resolved_app_config</span><span class="o">.</span><span class="n">safety_finish_reason</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="k">if</span> <span class="n">safety_config</span><span class="o">.</span><span class="n">enabled</span><span class="p">:</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>        <span class="n">middlewares</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SafetyFinishReasonMiddleware</span><span class="o">.</span><span class="n">from_config</span><span class="p">(</span><span class="n">safety_config</span><span class="p">))</span>
+</code></pre></div>
+<p>三个治理视角：</p>
+<ol>
+<li><strong>压缩</strong>：<code>DurableContextMiddleware</code> 先于 <code>SummarizationMiddleware</code> 运行
+   （<code>backend/docs/summarization.md</code> §Middleware Order）——任务委派记录与已加载
+   skill 引用必须先被记入 durable 通道，它们的原始 ToolMessage 才有资格被压缩掉；</li>
+<li><strong>保留</strong>：摘要不是唯一手段——摘要本身、活跃 <code>/goal</code> 目标、已加载 skill 引用
+   都走"durable context"通道在每次模型调用时重投影，绕开消息淘汰；</li>
+<li><strong>防护</strong>：在工具真正执行前后，由多个确定性中间件拦截危险或失控行为。</li>
+</ol>
+<h2 id="112-summarizationmiddleware">11.2 源码走读：自动摘要 SummarizationMiddleware<a class="headerlink" href="#112-summarizationmiddleware" title="Permanent link">&para;</a></h2>
+<h3 id="1121-or">11.2.1 触发条件：三选一即触发（OR 逻辑）<a class="headerlink" href="#1121-or" title="Permanent link">&para;</a></h3>
+<p><code>config.example.yaml:2242</code> 的出厂配置：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">summarization</span><span class="p">:</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="nt">model_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span><span class="nt">trigger</span><span class="p">:</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="c1"># Trigger when token count reaches 32000</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tokens</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">      </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">32000</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">  </span><span class="nt">keep</span><span class="p">:</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">    </span><span class="c1"># Keep the most recent 10 messages (recommended)</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">messages</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">    </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">  </span><span class="nt">trim_tokens_to_summarize</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">15564</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">  </span><span class="nt">summary_prompt</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
+</code></pre></div>
+<p>三种 trigger 类型（<code>backend/docs/summarization.md</code> §trigger）：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>含义</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tokens</code></td>
+<td>消息历史 + 已有 <code>summary_text</code> 的 token 数达到阈值</td>
+<td>最常用，建议设为模型上下文的 60–80%</td>
+</tr>
+<tr>
+<td><code>messages</code></td>
+<td>消息条数达到阈值</td>
+<td>适合大量短消息的会话</td>
+</tr>
+<tr>
+<td><code>fraction</code></td>
+<td>达到模型 <code>context_window</code> 的百分比</td>
+<td>百分比从<strong>活跃 run 模型</strong>声明的 <code>context_window</code> 解析；第三方 OpenAI 兼容模型没有内置容量档案，未声明时 fraction 子句在 agent 构建时带警告丢弃，其余绝对阈值继续工作</td>
+</tr>
+</tbody>
+</table>
+<p>监测发生在每次模型调用前，且计数包含已有 <code>summary_text</code>——因为摘要会作为
+durable context 投影进下一次请求，不计数就会低估真实输入。</p>
+<h3 id="1122-deerflow-deerflowsummarizationmiddleware">11.2.2 DeerFlow 扩展层：DeerFlowSummarizationMiddleware<a class="headerlink" href="#1122-deerflow-deerflowsummarizationmiddleware" title="Permanent link">&para;</a></h3>
+<p>DeerFlow 没有重写 LangChain 的 <code>SummarizationMiddleware</code>，而是继承扩展
+（<code>backend/packages/harness/deerflow/agents/middlewares/summarization_middleware.py:123</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">DeerFlowSummarizationMiddleware</span><span class="p">(</span><span class="n">SummarizationMiddleware</span><span class="p">):</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="sd">"""Summarization middleware with pre-compression hook dispatch."""</span>
+</code></pre></div>
+<p>文件头部的常量定义了三个治理参数（<code>summarization_middleware.py:43-49</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">_NOOP_CACHE_MAX_ENTRIES</span> <span class="o">=</span> <span class="mi">128</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">_MAX_SUMMARY_CHUNKS</span> <span class="o">=</span> <span class="mi">64</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">_SUMMARY_CHUNK_RETRY_SECONDS</span> <span class="o">=</span> <span class="mi">300</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">_SHORTENED_SUMMARY_MARKER</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">[summary shortened]</span><span class="se">\n</span><span class="s2">"</span>
+</code></pre></div>
+<p>四个关键机制：</p>
+<p><strong>(1) 模型归属（model ownership）</strong>。构造函数注释（第 142-153 行）说明：
+<code>run_model_name</code> 由调用方（lead / subagent / 手动构建器）直接提供——它是本次
+run 真正执行的模型，是权威事实源；<code>configured_model_name</code> 是配置的摘要模型。
+两者不同且摘要供应商故障（key 过期、配额、宕机）时，run 自己的模型仍可完成压缩
+——一个坏掉的摘要供应商不能让压缩整体停摆。<code>model_name: null</code>（默认）表示直接用
+run 自己的模型，而不是 <code>models[0]</code>。</p>
+<p><strong>(2) 流式隔离</strong>。第 157-163 行注释解释了 <code>_tag_nostream</code>：</p>
+<blockquote>
+<p>The summary LLM call runs inside a LangGraph middleware hook, so its token
+stream would otherwise be captured by the messages-tuple stream callback and
+broadcast to the frontend as a phantom AI message. Tag a dedicated model copy
+with TAG_NOSTREAM so the streaming handler skips it.</p>
+</blockquote>
+<p>摘要调用发生在中间件钩子里，若不隔离，其 token 流会被 SSE 回调捕获，前端出现
+一条"幽灵 AI 消息"。</p>
+<p><strong>(3) 分块与预算</strong>（<code>backend/docs/summarization.md</code> §Overview）：选中历史按时间序
+分块处理，每次调用拿到"前序摘要 + 下一块原文"；已生成摘要最多占用一半原始输入
+预算，超长摘要保留头尾并打 <code>[summary shortened]</code> 标记，<strong>原文永远不会被这样裁剪</strong>；
+单条超长消息切成连续片段（包括中段）。一次 pass 最多 64 块，超限保留原历史；
+任何一块失败，活跃历史保持不变（手动 <code>/compact</code> 报告生成失败）。块数超限触发
+5 分钟冷却（按 user/thread/executor/首条源消息 ID/旧摘要/策略键控），冷却期内
+自动与手动尝试都不发起摘要模型调用——这是一个进程内的成本熔断，不是持久预算。</p>
+<p><strong>(4) no-op 缓存</strong>（<code>backend/docs/summarization.md</code> §Reuse and telemetry）：缓存
+"首次候选模型原样返回了已有 summary_text"的渲染 prompt，命中时直接复用
+（<code>_ReusedSummary</code> 标记，<code>summarization_middleware.py:52</code>）。<strong>只缓存首选候选</strong>
+——回退候选的结果永不缓存，所以缓存复用不会抑制主模型失败后的重试。每次成功
+摘要发 <code>middleware:summarize</code> 日志事件，<code>changes</code> 里带 <code>noop</code> / <code>llm_call_skipped</code> /
+<code>summary_chars</code> / <code>call_count</code> / <code>noop_count</code> / <code>skip_count</code> 等字段，
+<code>skip_count / call_count</code> 即缓存复用率。</p>
+<h3 id="1123">11.2.3 摘要前钩子：与记忆系统的交接<a class="headerlink" href="#1123" title="Permanent link">&para;</a></h3>
+<p><code>BeforeSummarizationHook</code> 协议（<code>summarization_middleware.py:88-96</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nd">@runtime_checkable</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">class</span><span class="w"> </span><span class="nc">BeforeSummarizationHook</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span><span class="sd">"""Hook invoked before summarization removes messages from state.</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="sd">    Hooks are synchronous and may block. The async compaction path runs them</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="sd">    in a worker thread, so a hook must not assume it runs on the event loop.</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="sd">    """</span>
+</code></pre></div>
+<p>第 10 章的 <code>memory_flush_hook</code>（<code>agents/memory/summarization_hook.py:14</code>）就是挂
+在这里的钩子：即将被摘要掉的消息先抢救进记忆队列（<code>add_nowait</code>），异步压缩路径
+在工作线程中执行钩子（mem0/Honcho/OpenViking 的 <code>add_nowait</code> 是同步 HTTP，见
+<code>agents/memory/AGENTS.md</code> §Main components 与阻塞 IO 测试）。</p>
+<h3 id="1124-durable">11.2.4 压缩后：三条"durable"通道<a class="headerlink" href="#1124-durable" title="Permanent link">&para;</a></h3>
+<p>摘要只是删消息，真正防"上下文丢失"的是三类重投影（<code>backend/docs/summarization.md</code>
+§Message Preservation / §Skill context channel）：</p>
+<ol>
+<li><strong>摘要文本</strong>：存进 <code>ThreadState.summary_text</code>（不是 messages），由
+   <code>DurableContextMiddleware</code> 在每次模型调用时渲染成隐藏的
+   <code>&lt;durable_context_data&gt;## Conversation summary so far ...</code> 数据消息；
+   静态处理规则放在单独的系统消息里——摘要文本与其他用户/工具派生值一律是
+   低权限数据；</li>
+<li><strong>活跃目标</strong>：线程有活跃 <code>/goal</code> 时，目标文本在每次模型调用时以
+   <code>&lt;active_goal&gt;</code> 元素出现在同一数据消息开头——压缩不能把目标连同陈述它的消息
+   一起带走。元素按位置只认开头那一段，其余字段值全部 HTML 转义，防止注入；</li>
+<li><strong>已加载 skill 引用</strong>：<code>read_file</code> 命中 <code>skill_file_read_tool_names</code>
+   （默认 <code>["read_file", "read", "view", "cat"]</code>）且路径在
+   <code>skills.container_path</code> 下的调用，在读取工具边界打 <code>skill_context_entry</code>
+   元数据，由 <code>DurableContextMiddleware</code> 捕获进 checkpoint 的 <code>skill_context</code>
+   通道——压缩后重注入 <code>name</code>/<code>path</code>/<code>description</code>/<code>loaded_at</code> 引用，<strong>不持久化
+   skill 正文</strong>，agent 需要时按引用重读。</li>
+</ol>
+<p>另外压缩会过滤 <code>HumanMessage(name="todo_reminder")</code> 快照（在触发检查之后、
+保留尾部选择之前）：它们不进入摘要生成也不进入保留消息，<code>state["todos"]</code>
+不变；只有压缩成功才提交删除，失败路径保持原状态。下一个 <code>TodoMiddleware.before_model</code>
+会从当前 todos 重建提醒（<code>backend/docs/summarization.md</code> §Todo reminders；
+消息名常量由 <code>todo_middleware.py::TODO_REMINDER_MESSAGE_NAME</code> 独占，值保持
+<code>todo_reminder</code> 以兼容前端隐藏过滤）。</p>
+<h3 id="1125">11.2.5 配置建议速查<a class="headerlink" href="#1125" title="Permanent link">&para;</a></h3>
+<p><code>backend/docs/summarization.md</code> §Best Practices 给出推荐区间：token 触发设模型
+上下文的 60–80%；<code>keep: messages</code> 推荐 15–25 条；<code>trim_tokens_to_summarize</code>
+限制单次摘要调用的输入预算（默认 4000，<code>null</code> = 单次不裁剪但不推荐）；摘要模型
+推荐轻量款（gpt-4o-mini 等）。多模型场景用 <code>fraction</code> 触发自动适配每个模型的容量。</p>
+<h2 id="113-post-apithreadsthread_idcompact">11.3 源码走读：手动压缩 POST /api/threads/{thread_id}/compact<a class="headerlink" href="#113-post-apithreadsthread_idcompact" title="Permanent link">&para;</a></h2>
+<p>端点在 <code>backend/app/gateway/routers/threads.py:1567</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">"/</span><span class="si">{thread_id}</span><span class="s2">/compact"</span><span class="p">,</span> <span class="n">response_model</span><span class="o">=</span><span class="n">ThreadCompactResponse</span><span class="p">)</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="nd">@require_permission</span><span class="p">(</span><span class="s2">"threads"</span><span class="p">,</span> <span class="s2">"write"</span><span class="p">,</span> <span class="n">owner_check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">require_existing</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">compact_thread</span><span class="p">(</span><span class="n">thread_id</span><span class="p">:</span> <span class="n">ThreadId</span><span class="p">,</span> <span class="n">body</span><span class="p">:</span> <span class="n">ThreadCompactRequest</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ThreadCompactResponse</span><span class="p">:</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">    </span><span class="sd">"""Manually summarize old thread context while preserving the visible history."""</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="c1"># Compaction writes only base-schema channels (messages + summary_text);</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>    <span class="c1"># every other channel — including middleware-contributed ones — is carried</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>    <span class="c1"># forward by checkpoint fork inheritance, so the base-schema mutation</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>    <span class="c1"># graph is sufficient (and avoids building the full lead graph per call).</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>    <span class="k">try</span><span class="p">:</span>
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>        <span class="n">accessor</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">build_checkpoint_state_mutation_accessor</span><span class="p">(</span>
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>            <span class="n">request</span><span class="p">,</span>
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>            <span class="n">thread_id</span><span class="o">=</span><span class="n">thread_id</span><span class="p">,</span>
+<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>            <span class="n">as_node</span><span class="o">=</span><span class="s2">"manual_compaction"</span><span class="p">,</span>
+<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>        <span class="p">)</span>
+<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>    <span class="k">except</span> <span class="n">_CHECKPOINT_MODE_ERRORS</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>        <span class="k">raise</span> <span class="n">_checkpoint_mode_http_error</span><span class="p">(</span><span class="n">exc</span><span class="p">,</span> <span class="n">thread_id</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a>    <span class="n">keep</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">keep</span><span class="o">.</span><span class="n">to_tuple</span><span class="p">()</span> <span class="k">if</span> <span class="n">body</span><span class="o">.</span><span class="n">keep</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>    <span class="k">try</span><span class="p">:</span>
+<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a>        <span class="k">async</span> <span class="k">with</span> <span class="n">reserve_checkpoint_write</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">thread_id</span><span class="p">,</span> <span class="n">user_id</span><span class="o">=</span><span class="n">get_effective_user_id</span><span class="p">()):</span>
+<a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>            <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">compact_thread_context</span><span class="p">(</span>
+<a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a>                <span class="n">accessor</span><span class="p">,</span>
+<a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a>                <span class="n">thread_id</span><span class="p">,</span>
+<a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a>                <span class="n">keep</span><span class="o">=</span><span class="n">keep</span><span class="p">,</span>
+<a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a>                <span class="n">force</span><span class="o">=</span><span class="n">body</span><span class="o">.</span><span class="n">force</span><span class="p">,</span>
+<a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a>                <span class="n">user_id</span><span class="o">=</span><span class="n">get_effective_user_id</span><span class="p">(),</span>
+<a id="__codelineno-5-26" name="__codelineno-5-26" href="#__codelineno-5-26"></a>                <span class="n">agent_name</span><span class="o">=</span><span class="n">body</span><span class="o">.</span><span class="n">agent_name</span><span class="p">,</span>
+<a id="__codelineno-5-27" name="__codelineno-5-27" href="#__codelineno-5-27"></a>                <span class="n">model_name</span><span class="o">=</span><span class="n">body</span><span class="o">.</span><span class="n">model_name</span><span class="p">,</span>
+<a id="__codelineno-5-28" name="__codelineno-5-28" href="#__codelineno-5-28"></a>            <span class="p">)</span>
+</code></pre></div>
+<p>逐条拆解：</p>
+<ul>
+<li><strong>请求体</strong>（<code>threads.py:600-607</code> 的 <code>ThreadCompactRequest</code>）：<code>force</code>（默认
+  True——未达自动阈值也强制压缩）、<code>keep</code>（仅本次压缩生效的保留策略覆盖）、
+  <code>model_name</code>（前端从 composer 当前模型带入，与普通 run 相同的解析优先级）、
+  <code>agent_name</code>；</li>
+<li><strong>只写基础通道</strong>：压缩只改 <code>messages</code> + <code>summary_text</code>，其余通道（包括
+  middleware 贡献的）靠 checkpoint fork 继承携带，因此不必为每次调用构建完整
+  lead graph（上面的代码注释）；</li>
+<li><strong>写边界</strong>：<code>reserve_checkpoint_write()</code>（<code>backend/app/gateway/services.py:142</code>）
+  组合进程内线程锁与持久 <code>checkpoint_write</code> 预留。<code>backend/app/gateway/AGENTS.md:224</code>
+  写明：手动压缩、<code>POST /threads/{id}/state</code> 与两条 goal 路由都走这个边界——
+  存量 run 会阻塞写入，预留会阻塞新的 reject/interrupt/rollback run，
+  且该短命 <code>checkpoint_write</code> 操作与 run 准入共享持久唯一约束，防住 worker
+  本地与跨 worker 的检查点写竞争；</li>
+<li><strong>错误映射</strong>：<code>ConflictError</code> → 409 "Thread has a run in flight. Compact after
+  the run finishes."；<code>ContextCompactionDisabled</code> → 409；<code>ContextCompactionFailed</code>
+  → 500；线程不存在 → 404；</li>
+<li><strong>复用同一中间件</strong>：<code>compact_thread_context</code>（<code>runtime/context_compaction.py:146</code>
+  实现，<code>ThreadCompactionResult</code> 定义在其第 64 行）内部走同一个
+  <code>DeerFlowSummarizationMiddleware</code> 压缩路径，因此摘要前钩子（记忆抢救）、
+  todo_reminder 过滤、分块/冷却/no-op 缓存全部生效。结果写入新 checkpoint
+  （更新 <code>messages</code> / <code>summary_text</code>），响应（<code>threads.py:1554</code>）返回
+  <code>compacted</code> / <code>reason</code> / <code>removed_message_count</code> / <code>preserved_message_count</code> /
+  <code>summary_updated</code> / <code>checkpoint_id</code> / <code>total_tokens</code>。</li>
+</ul>
+<p>白话版协议：前端"压缩上下文"按钮 → <code>POST /api/threads/{id}/compact</code> →
+拿一个与 run 互斥的写预留 → 复用自动摘要管线生成新摘要 → 写新 checkpoint →
+返回统计。可见聊天历史不变，被压缩的是发给模型的上下文。</p>
+<h2 id="114">11.4 防护体系：六层确定性中间件<a class="headerlink" href="#114" title="Permanent link">&para;</a></h2>
+<h3 id="1141-loop_detection">11.4.1 loop_detection：循环检测<a class="headerlink" href="#1141-loop_detection" title="Permanent link">&para;</a></h3>
+<p><code>backend/packages/harness/deerflow/agents/middlewares/loop_detection_middleware.py</code>
+的文件头把策略讲得很清楚：</p>
+<blockquote>
+<ol>
+<li>After each model response, hash the tool calls (name + args).</li>
+<li>Track recent hashes in a sliding window.</li>
+<li>If the same hash appears &gt;= warn_threshold times, queue a
+   "you are repeating yourself — wrap up" warning ... injected at the next
+   model call (in <code>wrap_model_call</code>) as a <code>HumanMessage</code> appended ... <em>after</em>
+   all ToolMessage responses.</li>
+<li>If it appears &gt;= hard_limit times, strip all tool_calls from the response
+   so the agent is forced to produce a final text answer.</li>
+</ol>
+</blockquote>
+<p>为什么警告在 <code>wrap_model_call</code> 注入而不是 <code>after_model</code>？文件头解释：<code>after_model</code>
+时工具节点尚未执行，插进来的消息会落在 <code>tool_calls</code> 与其 <code>ToolMessage</code> 之间，
+OpenAI/Moonshot 会以 <code>"tool_call_ids did not have response messages"</code> 拒绝下一个
+请求。推迟到下次请求前注入，配对完好。</p>
+<p><code>config.example.yaml:1505</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nt">loop_detection</span><span class="p">:</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">  </span><span class="nt">warn_threshold</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">  </span><span class="nt">hard_limit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">  </span><span class="nt">window_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">20</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">  </span><span class="c1"># Compatibility name: bounds retained (thread_id, run_id) histories, not whole threads.</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">  </span><span class="nt">max_tracked_threads</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">  </span><span class="nt">tool_freq_warn</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30</span>
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="w">  </span><span class="nt">tool_freq_hard_limit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">50</span>
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="w">  </span><span class="c1"># tool_freq_overrides:</span>
+<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="w">  </span><span class="c1">#   bash:</span>
+<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="w">  </span><span class="c1">#     warn: 150</span>
+<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="w">  </span><span class="c1">#     hard_limit: 300</span>
+</code></pre></div>
+<p>两层检测：哈希层（同工具同参数重复）与频率层（窗口内同类工具调用次数）。
+<code>tool_freq_overrides</code> 允许为高频工具（如批处理工作流里的 bash）单独放宽而不
+削弱其他工具的防护。状态按 <code>(thread_id, run_id)</code> 键控（<code>backend/docs/LOOP_DETECTION.md</code>
+§Run-scoped state）：编译图缓存复用时每个用户 run 拿到全新预算，而同一 Gateway
+run 的多次图进入（包括隐藏的 goal 续跑）共享一份预算。决策按严重度优先——硬限制
+可以直接终止扫描，警告候选不会短路同批次后续调用的频率计数。</p>
+<h3 id="1142-guardrails">11.4.2 guardrails：工具调用前的策略授权<a class="headerlink" href="#1142-guardrails" title="Permanent link">&para;</a></h3>
+<p><code>backend/docs/GUARDRAILS.md</code> 的定位论证：沙箱提供进程隔离但不是语义授权
+（沙箱里的 bash 依然能 <code>curl</code> 数据外传）；<code>ask_clarification</code> 人工审批不适合
+自主长任务；guardrails 填补"确定性、策略驱动的工具授权"空缺。核心组件
+<code>GuardrailMiddleware</code>（<code>backend/packages/harness/deerflow/guardrails/middleware.py:25</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">GuardrailMiddleware</span><span class="p">(</span><span class="n">AgentMiddleware</span><span class="p">[</span><span class="n">AgentState</span><span class="p">]):</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">    </span><span class="sd">"""Evaluate tool calls against a GuardrailProvider before execution.</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="sd">    Denied calls return an error ToolMessage so the agent can adapt.</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="sd">    If the provider raises, behavior depends on fail_closed:</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="sd">      - True (default): block the call</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="sd">      - False: allow it through with a warning</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="sd">    """</span>
+</code></pre></div>
+<p>每次工具调用构造 <code>GuardrailRequest</code>（<code>guardrails/provider.py:12</code>——含
+<code>tool_name</code>、<code>tool_input</code>、<code>user_id</code>、<code>user_role</code>、<code>thread_id</code>、<code>run_id</code>、
+<code>tool_call_id</code>、<code>is_subagent</code> 等归属字段，全部由 Gateway 从服务端认证状态填充，
+客户端提供的值无法覆盖），交给 provider 评估。拒绝返回
+<code>ToolMessage(status="error")</code>，agent 看到拒绝原因并自行调整策略。<code>GraphBubbleUp</code>
+（LangGraph 控制信号）永远直接传播，不会被吞。</p>
+<p>四种内置 provider（<code>backend/docs/GUARDRAILS.md</code> §Four Provider Options）：</p>
+<table>
+<thead>
+<tr>
+<th>Provider</th>
+<th>类路径</th>
+<th>特点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Allowlist（零依赖）</td>
+<td><code>deerflow.guardrails.builtin:AllowlistProvider</code></td>
+<td>按工具名黑/白名单，无网络无外部包</td>
+</tr>
+<tr>
+<td>OAP Passport</td>
+<td>如 <code>aport_guardrails.providers.generic:OAPGuardrailProvider</code></td>
+<td>Open Agent Passport 开放标准：JSON passport 声明 capabilities 与 limits（<code>allowed_commands</code>、<code>blocked_patterns</code>），<code>status</code> 即 kill switch</td>
+</tr>
+<tr>
+<td>Custom</td>
+<td>任何带 <code>evaluate</code>/<code>aevaluate</code> 的类</td>
+<td>结构化协议，无基类；可读 runtime 归属字段做角色策略，审计写文件须 <code>asyncio.to_thread</code> 卸载（CI 有 blocking-IO 门禁）</td>
+</tr>
+<tr>
+<td>TypeSafe (Jev)</td>
+<td><code>deerflow.guardrails.typesafe:TypeSafeGuardrailProvider</code></td>
+<td>发送工具名 + 完整参数 JSON 到 <code>POST /v1/systemone</code>，风险概率 ≥ <code>threshold</code> 拒绝；另有 <code>openai_decisions:OpenAIDecisionsGuardrailProvider</code> 走 <code>POST /v1/decisions</code> 同语义</td>
+</tr>
+</tbody>
+</table>
+<p>TypeSafe 是唯一把工具参数发往第三方的 provider，文档明确警示（§What is sent）：
+<strong>provider 不做脱敏，<code>pii_redaction_middleware</code> 不覆盖这条路径</strong>；参数超
+<code>max_state_chars</code>（字符数，非字节——CJK 一字三字节）本地拒绝（<code>typesafe.state_unusable</code>），
+绝不截断发送——"前缀可能藏着一半危险的 <code>write_file</code> 载荷"。<code>allowed_tools</code> 是
+硬权限名单而非评估豁免：名单外的工具在任何状态构建之前本地拒绝，名单内的工具
+仍要过风险门。本地拒绝同样是 guardrail 决策，<code>fail_closed: false</code> 也不能把它
+变成未评估就放行。还有一个覆盖面提醒（§Coverage）：拒绝不阻止操作本身——agent
+可以从未探查的工具、MCP 工具、子代理或 shell 包装重试同一效果，<code>tools: ["bash"]</code>
+只是冒烟测试范围而非生产建议。</p>
+<p><code>config.example.yaml:3305</code> 起是四种 provider 的注释模板；<code>guardrails.provider</code>
+是<strong>单槽</strong>设计——指向 TypeSafe 会整体替换 AllowlistProvider，allow 半边迁入
+<code>allowed_tools</code>，deny 规则迁入 <code>authorization.*</code>（RBAC）。</p>
+<h3 id="1143-pii_redaction-pii">11.4.3 pii_redaction：模型可见上下文中的 PII 脱敏<a class="headerlink" href="#1143-pii_redaction-pii" title="Permanent link">&para;</a></h3>
+<p><code>config.example.yaml:1538</code>（注释 1523-1537）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nt">pii_redaction</span><span class="p">:</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">  </span><span class="c1"># redact_email: true</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">  </span><span class="c1"># redact_api_key: true</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">  </span><span class="c1"># redact_credit_card: true</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">  </span><span class="c1"># redact_phone: true</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">  </span><span class="c1"># redact_national_id: true</span>
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="w">  </span><span class="c1"># token_secret: change-me-to-a-long-random-string</span>
+</code></pre></div>
+<p>覆盖对象：真实用户消息与远端内容工具结果（web_fetch / web_search / image_search /
+web_capture 与 MCP 工具）中的邮箱、电话、API key、信用卡（Luhn 校验）、身份证号。
+改写为<strong>键控、值派生的占位符</strong>（如 <code>[EMAIL_bdqkxw...]</code>）——HMAC 摘要以
+<code>token_secret</code> 为密钥（启用时必填、≥16 字符），离线不可反推，同一原始值在同一
+部署内总是渲染为同一 token。这个"值派生"性质是关键：身份在压缩前脱敏，压缩后
+依然渲染出相同 token，摘要与 <code>/goal</code> 评估输入也覆盖。原始文本保留在线程状态里
+供 UI 展示；入队的记忆抽取载荷同样脱敏（第 10 章的 <code>redact_queued_messages</code>）。</p>
+<h3 id="1144-read_before_write">11.4.4 read_before_write：先读后写门<a class="headerlink" href="#1144-read_before_write" title="Permanent link">&para;</a></h3>
+<p><code>config.example.yaml:1586</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nt">read_before_write</span><span class="p">:</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">  </span><span class="c1"># A blocked call never ran and must be re-issued after a re-read, so its</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">  </span><span class="c1"># payload (write_file content, str_replace old_str/new_str) is dead weight in</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">  </span><span class="c1"># every later model call. Replace it with a short placeholder in model-bound</span>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="w">  </span><span class="c1"># requests; stored history, receipts, and the run journal keep the original.</span>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="w">  </span><span class="nt">elide_blocked_payloads</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="w">  </span><span class="nt">elide_min_chars</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2000</span>
+</code></pre></div>
+<p>语义：<code>write_file</code>（对既有文件的 append/overwrite）与 <code>str_replace</code> 在 agent 未
+读过该文件当前版本时被阻止；任何写操作使之前的读失效，强制连续编辑之间重读——
+这是对长任务里"盲写重复追加"的确定性防线。<code>elide_blocked_payloads</code> 处理一个
+上下文工程细节：被阻止的调用从未执行，其载荷在之后每次模型调用里都是死重，
+所以模型可见请求里用短占位符替换（≥<code>elide_min_chars</code> 字符的字段才裁），而
+存储历史、回执与运行日志保留原始载荷。</p>
+<h3 id="1145-harness_guard">11.4.5 harness_guard：语法验证与错误模式治理<a class="headerlink" href="#1145-harness_guard" title="Permanent link">&para;</a></h3>
+<p><code>config.example.yaml:1604</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nt">harness_guard</span><span class="p">:</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">  </span><span class="nt">write_verify_syntax</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">  </span><span class="nt">block_on_syntax_error</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="w">  </span><span class="nt">targeted_hints_enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="w">  </span><span class="nt">max_repeated_error_signatures</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="w">  </span><span class="nt">detect_alternating_loops</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="w">  </span><span class="nt">max_loop_history</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">20</span>
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="w">  </span><span class="nt">max_tracked_scopes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span>
+</code></pre></div>
+<p>两个职责：<code>write_verify_syntax: true</code> 时在落盘前对 <code>str_replace</code> 拼接后的 <code>.py</code>
+（<code>ast.parse</code>）与 <code>.json</code>（<code>json.loads</code>）做语法验证；错误分类器识别
+ModuleNotFoundError / SyntaxError / FileNotFoundError 等工具错误输出，向工具结果
+注入针对性的补救提示。<code>max_repeated_error_signatures: 2</code> 限制同一错误签名重复
+出现次数，<code>detect_alternating_loops</code> 捕捉 A→B→A 交替循环。</p>
+<h3 id="1146-safety_finish_reason">11.4.6 safety_finish_reason：供应商安全中断<a class="headerlink" href="#1146-safety_finish_reason" title="Permanent link">&para;</a></h3>
+<p><code>config.example.yaml:1680</code>（注释 1666-1678）处理 issue #3028 记录的故障模式：
+provider 以安全原因停止生成（OpenAI <code>finish_reason='content_filter'</code>、Anthropic
+<code>stop_reason='refusal'</code>、Gemini <code>finish_reason='SAFETY'</code>）但消息里仍带 tool_calls
+——这些 tool_calls 通常是截断/不可靠的，<strong>绝不能执行</strong>。内置检测器按类路径反射
+加载，覆盖 OpenAI 兼容 content_filter、Anthropic refusal、Gemini SAFETY/BLOCKLIST/
+PROHIBITED_CONTENT/SPII/RECITATION；国产网关的非标准 finish_reason 用
+<code>detectors:</code> 列表扩展（示例里给了 <code>finish_reasons: ["content_filter",
+"sensitive", "risk_control"]</code> 的配置模板，<code>config.example.yaml:1688-1699</code>）。</p>
+<h3 id="1147">11.4.7 防护体系的共同哲学<a class="headerlink" href="#1147" title="Permanent link">&para;</a></h3>
+<p>把六层放在一起看，有两条一致的设计纪律：</p>
+<ol>
+<li><strong>失败方向明确</strong>：guardrail provider 异常默认 <code>fail_closed</code>（阻止）；
+   safety 检测宁可错杀 tool_calls（截断的调用不可靠）；loop 检测到硬限制直接
+   剥离 tool_calls 逼出最终文本。凡涉及"危险动作放行"的判断，都朝保守方向失败。</li>
+<li><strong>确定性优先</strong>：这六层没有一个依赖 LLM 判断——哈希、窗口计数、正则、HMAC、
+   <code>ast.parse</code>。LLM 参与的判断（TypeSafe 风险概率）是 opt-in 的网络门，且有自己的
+   本地预检兜底。确定性意味着可解释、可复放（guardrail 拒绝写入运行日志
+   <code>middleware:guardrail</code>，阈值比较可从记录重放）。</li>
+</ol>
+<h2 id="115-plan-modewrite_todos">11.5 Plan Mode：write_todos 与多步任务跟踪<a class="headerlink" href="#115-plan-modewrite_todos" title="Permanent link">&para;</a></h2>
+<p>Plan Mode 是运行时配置而非全局开关（<code>backend/docs/plan_mode_usage.md</code> §Configuration）：
+<code>config.configurable.is_plan_mode=True</code> 时 <code>build_middlewares()</code> 经
+<code>_create_todo_list_middleware(is_plan_mode)</code> 加入 TodoList 中间件，给 agent
+<code>write_todos</code> 工具。任务状态三值：<code>pending</code> / <code>in_progress</code> / <code>completed</code>。</p>
+<p>DeerFlow 在 LangChain <code>TodoListMiddleware</code> 上做了扩展——<code>TodoMiddleware</code>
+（<code>backend/packages/harness/deerflow/agents/middlewares/todo_middleware.py:124</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">TodoMiddleware</span><span class="p">(</span><span class="n">TodoListMiddleware</span><span class="p">):</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>    <span class="s2">"""Extends TodoListMiddleware with `write_todos` context-loss detection.</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="s2">    When the original `write_todos` tool call has been truncated from the message</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="s2">    ...</span>
+</code></pre></div>
+<p>解决的是长对话上下文丢失：原始 <code>write_todos</code> 调用与它的 ToolMessage 被滚动出
+（或被压缩掉）消息窗口后，中间件检测到"有 todos 但没有可见的 write_todos 调用"，
+重建一条提醒消息（前面 11.2.4 的 <code>todo_reminder</code> 过滤正是与它配对的压缩侧协议）。
+使用准则由自定义 prompt 表达：3 步以上复杂任务才用 todo 列表，单步任务与纯对话
+不用；始终恰好一个 <code>in_progress</code> 任务、实时更新。</p>
+<h2 id="_2">动手实验<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<h3 id="checkpoint">实验一：触发自动摘要并对比 checkpoint<a class="headerlink" href="#checkpoint" title="Permanent link">&para;</a></h3>
+<ol>
+<li><code>config.yaml</code> 的 <code>summarization</code> 段把阈值调低便于触发：</li>
+</ol>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nt">summarization</span><span class="p">:</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">  </span><span class="nt">trigger</span><span class="p">:</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tokens</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="w">      </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4000</span>
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="w">  </span><span class="nt">keep</span><span class="p">:</span>
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">messages</span>
+<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="w">    </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6</span>
+</code></pre></div>
+<ol>
+<li><code>make dev</code> 后在一个线程里连续发起多轮长回复对话（例如让 agent 反复读长文件），
+   观察 <code>logs/gateway.log</code> 中的摘要日志与 <code>middleware:summarize</code> 事件。</li>
+<li>触发后调用 <code>GET /api/threads/{thread_id}/state</code>，对比 <code>messages</code>（应只剩
+   <code>keep</code> 数量的近期消息）与 <code>values</code> 里的 <code>summary_text</code> 字段。</li>
+<li>再调 <code>POST /api/threads/{thread_id}/compact</code> 手动压缩一次（<code>force: true</code>），
+   检查响应里的 <code>removed_message_count</code> / <code>summary_updated</code> / <code>checkpoint_id</code>。</li>
+<li>（进阶）在同一会话里先说一条稳定偏好，等摘要触发后再开新线程验证记忆仍在——
+   这验证了 11.2.3 的"摘要前抢救钩子"：被摘要掉的消息已进记忆队列。</li>
+</ol>
+<h3 id="guardrail">实验二：接一个零依赖 guardrail<a class="headerlink" href="#guardrail" title="Permanent link">&para;</a></h3>
+<ol>
+<li>在 <code>config.yaml</code> 加入（<code>config.example.yaml:3305</code> 的取消注释版）：</li>
+</ol>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nt">guardrails</span><span class="p">:</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">  </span><span class="nt">provider</span><span class="p">:</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">    </span><span class="nt">use</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">deerflow.guardrails.builtin:AllowlistProvider</span>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="w">    </span><span class="nt">config</span><span class="p">:</span>
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="w">      </span><span class="nt">denied_tools</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">"bash"</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">"write_file"</span><span class="p p-Indicator">]</span>
+</code></pre></div>
+<ol>
+<li>重启 Gateway，让 agent "用 bash 执行 echo hello"——agent 收到的应是
+   <code>Guardrail denied: tool 'bash' was blocked (oap.tool_not_allowed)</code> 类错误
+   ToolMessage，且它会自行改道（比如改用别的工具）。</li>
+<li>把日志里的 <code>middleware:guardrail</code> 事件找出来，核对拒绝原因与策略标识。</li>
+<li>恢复配置并重启。</li>
+</ol>
+<h2 id="_3">常见坑<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>fraction 触发静默失效</strong>——<code>type: fraction</code> 需要模型在 <code>models:</code> 段声明
+   <code>context_window</code>；第三方 OpenAI 兼容模型没有内置容量档案，未声明时 fraction
+   子句在 agent 构建时带警告丢弃，只留下绝对阈值。若你的触发只配了 fraction，
+   摘要会永远不触发。<code>keep: fraction</code> 同理。</li>
+<li><strong>手动压缩报 409 "Thread has a run in flight"</strong>——run 进行中检查点被锁定。
+   等 run 结束再压缩；这是 <code>reserve_checkpoint_write()</code> 边界的预期行为，不是 bug。</li>
+<li><strong>摘要模型供应商挂了导致压缩"消失"</strong>——<code>model_name</code> 指定的供应商故障时压缩
+   回退到 run 自己的模型；但如果你把 <code>model_name</code> 设成了一个没配 key 的模型且
+   回退也失败，块级失败会保留原历史并进入 5 分钟冷却。看日志里的
+   <code>SummaryGenerationError</code>（手动路径）或冷却警告（含剩余延迟）。</li>
+<li><strong>开了 pii_redaction 却没配 token_secret</strong>——配置校验直接失败：无密钥的
+   HMAC 是公开可计算的全局可链接指纹（电话号码甚至可猜测），所以"启用但无密钥"
+   被拒绝而不是降级。</li>
+<li><strong>guardrail 换 provider 后旧的 denied_tools 失效</strong>——<code>guardrails.provider</code>
+   是单槽：指向 TypeSafe 就替换了 AllowlistProvider，deny 规则必须迁到
+   <code>authorization.*</code> 的 RBAC，allow 半边迁入 TypeSafe 的 <code>allowed_tools</code>。
+   迁移期间保持旧 provider 启用并逐项验证（GUARDRAILS.md §Replacing the built-in
+   AllowlistProvider）。</li>
+<li><strong>循环检测误伤合法批量工具调用</strong>——批处理工作流（如 RNA-seq 流水线）里 bash
+   天然高频。用 <code>tool_freq_overrides</code> 单独为该工具提高阈值，而不是整体调高全局
+   阈值削弱其他工具的防护（<code>config.example.yaml:1514-1522</code>）。</li>
+</ol>
+<h2 id="_4">下一步<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<p>上下文治理保证"单次会话"既省钱又安全。但生产自动化还要求"没人盯着也能跑"：
+定时唤醒、非交互约束、多实例租约，以及把同一个 agent 接进飞书/Slack/Telegram。
+下一章 <a href="../12-scheduled-tasks-and-im/">第 12 章 定时任务与 IM 渠道</a>
+拆解 scheduler 的队列租约模型与 <code>app/channels/</code> 的渠道实现。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      教程基于开源项目 <a href='https://github.com/bytedance/deer-flow'>bytedance/deer-flow</a> 的真实源码编写
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.sections", "navigation.expand", "navigation.top", "navigation.indexes", "search.suggest", "search.highlight", "content.code.copy", "toc.follow"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.a5f9d56c.min.js"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

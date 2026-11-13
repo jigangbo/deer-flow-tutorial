@@ -1,0 +1,2520 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="基于 DeerFlow 真实源码的中文系统教程：21 章 + 附录，覆盖环境配置、核心组件拆解、二次开发与 MCP 集成">
+      
+      
+      
+        <link rel="canonical" href="https://jigangbo.github.io/deer-flow-tutorial/12-scheduled-tasks-and-im/">
+      
+      
+        <link rel="prev" href="../11-context-engineering/">
+      
+      
+        <link rel="next" href="../13-gateway-api/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
+    
+    
+      
+        <title>第 12 章 定时任务与 IM 渠道 - DeerFlow 从入门到精通 · 源码教程</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#12-im" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href=".." title="DeerFlow 从入门到精通 · 源码教程" class="md-header__button md-logo" aria-label="DeerFlow 从入门到精通 · 源码教程" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            DeerFlow 从入门到精通 · 源码教程
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              第 12 章 定时任务与 IM 渠道
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jigangbo/deer-flow-tutorial" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="DeerFlow 从入门到精通 · 源码教程" class="md-nav__button md-logo" aria-label="DeerFlow 从入门到精通 · 源码教程" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    DeerFlow 从入门到精通 · 源码教程
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jigangbo/deer-flow-tutorial" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    导读
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    导读
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 0 章 全景鸟瞰
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第一篇 入门篇
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第一篇 入门篇
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-environment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 1 章 准备环境（Environment Setup）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 2 章 一键启动（Quick Start）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 3 章 配置系统入门
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-frontend-tour/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 4 章 前端界面与基本功能导览
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-run-modes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 5 章 更多运行方式
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第二篇 进阶篇
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第二篇 进阶篇
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-request-lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 6 章 一次请求的一生：Agent 运行时全链路
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-tools-and-skills/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 7 章 工具系统与 Skills
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-sandbox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 8 章 沙箱与代码执行
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-multi-agent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 9 章 Multi-Agent 路由与子代理委派
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10-memory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 10 章 记忆系统（Memory / DeerMem）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../11-context-engineering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 11 章 上下文工程与长对话治理
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 12 章 定时任务与 IM 渠道
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 12 章 定时任务与 IM 渠道
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        本章源码锚点
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#120" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.0 学习目标
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#121-mvp-owner-bound" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.1 定时任务 MVP：两级开关与 owner-bound 能力
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="12.1 定时任务 MVP：两级开关与 owner-bound 能力">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1211" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.1.1 配置总闸
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1212-schedule_type-cron-dst" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.1.2 三种 schedule_type 与 cron 的 DST 语义
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1213" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.1.3 停止规则：存储与注入分离
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#122-occurrence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.2 源码走读：occurrence 生命周期与队列
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="12.2 源码走读：occurrence 生命周期与队列">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1221-scheduledtaskrunstatus" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.2.1 状态机：ScheduledTaskRunStatus
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1222-uq_scheduled_task_run_active" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.2.2 单活跃约束：uq_scheduled_task_run_active
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1223" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.2.3 轮询主循环：认领、预算与队列超时
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1224" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.2.4 重启与多实例恢复
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#123-run-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.3 非交互约束与 run-context 信任边界
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#124-im" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.4 IM 渠道：一条消息的完整旅程
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="12.4 IM 渠道：一条消息的完整旅程">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1241-appchannelsagentsmd-message-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.4.1 消息流（app/channels/AGENTS.md §Message Flow）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1242" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.4.2 五大渠道实现文件
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1243" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.4.3 飞书选项澄清卡片
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1244" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.4.4 凭证暂存目录清理
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        动手实验
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="动手实验">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        实验 A：创建并观察一个定时任务
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bslack" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        实验 B：从飞书/Slack 触发一次对话
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        常见坑
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        下一步
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../13-gateway-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 13 章 Gateway API 与编程接入
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第三篇 精通篇
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第三篇 精通篇
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../14-architecture-layers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 14 章 架构分层与开发规范（二次开发前必读）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../15-mcp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 15 章 MCP 集成（重点）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../16-extensions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 16 章 扩展（Extensions）开发
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../17-business-cases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 17 章 业务二次开发实战（综合案例）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../18-frontend-dev/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 18 章 前端二次开发
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../19-testing-quality/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 19 章 可观测性、测试与质量保障
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../20-production/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 20 章 生产部署与运维
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    附录
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    附录
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../appendices/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    附录
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        本章源码锚点
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#120" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.0 学习目标
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#121-mvp-owner-bound" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.1 定时任务 MVP：两级开关与 owner-bound 能力
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="12.1 定时任务 MVP：两级开关与 owner-bound 能力">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1211" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.1.1 配置总闸
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1212-schedule_type-cron-dst" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.1.2 三种 schedule_type 与 cron 的 DST 语义
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1213" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.1.3 停止规则：存储与注入分离
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#122-occurrence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.2 源码走读：occurrence 生命周期与队列
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="12.2 源码走读：occurrence 生命周期与队列">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1221-scheduledtaskrunstatus" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.2.1 状态机：ScheduledTaskRunStatus
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1222-uq_scheduled_task_run_active" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.2.2 单活跃约束：uq_scheduled_task_run_active
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1223" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.2.3 轮询主循环：认领、预算与队列超时
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1224" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.2.4 重启与多实例恢复
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#123-run-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.3 非交互约束与 run-context 信任边界
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#124-im" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.4 IM 渠道：一条消息的完整旅程
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="12.4 IM 渠道：一条消息的完整旅程">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1241-appchannelsagentsmd-message-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.4.1 消息流（app/channels/AGENTS.md §Message Flow）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1242" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.4.2 五大渠道实现文件
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1243" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.4.3 飞书选项澄清卡片
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1244" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.4.4 凭证暂存目录清理
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        动手实验
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="动手实验">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        实验 A：创建并观察一个定时任务
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bslack" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        实验 B：从飞书/Slack 触发一次对话
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        常见坑
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        下一步
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="12-im">第 12 章 定时任务与 IM 渠道<a class="headerlink" href="#12-im" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>前两章解决的是"会话内"的治理。本章进入生产自动化：让 DeerFlow 在没有人在场的
+时刻自己醒来干活（scheduler），并把同一个 agent 通过 IM 渠道（飞书/Slack/Telegram/
+Discord/钉钉/QQ/WeCom/微信/Buzz/GitHub）接进团队日常。两者的共同底座是同一个
+Gateway run 生命周期——<strong>scheduler 决定"何时"，不改变"如何"</strong>。</p>
+</blockquote>
+<h2 id="_1">本章源码锚点<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>主题</th>
+<th>锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>调度计算（cron/once/interval）</td>
+<td><code>backend/packages/harness/deerflow/scheduler/schedules.py:60</code></td>
+</tr>
+<tr>
+<td>停止规则与启动 prompt 组装</td>
+<td><code>backend/packages/harness/deerflow/scheduler/stop_rule.py:30</code></td>
+</tr>
+<tr>
+<td>能力准入开关</td>
+<td><code>backend/packages/harness/deerflow/scheduler/runtime.py:21</code></td>
+</tr>
+<tr>
+<td>调度服务主循环</td>
+<td><code>backend/app/scheduler/service.py:207</code>（类）、<code>service.py:446</code>（run_once）、<code>service.py:1244</code>（start）</td>
+</tr>
+<tr>
+<td>计划 run 启动入口</td>
+<td><code>backend/app/gateway/services.py:2876</code></td>
+</tr>
+<tr>
+<td>运行状态枚举</td>
+<td><code>backend/packages/harness/deerflow/persistence/scheduled_tasks/model.py:56</code></td>
+</tr>
+<tr>
+<td>单活跃约束迁移</td>
+<td><code>backend/packages/harness/deerflow/persistence/migrations/versions/0007_scheduled_run_active_index.py:28</code></td>
+</tr>
+<tr>
+<td>生命周期规则汇总</td>
+<td><code>backend/packages/harness/deerflow/persistence/AGENTS.md:44</code>（Scheduled-task Lifecycle）</td>
+</tr>
+<tr>
+<td>定时任务 REST 路由</td>
+<td><code>backend/app/gateway/routers/scheduled_tasks.py:234</code></td>
+</tr>
+<tr>
+<td>交互策略</td>
+<td><code>backend/docs/RUN_INTERACTION_POLICY.md</code></td>
+</tr>
+<tr>
+<td>IM 渠道总纲</td>
+<td><code>backend/app/channels/AGENTS.md</code></td>
+</tr>
+<tr>
+<td>渠道实现</td>
+<td><code>backend/app/channels/feishu.py:153</code>、<code>slack.py:112</code>、<code>telegram.py:129</code>、<code>discord.py:110</code>、<code>dingtalk.py:183</code></td>
+</tr>
+<tr>
+<td>选项澄清卡片</td>
+<td><code>backend/app/channels/feishu_card_interaction.py</code></td>
+</tr>
+<tr>
+<td>凭证暂存清理</td>
+<td><code>backend/app/channels/credential_staging.py:23</code></td>
+</tr>
+<tr>
+<td>config.yaml scheduler 段</td>
+<td><code>config.example.yaml:2895</code></td>
+</tr>
+<tr>
+<td>config.yaml channels 段</td>
+<td><code>config.example.yaml:3138</code>（feishu）</td>
+</tr>
+</tbody>
+</table>
+<h2 id="120">12.0 学习目标<a class="headerlink" href="#120" title="Permanent link">&para;</a></h2>
+<p>读完本章，你应该能够：</p>
+<ol>
+<li>解释 <code>scheduler.enabled</code> 与 <code>scheduler.tool_enabled</code> 的两级开关语义，以及
+   owner-bound 能力准入（<code>SchedulerRunCapability</code>）如何限制"谁能建计划、计划能停谁"；</li>
+<li>走读 <code>ScheduledTaskRunStatus</code> 的八种状态与 <code>uq_scheduled_task_run_active</code>
+   唯一约束，说明队列如何在重启后存活、租约如何防两个实例重复派发；</li>
+<li>描述计划轮的非交互约束：<code>ask_clarification</code> 被排除、<code>non_interactive</code> 等键
+   只对内部认证调用方生效（run-context 信任边界）；</li>
+<li>了解 <code>scheduler.multi_instance=true</code> 的三个前置条件与恢复语义；</li>
+<li>画出一条 IM 消息从平台 WebSocket 到 Gateway run 再回到平台的完整链路。</li>
+</ol>
+<h2 id="121-mvp-owner-bound">12.1 定时任务 MVP：两级开关与 owner-bound 能力<a class="headerlink" href="#121-mvp-owner-bound" title="Permanent link">&para;</a></h2>
+<h3 id="1211">12.1.1 配置总闸<a class="headerlink" href="#1211" title="Permanent link">&para;</a></h3>
+<p><code>config.example.yaml:2895</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">scheduler</span><span class="p">:</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span><span class="nt">tool_enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w">          </span><span class="c1"># Offer schedule tools to authorized Gateway conversations</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">  </span><span class="nt">multi_instance</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w">       </span><span class="c1"># Opt into lease-aware recovery across Gateway instances</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">  </span><span class="nt">poll_interval_seconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">  </span><span class="nt">lease_seconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">120</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">  </span><span class="nt">max_concurrent_runs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">  </span><span class="nt">max_concurrent_runs_per_user</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">  </span><span class="nt">queue_timeout_seconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3600</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">  </span><span class="nt">min_once_delay_seconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">60</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">  </span><span class="nt">recursion_limit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span>
+</code></pre></div>
+<p><code>enabled</code> 打开后台调度器（lifespan 启动 <code>ScheduledTaskService</code>）；<code>tool_enabled</code>
+只决定<strong>是否给对话注入 schedule 工具</strong>。<code>backend/packages/harness/deerflow/scheduler/runtime.py:21</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">scheduler_tools_enabled</span><span class="p">(</span><span class="n">app_config</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="sd">"""Require both operator switches, including for already assembled tools."""</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="n">scheduler</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">app_config</span><span class="p">,</span> <span class="s2">"scheduler"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">scheduler</span><span class="p">,</span> <span class="s2">"enabled"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">scheduler</span><span class="p">,</span> <span class="s2">"tool_enabled"</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+</code></pre></div>
+<p>两个开关必须同时打开才提供工具——这就是根 <code>AGENTS.md</code> Scheduled-task note 里
+"scheduler.tool_enabled（默认 off）通过 Gateway 能力准入提供 owner-bound 的
+schedule 工具"的实现。能力通过 <code>SchedulerRunCapability</code> 协议
+（<code>scheduler/runtime.py:10</code>）下发，带 <code>mode: "interactive" | "scheduled"</code>：
+<strong>交互轮</strong>创建/管理自己的计划；<strong>计划轮</strong>（scheduled 模式）只能调用
+<code>stop_current_schedule()</code> 停止"自己这一条"计划——每次调度轮只允许停自己的
+schedule，不能操作别人的，也不能结束循环计划（每轮目标达成不终止 recurring 计划，
+见根 <code>AGENTS.md</code>）。</p>
+<p>工作区页面是 <code>/workspace/scheduled-tasks</code>，REST 端点在
+<code>backend/app/gateway/routers/scheduled_tasks.py</code>：<code>POST /scheduled-tasks</code>（创建）、
+<code>PATCH /scheduled-tasks/{task_id}</code>、<code>pause</code> / <code>resume</code> / <code>trigger</code> / <code>DELETE</code>、
+<code>GET /scheduled-tasks/{task_id}/runs</code>（运行历史）等；另有咨询型端点
+<code>POST /scheduled-tasks/preview-cron</code>（第 234 行）——它要求 <code>threads:read</code> 权限，
+在有界线程里调用共享调度计算器保留 DST 语义，返回 UTC 与本地时间偏移的将来触发点，
+<strong>不做任何预约</strong>（backend <code>AGENTS.md</code> Runtime 段）。</p>
+<h3 id="1212-schedule_type-cron-dst">12.1.2 三种 schedule_type 与 cron 的 DST 语义<a class="headerlink" href="#1212-schedule_type-cron-dst" title="Permanent link">&para;</a></h3>
+<p><code>backend/packages/harness/deerflow/scheduler/schedules.py:60</code> 的 <code>next_run_at()</code>
+支持三种类型：<code>once</code>（一次性 <code>run_at</code>）、<code>cron</code>（5 字段 croniter 表达式）、
+<code>interval</code>（<code>every_seconds</code>）。所有时间统一归一到 UTC 存储——注释解释了原因
+（<code>schedules.py:80-83</code>）：SQLite 的时间列丢弃时区，非 UTC 偏移会让实际触发时间
+整体偏移。cron 分支最有意思的是夏令时处理（<code>schedules.py:95-103</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>        <span class="c1"># During a daylight-saving fall-back (e.g. 03:00 -&gt; 02:00), an ambiguous</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>        <span class="c1"># wall-clock hour repeats twice. croniter returns both occurrences (the</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>        <span class="c1"># first with fold=0, the second with fold=1). For fixed-time tasks</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>        <span class="c1"># (where neither minute nor hour contains '*'), running twice on the</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>        <span class="c1"># same calendar day violates the cron contract (Vixie cron / POSIX</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>        <span class="c1"># behavior). Skip the second occurrence (fold=1) to preserve once-per-day</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>        <span class="c1"># semantics while letting wildcard schedules (e.g. '0 * * * *') fire each hour.</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>        <span class="k">if</span> <span class="n">next_local</span><span class="o">.</span><span class="n">fold</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">_is_fixed_time_cron</span><span class="p">(</span><span class="n">cron_expr</span><span class="p">)</span> <span class="ow">and</span> <span class="n">_is_ambiguous_datetime</span><span class="p">(</span><span class="n">next_local</span><span class="p">):</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>            <span class="n">next_local</span> <span class="o">=</span> <span class="n">it</span><span class="o">.</span><span class="n">get_next</span><span class="p">(</span><span class="n">datetime</span><span class="p">)</span>
+</code></pre></div>
+<p>固定时刻的 cron（如 <code>0 9 * * *</code>）在夏令时回拨日跳过第二次出现（fold=1），
+保持"每天一次"的 POSIX cron 契约；通配表达式（如 <code>0 * * * *</code>）则每小时照常触发。
+<code>_is_fixed_time_cron</code>（<code>schedules.py:43</code>）通过检查 minute/hour 字段是否含
+<code>*</code>/<code>/</code>/<code>-</code>/<code>,</code> 判断是否为固定时刻。</p>
+<p><code>should_advance_schedule_cursor</code>（<code>schedules.py:11</code>）规定：手动 trial 永远不推进
+recurring 计划的游标（<code>persistence/AGENTS.md:46</code>：手动 interval/cron 试运行从不
+推进 <code>next_run_at</code>，即使已逾期；但 trial 会占用单活跃槽位，trial 结束后逾期的
+正式 occurrence 仍可被认领并补跑一次 catch-up）。</p>
+<h3 id="1213">12.1.3 停止规则：存储与注入分离<a class="headerlink" href="#1213" title="Permanent link">&para;</a></h3>
+<p><code>backend/packages/harness/deerflow/scheduler/stop_rule.py</code> 管理"停止条件"：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">STOP_RULE_PREFIX</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"Stop rule from the user: when this is true, report it and call stop_scheduled_task to pause this schedule: "</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">STOP_RULE_NO_TOOL_PREFIX</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"Stop rule from the user (this run cannot pause the schedule; if it is true, say so clearly so the user can pause it): "</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">MAX_STOP_CONDITION_CHARS</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">500</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="k">def</span><span class="w"> </span><span class="nf">launch_prompt</span><span class="p">(</span><span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">stop_condition</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">can_stop</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="sd">"""Compose the launched message: the stored prompt plus the stop rule."""</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">stop_condition</span><span class="p">:</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>        <span class="k">return</span> <span class="n">prompt</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>    <span class="n">prefix</span> <span class="o">=</span> <span class="n">STOP_RULE_PREFIX</span> <span class="k">if</span> <span class="n">can_stop</span> <span class="k">else</span> <span class="n">STOP_RULE_NO_TOOL_PREFIX</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>    <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">prompt</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span><span class="si">}</span><span class="se">\n\n</span><span class="si">{</span><span class="n">prefix</span><span class="si">}{</span><span class="n">stop_condition</span><span class="si">}</span><span class="s2">"</span>
+</code></pre></div>
+<p>设计原则写在文件头：停止条件存在 <code>scheduled_tasks.stop_condition</code> 自己的列里，
+<strong>绝不写进 prompt 存储</strong>；只有启动那一刻才由 <code>launch_prompt()</code> 拼成模型可见段落。
+<code>can_stop</code> 取决于这次 run 是否拿到了 <code>stop_scheduled_task</code> 工具（读 live 配置，
+<code>service.py:257</code> 的 <code>_can_stop_itself</code>）——拿不到工具时措辞换成"无法暂停，但请
+明确说出条件已满足"，配置重载永远不会让 run 调用一个它没有的工具。</p>
+<h2 id="122-occurrence">12.2 源码走读：occurrence 生命周期与队列<a class="headerlink" href="#122-occurrence" title="Permanent link">&para;</a></h2>
+<h3 id="1221-scheduledtaskrunstatus">12.2.1 状态机：ScheduledTaskRunStatus<a class="headerlink" href="#1221-scheduledtaskrunstatus" title="Permanent link">&para;</a></h3>
+<p><code>backend/packages/harness/deerflow/persistence/scheduled_tasks/model.py:56</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">ScheduledTaskRunStatus</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span><span class="sd">"""Canonical status vocabulary for scheduled-task occurrences."""</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="n">QUEUED</span> <span class="o">=</span> <span class="s2">"queued"</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    <span class="n">LAUNCHING</span> <span class="o">=</span> <span class="s2">"launching"</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>    <span class="n">RUNNING</span> <span class="o">=</span> <span class="s2">"running"</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>    <span class="n">SUCCESS</span> <span class="o">=</span> <span class="s2">"success"</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>    <span class="n">UNMET</span> <span class="o">=</span> <span class="s2">"unmet"</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>    <span class="n">FAILED</span> <span class="o">=</span> <span class="s2">"failed"</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>    <span class="n">SKIPPED</span> <span class="o">=</span> <span class="s2">"skipped"</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>    <span class="n">INTERRUPTED</span> <span class="o">=</span> <span class="s2">"interrupted"</span>
+</code></pre></div>
+<p>三个<strong>活跃</strong>状态（<code>queued/launching/running</code>）与五个<strong>终态</strong>
+（<code>success/unmet/failed/skipped/interrupted</code>）分别由 <code>ACTIVE_RUN_STATUSES</code>
+（<code>model.py:81</code>）与 <code>TERMINAL_RUN_STATUSES</code>（<code>model.py:72</code>）两个 frozenset 固定，
+是 API 与仓储共享的词汇表（backend <code>AGENTS.md</code> 明确要求它们与 API 的 occurrence
+状态集合一致，改动两处必须同步）。<code>unmet</code> 是个容易忽略的语义：run 正常完成但
+<strong>停止条件/目标判定未达成</strong>——它算终态但不算失败。父任务状态则是另一组词汇
+（<code>model.py:92-93</code>）：<code>TERMINAL_TASK_STATUSES = {"completed", "failed", "cancelled"}</code>、
+<code>LIVE_TASK_STATUSES = {"enabled", "running", "paused"}</code>。</p>
+<h3 id="1222-uq_scheduled_task_run_active">12.2.2 单活跃约束：uq_scheduled_task_run_active<a class="headerlink" href="#1222-uq_scheduled_task_run_active" title="Permanent link">&para;</a></h3>
+<p>每次 occurrence 启动要经过两步：先把到期的 occurrence 写成 <code>queued</code>（持久排队），
+再由执行预算认领。关键不变量是<strong>每个 task 同时最多一个活跃 occurrence</strong>，由
+部分唯一索引 <code>uq_scheduled_task_run_active</code> 强制（migration
+<code>0007_scheduled_run_active_index.py:28</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>    <span class="s2">"""Supersede duplicate active rows so the partial unique index can be built.</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="s2">    ``uq_scheduled_task_run_active`` enforces at most one queued/running row per</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="s2">    ``task_id``. A DB that already has two+ active rows for the same task (the</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="s2">    exact TOCTOU this PR closes: two concurrent ``dispatch_task`` calls both</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="s2">    passed ``has_active_runs`` and both inserted a "queued" row) would fail</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="s2">    ``CREATE UNIQUE INDEX`` and abort the alembic upgrade, blocking gateway</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="s2">    startup. ...</span>
+</code></pre></div>
+<p>这个约束同时是几件事的根基（backend <code>AGENTS.md</code> Scheduled-task dispatch 段）：</p>
+<ul>
+<li><strong>队列在重启后存活</strong>——<code>queued</code> 行是持久行，重启不会丢；</li>
+<li><strong>只有租约围栏内的 <code>launching</code> 才调用 Gateway</strong>——<code>running</code> 引用持久 run；</li>
+<li><strong>稳定的准入键</strong>（<code>scheduled-task:{scheduled_task_run_id}</code> 幂等键，见下文）
+  在恢复后可以复用。</li>
+</ul>
+<p><code>backend/app/gateway/services.py:2876</code> 的 <code>launch_scheduled_thread_run()</code> 是
+"队列 → 真实 run"的唯一桥梁：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>    <span class="n">body</span> <span class="o">=</span> <span class="n">RunCreateRequest</span><span class="p">(</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>        <span class="n">assistant_id</span><span class="o">=</span><span class="n">assistant_id</span><span class="p">,</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>        <span class="nb">input</span><span class="o">=</span><span class="n">graph_input</span><span class="p">,</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>        <span class="n">command</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>        <span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span> <span class="ow">or</span> <span class="p">{},</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>        <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">"recursion_limit"</span><span class="p">:</span> <span class="n">_resolve_scheduler_recursion_limit</span><span class="p">()},</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>        <span class="o">...</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>        <span class="c1"># ``user_id`` mirrors what IM channels put in ``body.context`` so</span>
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>        <span class="c1"># runtime-context consumers without a ContextVar fallback (e.g.</span>
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>        <span class="c1"># user-scoped GuardrailMiddleware providers) see the owning user;</span>
+<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>        <span class="c1"># ``inject_authenticated_user_context`` skips the internal user.</span>
+<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>        <span class="n">context</span><span class="o">=</span><span class="p">({</span><span class="s2">"non_interactive"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">"user_id"</span><span class="p">:</span> <span class="n">owner_user_id</span><span class="p">}</span> <span class="k">if</span> <span class="n">owner_user_id</span> <span class="k">else</span> <span class="p">{</span><span class="s2">"non_interactive"</span><span class="p">:</span> <span class="kc">True</span><span class="p">}),</span>
+<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>        <span class="o">...</span>
+<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a>        <span class="n">multitask_strategy</span><span class="o">=</span><span class="s2">"reject"</span><span class="p">,</span>
+<a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>        <span class="o">...</span>
+<a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a>    <span class="p">)</span>
+<a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a>    <span class="o">...</span>
+<a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a>    <span class="k">with</span> <span class="n">ensure_trace_context</span><span class="p">():</span>
+<a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a>        <span class="n">record</span> <span class="o">=</span> <span class="k">await</span> <span class="n">start_run</span><span class="p">(</span>
+<a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a>            <span class="n">body</span><span class="p">,</span>
+<a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a>            <span class="n">thread_id</span><span class="p">,</span>
+<a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a>            <span class="n">request</span><span class="p">,</span>
+<a id="__codelineno-6-23" name="__codelineno-6-23" href="#__codelineno-6-23"></a>            <span class="n">idempotency_key</span><span class="o">=</span><span class="sa">f</span><span class="s2">"scheduled-task:</span><span class="si">{</span><span class="n">scheduled_task_run_id</span><span class="si">}</span><span class="s2">"</span> <span class="k">if</span> <span class="o">...</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-6-24" name="__codelineno-6-24" href="#__codelineno-6-24"></a>            <span class="n">evidence_origin</span><span class="o">=</span><span class="s2">"scheduled"</span><span class="p">,</span>
+<a id="__codelineno-6-25" name="__codelineno-6-25" href="#__codelineno-6-25"></a>            <span class="n">scheduled_task_runtime</span><span class="o">=</span><span class="n">scheduled_task_runtime</span><span class="p">,</span>
+<a id="__codelineno-6-26" name="__codelineno-6-26" href="#__codelineno-6-26"></a>        <span class="p">)</span>
+</code></pre></div>
+<p>注意它<strong>不走任何特殊路径</strong>：构造的就是标准 <code>RunCreateRequest</code>，交给与 HTTP
+run 相同的 <code>start_run()</code>。计划消息有稳定 ID（<code>scheduled-{run_id}</code>），重试启动与
+重连水合看到同一条消息；<code>recursion_limit</code> 默认 1000（与 Web UI 一致），dispatch
+时从 <code>get_app_config()</code> 读取并被 <code>max_recursion_limit</code> 钳制
+（<code>services.py:1334</code> 的 <code>_resolve_scheduler_recursion_limit</code>），YAML 改动下一次
+run 生效、无需重启。<code>multitask_strategy="reject"</code> 保证同线程已有 run 在飞时
+ConflictError → 该 occurrence 重新排队（backend <code>AGENTS.md</code>：Reused-thread
+ConflictError requeues；其他启动错误失败）。</p>
+<h3 id="1223">12.2.3 轮询主循环：认领、预算与队列超时<a class="headerlink" href="#1223" title="Permanent link">&para;</a></h3>
+<p><code>backend/app/scheduler/service.py:446</code> 的 <code>run_once()</code> 是每 5 秒（<code>poll_interval_seconds</code>）
+执行一次的心跳：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">run_once</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">now</span><span class="p">:</span> <span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_multi_instance</span><span class="p">:</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>            <span class="o">...</span>  <span class="c1"># 租约对账</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>        <span class="k">else</span><span class="p">:</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_task_run_repo</span><span class="o">.</span><span class="n">recover_expired_launch_claims</span><span class="p">(</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>                <span class="n">error</span><span class="o">=</span><span class="n">_LEASE_RECOVERY_ERROR</span><span class="p">,</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>                <span class="n">now</span><span class="o">=</span><span class="n">now</span><span class="p">,</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>            <span class="p">)</span>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>            <span class="o">...</span>
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expire_waiting_runs</span><span class="p">(</span><span class="n">now</span><span class="o">=</span><span class="n">now</span><span class="p">)</span>
+<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_drain_queue</span><span class="p">(</span><span class="n">now</span><span class="o">=</span><span class="n">now</span><span class="p">)</span>
+<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>        <span class="c1"># Admission and execution capacity are separate. Due occurrences are</span>
+<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a>        <span class="c1"># persisted even when all execution slots are busy; claim_queued_run()</span>
+<a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a>        <span class="c1"># applies the global launch budget under the database lock.</span>
+<a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a>        <span class="n">claimed</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_task_repo</span><span class="o">.</span><span class="n">claim_due_tasks</span><span class="p">(</span>
+<a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a>            <span class="n">now</span><span class="o">=</span><span class="n">now</span><span class="p">,</span>
+<a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a>            <span class="n">lease_owner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_lease_owner</span><span class="p">,</span>
+<a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a>            <span class="n">lease_seconds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_lease_seconds</span><span class="p">,</span>
+<a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a>            <span class="n">limit</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_concurrent_runs</span><span class="p">,</span>
+<a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a>        <span class="p">)</span>
+</code></pre></div>
+<p>"准入与执行容量分离"是注释点题的设计：到期 occurrence <strong>先持久化为 queued</strong>，
+即使所有执行槽都忙——这就是"busy occurrences persist as queued"（根 AGENTS.md）
+的实现，替代了旧的"重叠即跳过"（<strong>不要重新引入 skip-on-overlap</strong>）。随后
+<code>claim_queued_run</code>（<code>persistence/scheduled_task_runs/sql.py:559</code>）在数据库锁下
+检查全局预算 <code>max_concurrent_runs</code> 与 per-owner 预算
+<code>max_concurrent_runs_per_user</code>（后者生效值是 <code>min(per_user, max_concurrent_runs)</code>，
+构造函数 <code>service.py:232-235</code> 注释：默认 3 全局 / 2 每用户，保证一个 owner 永远
+给其他人留一个槽）。Postgres 用 advisory lock 序列化 count+UPDATE，SQLite 用
+<code>BEGIN IMMEDIATE</code>；<code>list_queued_runs</code> 的公平队列按 owner 的同线程 FIFO 头排序
+（<code>sql.py:464</code> 的 <code>_fair_queue_statement</code>），即使没开 per-owner 上限，排空也
+是 owner 公平的。</p>
+<p><code>queue_timeout_seconds</code>（默认 3600）给排队等待设上限：超过后该 occurrence 失败
+（错误码 <code>RUN_ERROR_QUEUE_TIMEOUT</code>，<code>scheduler/host_notes.py:14</code>：
+<code>"scheduled task run queue wait timeout exceeded"</code>），并推进后续调度游标。</p>
+<h3 id="1224">12.2.4 重启与多实例恢复<a class="headerlink" href="#1224" title="Permanent link">&para;</a></h3>
+<p><code>service.py:1244</code> 的 <code>start()</code> 区分两种模式：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_task</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>            <span class="k">return</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>        <span class="n">restart_error</span> <span class="o">=</span> <span class="n">_RESTART_RECOVERY_ERROR</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_multi_instance</span><span class="p">:</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reconcile_active_state</span><span class="p">(</span><span class="n">now</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">UTC</span><span class="p">))</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_skip_next_lease_reconciliation</span> <span class="o">=</span> <span class="kc">True</span>
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>        <span class="k">else</span><span class="p">:</span>
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>            <span class="c1"># This destructive sweep is safe only while Gateway lifespan awaits</span>
+<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>            <span class="c1"># start(): no request or poll admission can create a run owned by</span>
+<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>            <span class="c1"># this process yet. ...</span>
+<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a>            <span class="n">stale</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_task_run_repo</span><span class="o">.</span><span class="n">mark_stale_active_runs</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="n">restart_error</span><span class="p">)</span>
+<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>            <span class="o">...</span>
+<a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a>            <span class="n">stuck</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_task_repo</span><span class="o">.</span><span class="n">cancel_stuck_once_tasks</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="n">restart_error</span><span class="p">)</span>
+</code></pre></div>
+<p>单实例模式下，启动时的破坏性清扫（把上一个进程留下的活跃行标记 interrupted）
+只在 Gateway lifespan 等待 <code>start()</code> 完成期间安全；多实例模式改用非破坏性的
+租约对账——<strong>存活的对端计划 run 不被保留</strong>（backend <code>AGENTS.md</code>：Live scheduled
+runs are preserved when a peer starts），过期启动认领回到持久队列，过期 run
+租约原子接管，陈旧启动写入被租约所有权围栏（fenced）。</p>
+<p>开启 <code>scheduler.multi_instance=true</code> 的前置条件（backend <code>AGENTS.md</code> Runtime 段）：
+共享 Postgres、<code>run_ownership.heartbeat_enabled=true</code>、<code>run_events.backend=db</code>，
+否则启动直接拒绝配置。<code>max_concurrent_runs</code> 经 Postgres advisory lock 成为
+<code>launching</code>/<code>running</code> 行的<strong>全局共享上限</strong>。</p>
+<p><code>persistence/AGENTS.md:44</code>（Scheduled-task Lifecycle 段）是这套规则的权威清单，
+写作/改代码前必读：<code>ScheduledTaskRepository.update</code> 是唯一的重新激活 choke point
+（<code>status -&gt; enabled</code> 时重查 <code>end_condition_reached</code> 并抛
+<code>ScheduledTaskLimitsExhausted</code>）；暂停/删除原子取消 queued 工作并拒绝
+launching/running；PATCH/resume 拒绝所有活跃状态；只有 queued 冲突提供暂停取消。</p>
+<h2 id="123-run-context">12.3 非交互约束与 run-context 信任边界<a class="headerlink" href="#123-run-context" title="Permanent link">&para;</a></h2>
+<p>计划轮是非交互的：<code>ask_clarification</code> 从工具集中排除（根 <code>AGENTS.md</code> Scheduled-task
+note），run 以 <code>context={"non_interactive": True}</code> 启动。治理规则集中在
+<code>backend/docs/RUN_INTERACTION_POLICY.md</code>：</p>
+<blockquote>
+<p>Runs in <code>scheduled</code>, <code>webhook</code>, or <code>autonomous</code> mode must use the available
+context, make minimal reversible assumptions, list material assumptions, or
+return a structured <code>BLOCKED</code> result naming the missing decision for
+high-risk or irreversible work without sufficient authorization.
+They must never wait for a synchronous human response.</p>
+</blockquote>
+<p>模式解析优先级：显式 <code>interaction_mode</code> &gt; legacy 提示（<code>non_interactive</code> →
+scheduled；<code>channel_name="github"</code> → webhook；<code>disable_clarification</code> →
+autonomous）；未知显式模式是配置错误而非回退交互。</p>
+<p><strong>信任边界</strong>是本章最容易踩的安全坑（RUN_INTERACTION_POLICY.md §Gateway trust
+boundary + <code>docs/ARCHITECTURE.md</code> §6）：</p>
+<blockquote>
+<p><code>interaction_mode</code>, <code>non_interactive</code>, <code>disable_clarification</code>, and
+<code>channel_name</code> are internal-caller-only Gateway context keys. ... Public run
+requests cannot use these keys to disable clarification, impersonate a
+webhook channel, or override a scheduled run back to interactive behavior.</p>
+</blockquote>
+<p>run 上下文有两个客户端可写入口（<code>body.context</code> 与自由格式的 <code>body.config</code>），
+<code>merge_run_context_overrides</code> 只对 <code>internal=True</code> 的调用方放行这些键，
+<code>strip_internal_context_keys</code> 对两个入口都做擦除——普通 HTTP 客户端传
+<code>non_interactive: true</code> 会被静默剥掉。身份与沙箱生命周期字段无条件清除并从
+认证状态重盖。<code>launch_scheduled_thread_run</code> 之所以能带 <code>non_interactive</code>，
+是因为它以 <code>AUTH_SOURCE_INTERNAL</code> + <code>get_internal_user()</code> 构造合成请求
+（<code>services.py:2898-2908</code>）。同理 <code>github_token</code> 也只对内部认证调用方生效。</p>
+<h2 id="124-im">12.4 IM 渠道：一条消息的完整旅程<a class="headerlink" href="#124-im" title="Permanent link">&para;</a></h2>
+<p><code>backend/app/channels/</code> 是 App 层（<code>app.*</code>）的 IM 集成。总纲
+（<code>app/channels/AGENTS.md</code>）给出的组件地图：</p>
+<table>
+<thead>
+<tr>
+<th>组件</th>
+<th>职责</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>base.py</code></td>
+<td>抽象 <code>Channel</code> 基类（start/stop/send 生命周期）；SDK 线程回调经 <code>_submit_threadsafe_coroutine()</code> 投递到 Gateway 主循环；阻塞式 SDK 拆除必须 <code>asyncio.to_thread</code> 卸载</td>
+</tr>
+<tr>
+<td><code>message_bus.py</code></td>
+<td>入站队列 → 派发器；出站用 dispatch-start 监听器快照</td>
+</tr>
+<tr>
+<td><code>manager.py</code></td>
+<td>核心派发器：经 <code>client.threads.create()</code> 建 thread、路由 <code>/goal</code> <code>/agent</code> <code>/model</code> 等命令、选择 <code>runs.wait()</code> / <code>runs.stream()</code> / <code>runs.create()</code> 三种等待策略</td>
+</tr>
+<tr>
+<td><code>store.py</code></td>
+<td><code>channel_name:chat_id[:topic_id] → thread_id</code> 绑定存储（SQL 多副本共享 / JSON 单进程）</td>
+</tr>
+<tr>
+<td><code>service.py</code></td>
+<td>渠道生命周期管理（启动、停止、重启、超时保留重试）</td>
+</tr>
+<tr>
+<td><code>leadership.py</code></td>
+<td>Leader lease：只有 <code>channel_leases</code> 持有者启动非 GitHub 传输（多实例防重复消费）</td>
+</tr>
+<tr>
+<td><code>capabilities.py</code></td>
+<td>SDK-free <code>CHANNEL_CAPABILITIES</code>：声明每个渠道是否支持主动推送、交互卡片等</td>
+</tr>
+</tbody>
+</table>
+<h3 id="1241-appchannelsagentsmd-message-flow">12.4.1 消息流（app/channels/AGENTS.md §Message Flow）<a class="headerlink" href="#1241-appchannelsagentsmd-message-flow" title="Permanent link">&para;</a></h3>
+<ol>
+<li>外部平台 → 渠道实现（WebSocket 长连接，<strong>无需公网 IP 与回调 URL</strong>）→
+   <code>MessageBus.publish_inbound()</code>；</li>
+<li><code>ChannelManager._dispatch_loop()</code> 消费队列；用户自有连接的消息带
+   <code>connection_id</code> / <code>owner_user_id</code>，<code>owner_user_id</code> 成为 run 的 <code>user_id</code>
+   （owner-scoped 文件存储：入站文件、上传、产物都落在
+   <code>users/{user_id}/threads/{thread_id}/user-data/{uploads,outputs}</code> 下）；</li>
+<li>查找/创建 thread：首次绑定用 <code>claim_thread_id</code>（insert-if-absent），竞争失败方
+   采用胜者并删除自己铸的 thread；<code>/new</code> 重绑；</li>
+<li>等待策略按渠道分流（<code>manager.py</code>）：Slack/Discord 用 <code>client.runs.wait()</code> 一次
+   拿最终结果；飞书/Telegram 用 <code>client.runs.stream(["messages-tuple", "values"])</code>
+   增量流出（"Working on it..." 卡片原地编辑）；GitHub 用
+   <code>runs.create()</code> fire-and-forget（run 进入 <code>pending</code> 即返回，agent 自己在沙箱里
+   用 <code>gh</code> CLI 回帖——出站是 log-only 的）；</li>
+<li>出站 → 渠道回调 → 平台回复。</li>
+</ol>
+<p>两种容易忽略的正确性细节：</p>
+<ul>
+<li><strong>流式发布是白名单</strong>（<code>manager.py</code> §Stream publishing is an allowlist）：只有
+  assistant 类型（<code>"ai"</code>、<code>"AIMessageChunk"</code>、OpenAI 风格 <code>"assistant"</code>）的
+  messages-tuple 帧成为回复文本。旧的 <code>"tool"</code> 黑名单曾泄漏隐藏模型上下文——
+  <code>DynamicContextMiddleware</code>（记忆召回、改写后的用户轮）与
+  <code>DurableContextMiddleware</code> 注入的隐藏 <code>HumanMessage</code> 会随 messages-tuple 扇出；</li>
+<li><strong>run 比请求者活得久</strong>：<code>runs.wait</code>/<code>runs.stream</code> 传 <code>on_disconnect: "continue"</code>
+  ——请求者断线，run 继续跑（回复丢失但线程保留）；入站去重键在请求发出后保留
+  （<code>_keep_dedupe_key_after</code>），平台重投递拿到同一条已准入 run。</li>
+</ul>
+<h3 id="1242">12.4.2 五大渠道实现文件<a class="headerlink" href="#1242" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>类（行号）</th>
+<th>特色</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>feishu.py</code></td>
+<td><code>FeishuChannel</code>（153）</td>
+<td>WebSocket 长连接；每个来源一张卡片原地 patch（<code>config.update_multi=true</code>），queued → running → final 状态流转</td>
+</tr>
+<tr>
+<td><code>slack.py</code></td>
+<td><code>SlackChannel</code>（112）</td>
+<td>Socket Mode（<code>app_token: xapp-...</code>），<code>runs.wait()</code></td>
+</tr>
+<tr>
+<td><code>telegram.py</code></td>
+<td><code>TelegramChannel</code>（129）</td>
+<td>接收文本/照片/文档，"Working on it..." 经 <code>editMessageText</code> 原地编辑；最终 Markdown 可选走 Bot API Rich Messages（<code>channels.telegram.rich_messages</code>，且文本含富结构时才触发）</td>
+</tr>
+<tr>
+<td><code>discord.py</code></td>
+<td><code>DiscordChannel</code>（110）</td>
+<td>discord.py 私有事件循环；跨循环出站经 <code>_run_on_discord_loop</code> 有界等待（发送 30s / 上传 120s）</td>
+</tr>
+<tr>
+<td><code>dingtalk.py</code></td>
+<td><code>DingTalkChannel</code>（183）</td>
+<td><code>card_template_id</code> 启用 AI Card 流式（创建卡片 → <code>PUT /v1.0/card/streaming</code> → finalize）；<code>receive_file</code> 经 <code>downloadCode</code> 下载图片/文档</td>
+</tr>
+</tbody>
+</table>
+<p>配置模板见 <code>config.example.yaml:3138</code> 起（<code>channels.feishu:</code> 的 <code>app_id</code> /
+<code>app_secret</code> / <code>domain</code> / <code>card_interaction_enabled</code>，<code>channels.slack:</code> 的
+<code>bot_token</code> / <code>app_token</code> / <code>allowed_users</code> 等）。凭证一律支持
+<code>$ENV_VAR</code> 形式引用。Docker Compose 里渠道跑在 gateway 容器内，<code>localhost</code>
+指向容器自身——要用 <code>http://gateway:8001/api</code>（或 <code>DEER_FLOW_CHANNELS_LANGGRAPH_URL</code>）。</p>
+<h3 id="1243">12.4.3 飞书选项澄清卡片<a class="headerlink" href="#1243" title="Permanent link">&para;</a></h3>
+<p><code>channels.feishu.card_interaction_enabled</code>（默认 off）把 <code>ask_clarification</code> 的
+选项渲染成<strong>可点击按钮卡片</strong>（<code>backend/app/channels/feishu_card_interaction.py</code>
+的 <code>build_button_card</code> / <code>PendingCardRegistry</code>）。开启条件写在配置注释里
+（<code>config.example.yaml:3176</code>）：需要在开放平台控制台的回调配置页（card.action.trigger，
+与事件订阅分开）订阅卡片回调并发布新版本。点击交互的归属校验跨 worker 消费一次、
+失败即 fail-closed（<code>app/channels/AGENTS.md</code> 第 49 行）。卡片交互会让 IM 对话
+接近 Web 端的澄清体验，但要权衡：按钮卡片引入了额外的回调订阅与状态管理。</p>
+<h3 id="1244">12.4.4 凭证暂存目录清理<a class="headerlink" href="#1244" title="Permanent link">&para;</a></h3>
+<p>渠道凭证写入用"暂存 + 原子发布"，崩溃会在磁盘上留下孤儿暂存文件。
+<code>backend/app/channels/credential_staging.py</code> 负责清扫：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">_STALE_AFTER_SECONDS</span> <span class="o">=</span> <span class="mi">24</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">cleanup_stale_credential_staging</span><span class="p">(</span><span class="n">target</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">    </span><span class="sd">"""Remove only this store's regular staging files older than a day.</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="sd">    Scan siblings only, never attachments or symlink targets. The age guard</span>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="sd">    leaves fresh files to concurrent writers. Failure to inspect or remove a</span>
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="sd">    stale copy, including failure to report it, must not stop credential loading.</span>
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="sd">    Missing files are expected when a peer completes its atomic publication.</span>
+<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="sd">    """</span>
+</code></pre></div>
+<p>规则（backend <code>AGENTS.md</code> Layout 段）：清扫挂在 worker 线程状态加载路径上（含
+SQL legacy 导入）；只删除 <strong>owned</strong> 常规文件且超过 24 小时的；匿名临时文件不动。
+删除失败绝不能阻断凭证加载。命名空间由 <code>credential_staging_prefix()</code> 预留
+（<code>.{target.name}.deerflow-</code> 前缀 + <code>.tmp</code> 后缀）。</p>
+<h2 id="_2">动手实验<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<h3 id="a">实验 A：创建并观察一个定时任务<a class="headerlink" href="#a" title="Permanent link">&para;</a></h3>
+<ol>
+<li><code>config.yaml</code> 打开两级开关并重启 Gateway：</li>
+</ol>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nt">scheduler</span><span class="p">:</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">  </span><span class="nt">tool_enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</code></pre></div>
+<ol>
+<li>Web 端对话里说："每天早上 9 点帮我总结deer-flow仓库昨天的 commit（时区 Asia/Shanghai）"，
+   agent 会调用 schedule 工具创建计划；或直接在 <code>/workspace/scheduled-tasks</code> 页面创建。</li>
+<li>用 <code>POST /api/scheduled-tasks/preview-cron</code> 验证 cron 表达式（body 传
+   <code>cron: "0 9 * * *"</code>、<code>timezone: "Asia/Shanghai"</code>），核对返回的 UTC 与本地触发点。</li>
+<li>把计划改成 interval（<code>every_seconds</code> ≥ <code>min_once_delay_seconds</code>）并点
+   "Run now" 手动触发，然后观察：</li>
+<li><code>GET /api/scheduled-tasks/{task_id}/runs</code> 里出现 <code>queued</code> → <code>running</code> →
+     <code>success</code>/<code>unmet</code> 的状态流；</li>
+<li><strong>手动 trial 不推进 <code>next_run_at</code></strong>——触发后计划的下次运行时间不变
+     （<code>schedules.py:11</code> 语义）；</li>
+<li>手动触发后再立即触发第二次，第二次因单活跃约束进入 <code>queued</code>（或在忙碌时
+     排队），验证"busy occurrences persist as queued"。</li>
+<li>（可选）设置一个停止条件（如"当我说任务完成时"），观察 <code>stop_rule.launch_prompt</code>
+   拼进 run 的段落与 <code>stop_scheduled_task</code> 工具是否出现（取决于 <code>tool_enabled</code>）。</li>
+</ol>
+<h3 id="bslack">实验 B：从飞书/Slack 触发一次对话<a class="headerlink" href="#bslack" title="Permanent link">&para;</a></h3>
+<ol>
+<li>在渠道开放平台创建应用拿到凭证（飞书：<code>app_id</code>/<code>app_secret</code>，选择 WebSocket
+   模式，无需公网 IP；Slack：<code>bot_token: xoxb-...</code> + <code>app_token: xapp-...</code> Socket Mode）。</li>
+<li><code>config.yaml</code> 的 <code>channels:</code> 段启用对应渠道（凭证可用 <code>$ENV_VAR</code> 引用），重启 Gateway，
+   在日志里确认渠道启动（<code>logs/gateway.log</code>）。</li>
+<li>在 IM 里发送 <code>/new</code> 后随便说一句话，观察：</li>
+<li>新 thread 出现在 Web 工作区（绑定存进 <code>channel_thread_bindings</code>）；</li>
+<li>飞书/Telegram 是流式卡片（"Working on it..." 原地更新），Slack/Discord 是
+     等待后的完整回复；</li>
+<li>上传一个文件给 bot，确认它落在
+     <code>backend/.deer-flow/users/{owner}/threads/{thread_id}/user-data/uploads/</code>
+     （owner-scoped 存储）。</li>
+<li>（可选）在对话里问一个需要澄清的问题，观察默认文本澄清；再开启
+   <code>card_interaction_enabled</code>（需按 12.4.3 配置卡片回调）对比按钮卡片体验。</li>
+</ol>
+<h2 id="_3">常见坑<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>只开了 <code>scheduler.enabled</code> 没开 <code>tool_enabled</code>（或反之）</strong>——调度器在跑，
+   但对话里没有 schedule 工具；<code>scheduler_tools_enabled()</code> 要求两个开关同时为真
+   （<code>runtime.py:21</code>）。反过来，只想用页面手动建任务、不想让 agent 建，可以只开
+   <code>enabled</code>。</li>
+<li><strong>计划轮卡在问澄清</strong>——不会发生：计划 run 的工具集排除 <code>ask_clarification</code>，
+   且策略要求非交互模式"绝不等待同步的人类回复"。如果你的集成测试看到计划 run
+   等待人工，检查是否有人把 <code>non_interactive</code> 从客户端传进来——普通调用方的这个
+   键会被 <code>strip_internal_context_keys</code> 擦除，只有内部认证调用方（scheduler/
+   webhook 渠道策略）有效。</li>
+<li><strong>多实例开了但前置不满足</strong>——<code>scheduler.multi_instance=true</code> 要求共享 Postgres +
+   <code>run_ownership.heartbeat_enabled=true</code> + <code>run_events.backend=db</code>，启动时直接拒绝；
+   <code>deployment.multi_instance: true</code> 还要求不开 scheduler 单实例、IM 渠道开
+   leader lease（<code>config.example.yaml:2947-2954</code>）。逐项核对再启动。</li>
+<li><strong>Docker 里渠道连不上 Gateway</strong>——<code>localhost:8001</code> 在 gateway 容器内指向容器
+   自身。改用 <code>http://gateway:8001/api</code> 或环境变量 <code>DEER_FLOW_CHANNELS_LANGGRAPH_URL</code>
+   （<code>app/channels/AGENTS.md</code> §Configuration）。</li>
+<li><strong><code>allowed_users</code> 写了 <code>@names</code></strong>——Telegram 只认数字用户 ID，Slack 认 <code>U123456</code>
+   形态；无法解析的非空列表 fail-closed（全员拒绝），而不是放行。Buzz 与 Discord
+   的空列表语义不同（Buzz 空 = 没有人，其余渠道空 = 所有人），绑定前读
+   <code>allowed_users.py</code>。</li>
+<li><strong>时区存成 "UTC" 但用户不在 UTC</strong>——聊天保存的 interval 任务或带偏移的一次性
+   <code>run_at</code> 会把时区记为 "UTC"（<code>timezone_source: not_needed</code> 占位），展示层按
+   查看者时区渲染；不要把 UTC 字面时间当成"用户的 9 点"（<code>service.py:41</code>
+   <code>_zone_is_placeholder</code> 的完整语义）。需要确定本地触达时，用
+   <code>preview-cron</code> 端点先看一眼。</li>
+</ol>
+<h2 id="_4">下一步<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<p>现在 agent 既能定时醒来，也能在 IM 里被唤醒。它们对外的统一入口都是 Gateway 的
+HTTP API——下一章 <a href="../13-gateway-api/">第 13 章 Gateway API 与编程接入</a>
+给你 REST 路由全景、LangGraph 兼容层、文件上传协议，以及用内嵌
+<code>DeerFlowClient</code> 把整套 run 生命周期装进你自己的程序。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      教程基于开源项目 <a href='https://github.com/bytedance/deer-flow'>bytedance/deer-flow</a> 的真实源码编写
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.sections", "navigation.expand", "navigation.top", "navigation.indexes", "search.suggest", "search.highlight", "content.code.copy", "toc.follow"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.a5f9d56c.min.js"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,2721 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="基于 DeerFlow 真实源码的中文系统教程：21 章 + 附录，覆盖环境配置、核心组件拆解、二次开发与 MCP 集成">
+      
+      
+      
+        <link rel="canonical" href="https://jigangbo.github.io/deer-flow-tutorial/17-business-cases/">
+      
+      
+        <link rel="prev" href="../16-extensions/">
+      
+      
+        <link rel="next" href="../18-frontend-dev/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
+    
+    
+      
+        <title>第 17 章 业务二次开发实战（综合案例） - DeerFlow 从入门到精通 · 源码教程</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#17" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href=".." title="DeerFlow 从入门到精通 · 源码教程" class="md-header__button md-logo" aria-label="DeerFlow 从入门到精通 · 源码教程" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            DeerFlow 从入门到精通 · 源码教程
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              第 17 章 业务二次开发实战（综合案例）
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jigangbo/deer-flow-tutorial" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="DeerFlow 从入门到精通 · 源码教程" class="md-nav__button md-logo" aria-label="DeerFlow 从入门到精通 · 源码教程" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    DeerFlow 从入门到精通 · 源码教程
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jigangbo/deer-flow-tutorial" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    导读
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    导读
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 0 章 全景鸟瞰
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第一篇 入门篇
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第一篇 入门篇
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-environment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 1 章 准备环境（Environment Setup）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 2 章 一键启动（Quick Start）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 3 章 配置系统入门
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-frontend-tour/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 4 章 前端界面与基本功能导览
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-run-modes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 5 章 更多运行方式
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第二篇 进阶篇
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第二篇 进阶篇
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-request-lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 6 章 一次请求的一生：Agent 运行时全链路
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-tools-and-skills/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 7 章 工具系统与 Skills
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-sandbox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 8 章 沙箱与代码执行
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-multi-agent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 9 章 Multi-Agent 路由与子代理委派
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10-memory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 10 章 记忆系统（Memory / DeerMem）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../11-context-engineering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 11 章 上下文工程与长对话治理
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../12-scheduled-tasks-and-im/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 12 章 定时任务与 IM 渠道
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../13-gateway-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 13 章 Gateway API 与编程接入
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第三篇 精通篇
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第三篇 精通篇
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../14-architecture-layers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 14 章 架构分层与开发规范（二次开发前必读）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../15-mcp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 15 章 MCP 集成（重点）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../16-extensions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 16 章 扩展（Extensions）开发
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 17 章 业务二次开发实战（综合案例）
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 17 章 业务二次开发实战（综合案例）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#170" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.0 学习目标
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        本章源码锚点
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#171" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.1 需求分流决策树
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#172-a" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.2 实战 A：企业知识库问答
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="17.2 实战 A：企业知识库问答">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1721" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.2.1 配置面：开关与工具
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1722" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.2.2 契约面：只读知识提供者
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1723" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.2.3 管理面：独立扩展与授权边界
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1724" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.2.4 落地清单
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#173-b" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.3 实战 B：数据分析平台
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="17.3 实战 B：数据分析平台">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1731" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.3.1 三个构件
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1732-tool_artifacts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.3.2 产物管道：tool_artifacts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1733" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.3.3 动手实验：完整跑通数据分析平台（可操作步骤）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#174-c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.4 实战 C：深度研报自动化
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="17.4 实战 C：深度研报自动化">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1741-deep-research" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.4.1 研究方法论：deep-research 技能
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1742" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.4.2 规模化：子代理运行时与批处理
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1743-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.4.3 可信度：verification 凭证
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1744" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.4.4 定时与推送
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1745" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.4.5 组装清单
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#175-dim" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.5 实战 D：IM 智能客服
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="17.5 实战 D：IM 智能客服">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1751" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.5.1 渠道架构速读
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1752" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.5.2 配置面：渠道 + 交互卡片
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1753" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.5.3 落地清单
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#176-e" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.6 实战 E：自定义模型供应商
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="17.6 实战 E：自定义模型供应商">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1761" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.6.1 工厂走读
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1762" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.6.2 能力位配置样例
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1763" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.6.3 验证
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#177" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.7 常见坑
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        下一步
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../18-frontend-dev/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 18 章 前端二次开发
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../19-testing-quality/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 19 章 可观测性、测试与质量保障
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../20-production/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 20 章 生产部署与运维
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    附录
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    附录
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../appendices/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    附录
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#170" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.0 学习目标
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        本章源码锚点
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#171" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.1 需求分流决策树
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#172-a" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.2 实战 A：企业知识库问答
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="17.2 实战 A：企业知识库问答">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1721" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.2.1 配置面：开关与工具
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1722" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.2.2 契约面：只读知识提供者
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1723" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.2.3 管理面：独立扩展与授权边界
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1724" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.2.4 落地清单
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#173-b" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.3 实战 B：数据分析平台
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="17.3 实战 B：数据分析平台">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1731" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.3.1 三个构件
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1732-tool_artifacts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.3.2 产物管道：tool_artifacts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1733" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.3.3 动手实验：完整跑通数据分析平台（可操作步骤）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#174-c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.4 实战 C：深度研报自动化
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="17.4 实战 C：深度研报自动化">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1741-deep-research" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.4.1 研究方法论：deep-research 技能
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1742" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.4.2 规模化：子代理运行时与批处理
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1743-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.4.3 可信度：verification 凭证
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1744" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.4.4 定时与推送
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1745" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.4.5 组装清单
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#175-dim" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.5 实战 D：IM 智能客服
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="17.5 实战 D：IM 智能客服">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1751" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.5.1 渠道架构速读
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1752" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.5.2 配置面：渠道 + 交互卡片
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1753" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.5.3 落地清单
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#176-e" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.6 实战 E：自定义模型供应商
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="17.6 实战 E：自定义模型供应商">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1761" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.6.1 工厂走读
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1762" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.6.2 能力位配置样例
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1763" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.6.3 验证
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#177" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.7 常见坑
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        下一步
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="17">第 17 章 业务二次开发实战（综合案例）<a class="headerlink" href="#17" title="Permanent link">&para;</a></h1>
+<h2 id="170">17.0 学习目标<a class="headerlink" href="#170" title="Permanent link">&para;</a></h2>
+<p>读完本章，你应该能够：</p>
+<ol>
+<li>用<strong>需求分流决策树</strong>为任何新需求选对承载层：Skill（提示词 + 脚本的领域流程）、
+   MCP（外部系统工具化）、扩展（平台能力贡献点）、配置（开关/模型/工具组），以及
+   仅剩的"改核心"情形；</li>
+<li>拿出一个企业知识库问答方案：<code>knowledge_base:</code> 开关 + <code>knowledge_search</code> 工具 +
+   只读知识契约（<code>RetrievalProvider</code>）+ 知识管理扩展，理解范围选择与上游授权边界；</li>
+<li>拿出一个数据分析平台方案：Docker 沙箱隔离 + <code>data-analysis</code> / <code>chart-visualization</code>
+   两个官方技能 + <code>tool_artifacts</code> 产物句柄注册表，写出可操作的完整接入步骤；</li>
+<li>拿出一个深度研报自动化方案：<code>deep-research</code> 技能 + 子代理批处理（<code>subagent_batches</code>）</li>
+<li><code>verification</code> 凭证 + 定时任务 + IM 推送的组合拳；</li>
+<li>为私有模型网关接入一个自定义模型供应商：读懂 <code>create_chat_model()</code> 的能力位
+   （<code>supports_thinking</code> / <code>supports_vision</code> / <code>context_window</code> / <code>reasoning:</code> 契约），
+   不改一行核心代码完成接入。</li>
+</ol>
+<h2 id="_1">本章源码锚点<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>主题</th>
+<th>锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>分流依据（扩展优先）</td>
+<td>根 <code>AGENTS.md</code> Extension-first evaluation 段</td>
+</tr>
+<tr>
+<td>知识能力开关</td>
+<td><code>config.example.yaml:825</code>（<code>knowledge_base:</code>）</td>
+</tr>
+<tr>
+<td>知识检索工具</td>
+<td><code>config.example.yaml:865</code>–<code>config.example.yaml:881</code>（<code>knowledge_search</code>）</td>
+</tr>
+<tr>
+<td>只读知识契约</td>
+<td><code>backend/docs/KNOWLEDGE.md:12</code>（Provider 注册）、<code>:71</code>（Agent 工具入口配置）</td>
+</tr>
+<tr>
+<td>知识扩展示例</td>
+<td><code>examples/deerflow-extension-knowledge/deerflow_extension_knowledge/__init__.py:48</code></td>
+</tr>
+<tr>
+<td>知识管理边界</td>
+<td><code>examples/deerflow-extension-knowledge-management/AGENTS.md</code>、<code>CONTRACT.md</code></td>
+</tr>
+<tr>
+<td>数据分析技能</td>
+<td><code>skills/public/data-analysis/SKILL.md:1</code>（frontmatter）、<code>:46</code>（inspect 命令）</td>
+</tr>
+<tr>
+<td>图表技能</td>
+<td><code>skills/public/chart-visualization/SKILL.md:1</code>（frontmatter + <code>compatibility</code>）</td>
+</tr>
+<tr>
+<td>产物句柄注册表</td>
+<td><code>config.example.yaml:1462</code>（<code>tool_artifacts:</code>）</td>
+</tr>
+<tr>
+<td>深研技能</td>
+<td><code>skills/public/deep-research/SKILL.md:1</code></td>
+</tr>
+<tr>
+<td>子代理运行时</td>
+<td><code>config.example.yaml:2011</code>（<code>subagent_runtime:</code>）、<code>:2049</code>（per-agent overrides）</td>
+</tr>
+<tr>
+<td>批处理</td>
+<td><code>config.example.yaml:2102</code>（<code>subagent_batches:</code>）</td>
+</tr>
+<tr>
+<td>工具凭证</td>
+<td><code>config.example.yaml:2122</code>（<code>verification:</code>）</td>
+</tr>
+<tr>
+<td>定时任务</td>
+<td><code>config.example.yaml:2895</code>（<code>scheduler:</code>）、<code>:2873</code>（IM 通知投递）</td>
+</tr>
+<tr>
+<td>IM 渠道</td>
+<td><code>backend/app/channels/AGENTS.md:22</code>（组件表）、<code>:58</code>（owner 归属文件存储）</td>
+</tr>
+<tr>
+<td>交互卡片</td>
+<td><code>config.example.yaml:3176</code>（<code>card_interaction_enabled</code>）、<code>backend/app/channels/feishu.py:195</code></td>
+</tr>
+<tr>
+<td>用户连接层</td>
+<td><code>config.example.yaml:3063</code>（<code>channel_connections:</code>）</td>
+</tr>
+<tr>
+<td>模型工厂</td>
+<td><code>backend/packages/harness/deerflow/models/factory.py:540</code>（<code>create_chat_model</code>）、<code>:19</code>（元数据字段表）</td>
+</tr>
+<tr>
+<td>类路径解析</td>
+<td><code>backend/packages/harness/deerflow/reflection/resolvers.py:103</code>（<code>resolve_class</code>）</td>
+</tr>
+<tr>
+<td>模型配置段</td>
+<td><code>config.example.yaml:157</code>（<code>models:</code>）、<code>:266</code>（GLM 必思考示例）、<code>:334</code>（Ollama 原生供应商）</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="171">17.1 需求分流决策树<a class="headerlink" href="#171" title="Permanent link">&para;</a></h2>
+<p>第 16 章讲过机制，本章第一件事是建立<strong>决策纪律</strong>。根 <code>AGENTS.md</code> 的 Extension-first
+evaluation 段是权威依据：</p>
+<blockquote>
+<p><strong>Extension-first evaluation</strong> — before implementing a feature by editing core code,
+evaluate whether it can ship as a packaged extension through the contribution points
+above. Stay in core for bug fixes and for changes to the agent loop, memory, context
+compaction, or authentication. If existing hooks cannot express the feature, add a
+generic hook to the extension contract plus an extension that uses it — do not
+hard-code business logic into core.</p>
+</blockquote>
+<p>翻译成决策树。拿到一个需求后自顶向下问：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>需求是什么形态？
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├─ "教模型在某个领域按流程做事"（提示词 + 可选脚本，无需新增平台能力）
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│   → Skill。放 skills/custom/（gitignored）起步，成熟后可申请进 skills/public/。
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│     例：周报生成、合同审查清单、行业术语翻译。见第 7 章 7.6。
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>├─ "让模型能调用一个已有外部系统"（HTTP 服务、数据库、内部平台）
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│   → MCP server。写一个 stdio/http MCP server，配置进 extensions_config.json →
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│     mcpServers。核心不动，进程隔离，热启停。见第 15 章。
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>├─ "给平台加能力"（新中间件/生命周期观察/服务/HTTP 路由/浏览器页面/知识检索源）
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│   → 扩展（第 16 章）。对照九大贡献点选最小覆盖的那个；全栈插件（registry.plugin）
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│     一次装下页面 + action + 模型工具。
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>├─ "改一个开关/接一个模型/换一段提示词"
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│   → 纯配置。config.yaml（models、tools、sandbox、verification…）或
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│     extensions_config.json（mcpServers、skills）。连包都不用装。
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>│
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>└─ 以上都不行，且需求本质是 agent loop / 记忆 / 上下文压缩 / 认证的行为
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>    → 才考虑改核心。bug 修复直接进核心；新能力先给扩展契约加通用钩子，
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>      再用扩展消费它——禁止把业务逻辑硬编码进核心。
+</code></pre></div>
+<p>三条经验法则：</p>
+<ul>
+<li><strong>先配置，再 Skill，再 MCP，再扩展，最后核心</strong>——承载层离核心越远，升级成本越低；</li>
+<li><strong>数据面与控制面分开</strong>：知识/文档类接入优先走只读检索契约（<code>registry.knowledge_provider</code>），
+  管理面（上传、解析、索引）放独立的管理扩展——<code>examples/deerflow-extension-knowledge-management/AGENTS.md</code>
+  第一句就是"Core retrieval must never depend on it"；</li>
+<li><strong>一次 Slice 加一个贡献点</strong>：<code>backend/packages/harness/deerflow/extensions/AGENTS.md:442</code>
+  要求任何新贡献类型必须同时进公共契约与宿主运行时，绝不允许宿主静默忽略的注册方法——
+  反过来也提醒我们：贡献点选型宁可小而准，不要一次堆五个。</li>
+</ul>
+<p>下面五个实战分别演示决策树上不同分支的组合。</p>
+<h2 id="172-a">17.2 实战 A：企业知识库问答<a class="headerlink" href="#172-a" title="Permanent link">&para;</a></h2>
+<p><strong>需求</strong>：员工在对话框里提问，模型基于公司知识库（RAGFlow / WeKnora / LightRAG 等）
+作答，答案可追溯到来源；管理员还能上传与解析文档。</p>
+<p><strong>分流</strong>：检索是"平台能力"（工具面 + 范围选择 UI + 引用证据）→ 核心已有 <code>knowledge</code>
+工具组与只读契约；具体知识库对接是"连接外部系统" → 扩展（知识提供者）；文档管理 →
+独立管理扩展。改核心为零。</p>
+<h3 id="1721">17.2.1 配置面：开关与工具<a class="headerlink" href="#1721" title="Permanent link">&para;</a></h3>
+<p><code>config.example.yaml:825</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">knowledge_base</span><span class="p">:</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="c1"># Custom-agent chat only. Keeps the selector hidden unless the effective</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span><span class="c1"># knowledge_search provider is the bundled RAGFlow tool.</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">  </span><span class="nt">scope_selection_enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+</code></pre></div>
+<p>真正把检索挂进模型工具面的是 <code>tools:</code> 条目（<code>config.example.yaml:865</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="w">  </span><span class="c1"># - name: knowledge_search</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="c1">#   group: knowledge</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="c1">#   use: deerflow.community.ragflow.tools:knowledge_search_tool</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">  </span><span class="c1">#   base_url: http://localhost:9380  # Docker: use a backend-reachable URL</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">  </span><span class="c1">#   api_key: $RAGFLOW_API_KEY</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">  </span><span class="c1">#   datasets:  # Optional operator-controlled allowlist</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">  </span><span class="c1">#     - 0123456789abcdef0123456789abcdef  # Replace with a RAGFlow dataset ID</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">  </span><span class="c1">#   timeout: 30</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">  </span><span class="c1">#   page_size: 8</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">  </span><span class="c1">#   similarity_threshold: 0.2</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">  </span><span class="c1">#   ...（省略 vector_similarity_weight / max_chars_per_chunk 两行）</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">  </span><span class="c1">#   top_k: 256</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="w">  </span><span class="c1">#   max_total_chars: 8000</span>
+</code></pre></div>
+<p>注意注释里的安全设计（<code>config.example.yaml:863</code>）："Configure stable IDs only to
+restrict scope. <strong>IDs and catalog listing never reach the model</strong>"——数据集 ID 只做
+operator 侧的范围限制，模型永远看不到目录清单。<code>tool_groups:</code>（<code>config.example.yaml:836</code>）
+里的 <code>- name: knowledge</code> 是这个工具的分组归属。</p>
+<h3 id="1722">17.2.2 契约面：只读知识提供者<a class="headerlink" href="#1722" title="Permanent link">&para;</a></h3>
+<p><code>backend/docs/KNOWLEDGE.md:14</code> 定义了接入方式：</p>
+<blockquote>
+<p>An operator-installed extension calls <code>registry.knowledge_provider(name, provider)</code>
+during <code>install()</code>. The method returns <code>False</code> on older hosts and is supported by
+extension-api <strong>0.2.7</strong>.</p>
+</blockquote>
+<p>六种可选操作（<code>backend/docs/KNOWLEDGE.md:24</code> 的表格）：<code>search</code>（必选检索）、<code>sources</code>
+（可归因证据）、<code>catalog</code>（数据集分页目录）、<code>documents</code>（数据集内文档分页）、
+<code>dataset_filter</code> / <code>document_filter</code>（范围执行）。只有同时支持 <code>catalog</code> 与
+<code>dataset_filter</code>，前端的范围选择器才会启用（<code>backend/docs/KNOWLEDGE.md:103</code> 附近：
+<code>/api/features</code> 的启用条件）。</p>
+<p>官方合成示例 <code>examples/deerflow-extension-knowledge/deerflow_extension_knowledge/__init__.py:22</code>
+展示了范围执行的正确姿势：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">search_scoped</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">KnowledgeRequestContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RetrievalResult</span><span class="p">:</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>        <span class="n">scope</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">scope</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>        <span class="k">if</span> <span class="n">scope</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>            <span class="k">if</span> <span class="n">scope</span><span class="p">[</span><span class="s2">"mode"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"disabled"</span><span class="p">:</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Knowledge search is disabled"</span><span class="p">)</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>            <span class="k">if</span> <span class="n">scope</span><span class="p">[</span><span class="s2">"mode"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"selected"</span><span class="p">:</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>                <span class="k">if</span> <span class="n">scope</span><span class="p">[</span><span class="s2">"dataset_ids"</span><span class="p">]</span> <span class="o">!=</span> <span class="p">[</span><span class="n">_DATASET</span><span class="p">]:</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>                    <span class="k">raise</span> <span class="ne">PermissionError</span><span class="p">(</span><span class="s2">"Selected dataset is unavailable"</span><span class="p">)</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>                <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">scope</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"document_filters"</span><span class="p">,</span> <span class="p">[]):</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>                    <span class="k">if</span> <span class="n">item</span><span class="p">[</span><span class="s2">"dataset_id"</span><span class="p">]</span> <span class="o">!=</span> <span class="n">_DATASET</span> <span class="ow">or</span> <span class="n">item</span><span class="p">[</span><span class="s2">"document_ids"</span><span class="p">]</span> <span class="o">!=</span> <span class="p">[</span><span class="n">_DOCUMENT</span><span class="p">]:</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>                        <span class="k">raise</span> <span class="ne">PermissionError</span><span class="p">(</span><span class="s2">"Selected document is unavailable"</span><span class="p">)</span>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+</code></pre></div>
+<p><strong>范围检查在 provider 内部执行</strong>，宿主只传上下文；越权就抛 <code>PermissionError</code>，绝不
+静默扩大检索范围。注册只有两行（<code>__init__.py:48</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nd">@extension</span><span class="p">(</span><span class="n">api</span><span class="o">=</span><span class="s2">"0.2.7"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"knowledge-example"</span><span class="p">)</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">install</span><span class="p">(</span><span class="n">registry</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">registry</span><span class="o">.</span><span class="n">knowledge_provider</span><span class="p">(</span><span class="s2">"synthetic-example"</span><span class="p">,</span> <span class="n">SyntheticKnowledgeProvider</span><span class="p">()):</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"This host does not support knowledge provider registration"</span><span class="p">)</span>
+</code></pre></div>
+<p>宿主会在注册时验证每个声称支持的异步操作，并把它纳入与其它贡献一致的按位置回滚
+（<code>backend/packages/harness/deerflow/extensions/AGENTS.md:3</code>）。</p>
+<h3 id="1723">17.2.3 管理面：独立扩展与授权边界<a class="headerlink" href="#1723" title="Permanent link">&para;</a></h3>
+<p><code>examples/deerflow-extension-knowledge-management/AGENTS.md</code> 圈出了管理面的纪律：</p>
+<ul>
+<li>管理（上传/解析/索引）与检索（只读查询）必须分属两个扩展，核心检索<strong>永不依赖</strong>管理扩展；</li>
+<li>授权是"显式精确授权 + 宿主管理员下限 + 上游授权"三层叠加，检索绑定不授予写权限；</li>
+<li>不接受客户端伪造的 user/tenant/Agent/space 身份，不重试写操作，不跟随带凭证的重定向；</li>
+<li>上游处理状态是"配置能力"而非"完成证据"——可搜索的文档仍可能在继续富化，未知状态
+  必须保持未知（<code>CONTRACT.md</code> 的 State and uncertainty 节）。</li>
+</ul>
+<p><code>examples/deerflow-extension-knowledge-platform/</code> 则给出平台化版本（<code>service.py</code> /
+<code>store.py</code> / <code>router.py</code> / <code>models.py</code> 四件套，SQLite 存插件自有空间策略）。</p>
+<h3 id="1724">17.2.4 落地清单<a class="headerlink" href="#1724" title="Permanent link">&para;</a></h3>
+<ol>
+<li><code>config.yaml</code>：<code>knowledge_base.enabled: true</code> + 取消 <code>knowledge_search</code> 工具注释并填
+   <code>base_url</code>/<code>api_key</code>（RAGFlow 内置路径），或安装知识提供者扩展后把 <code>provider</code> 指向
+   注册名（<code>backend/docs/KNOWLEDGE.md:71</code> 的 YAML 模板）；</li>
+<li>重启 Gateway，<code>GET /api/knowledge/capabilities?agent_name=...</code> 确认能力枚举；</li>
+<li>需要文档管理再装 knowledge-management 扩展并做精确授权；</li>
+<li>验证引用：回答中的每条知识都应能回链到 <code>KnowledgeSource</code>（<code>backend/docs/KNOWLEDGE.md:133</code>
+   的 Sources and citations 节）。</li>
+</ol>
+<h2 id="173-b">17.3 实战 B：数据分析平台<a class="headerlink" href="#173-b" title="Permanent link">&para;</a></h2>
+<p><strong>需求</strong>：用户上传 Excel/CSV，模型做 SQL 级分析并产出图表，文件产物可下载、可追溯。</p>
+<p><strong>分流</strong>：分析能力 = 沙箱（核心已有）+ 两个官方 Skill（现成）+ 产物管道（核心已有）。
+配置层即可完成，一个扩展都不用写——这是决策树"纯配置"分支的样板。</p>
+<h3 id="1731">17.3.1 三个构件<a class="headerlink" href="#1731" title="Permanent link">&para;</a></h3>
+<p><strong>构件一：沙箱隔离</strong>。分析脚本由模型的 <code>bash</code> 工具在沙箱里执行。生产部署用
+<code>AioSandboxProvider</code>（Docker 隔离），开发用 <code>LocalSandboxProvider</code>（第 8 章）。上传的
+文件经虚拟路径映射出现在沙箱的 <code>/mnt/user-data/uploads/</code>，产物写到
+<code>/mnt/user-data/outputs/</code>。</p>
+<p><strong>构件二：<code>data-analysis</code> 技能</strong>。<code>skills/public/data-analysis/SKILL.md:1</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>---
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>name: data-analysis
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>description: Use this skill when the user uploads Excel (.xlsx/.xls) or CSV files and
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>  wants to perform data analysis, generate statistics, create summaries, pivot tables,
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>  SQL queries, or any form of structured data exploration. Supports multi-sheet Excel
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="gu">  workbooks, aggregation, filtering, joins, and exporting results to CSV/JSON/Markdown.</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="gu">---</span>
+</code></pre></div>
+<p>技能正文教模型用 DuckDB 三步走：<code>inspect</code> 看结构 → <code>query</code>/<code>summary</code> 分析 → 导出
+（<code>skills/public/data-analysis/SKILL.md:46</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>python<span class="w"> </span>/mnt/skills/public/data-analysis/scripts/analyze.py<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span>--files<span class="w"> </span>/mnt/user-data/uploads/data.xlsx<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">  </span>--action<span class="w"> </span>inspect
+</code></pre></div>
+<p>注意技能的注释约定："Do NOT read the Python file, just call it with the parameters"
+——技能脚本是模型调用的黑盒 CLI，错误走 stderr、退出码非零。</p>
+<p><strong>构件三：<code>chart-visualization</code> 技能</strong>。<code>skills/public/chart-visualization/SKILL.md:1</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>---
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>name: chart-visualization
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>description: This skill should be used when the user wants to visualize data. It
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>  intelligently selects the most suitable chart type from 26 available options, extracts
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>  parameters based on detailed specifications, and generates a chart image using a
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>  JavaScript script.
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>compatibility:
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="gu">  nodejs: "&gt;=18.0.0"</span>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="gu">---</span>
+</code></pre></div>
+<p>它前置声明了 <code>compatibility.nodejs</code>——技能可以带环境兼容位，frontmatter 是机器可读的。
+生成走 Node 脚本（<code>SKILL.md:58</code>）：<code>node ./scripts/generate.js '&lt;payload_json&gt;'</code>，图片
+URL 打在 stdout，失败写 stderr 且退出码为 1（<code>SKILL.md:63</code> 的 Result Return 约定）。</p>
+<h3 id="1732-tool_artifacts">17.3.2 产物管道：<code>tool_artifacts</code><a class="headerlink" href="#1732-tool_artifacts" title="Permanent link">&para;</a></h3>
+<p>工具结果里的文件引用要跨上下文压缩存活，靠的是工具产物句柄注册表
+（<code>config.example.yaml:1462</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nt">tool_artifacts</span><span class="p">:</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">  </span><span class="c1"># Maximum artifact entries retained per thread (a sliding window: the</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">  </span><span class="c1"># oldest entries are evicted when the cap is exceeded).</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">  </span><span class="nt">max_entries</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">  </span><span class="c1"># Conservatively scan free-text tool results for sandbox paths / remote file URLs.</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">  </span><span class="nt">detect_refs_in_text</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="w">  </span><span class="c1"># Project available artifact handles into the model request as durable context.</span>
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="w">  </span><span class="nt">inject_model_context</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="w">  </span><span class="c1"># Resolve artifact handles found in tool arguments to real references before execution.</span>
+<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="w">  </span><span class="nt">resolve_handles_in_args</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</code></pre></div>
+<p>机制（<code>config.example.yaml:1456</code> 的段注释）：工具结果中的路径/URL 被捕获进线程持久状态
+<code>ThreadState.tool_artifacts</code>，模型用短句柄（<code>art_xxxxxxxx</code>）引用它们，句柄在工具执行前
+被还原成真实引用，并在 UI 里渲染成徽标。这样即使摘要中间件压缩掉了早期消息，"我刚才
+导出的那个 CSV"仍然可解析。</p>
+<h3 id="1733">17.3.3 动手实验：完整跑通数据分析平台（可操作步骤）<a class="headerlink" href="#1733" title="Permanent link">&para;</a></h3>
+<p>前置：已完成第 2 章三步（<code>make config &amp;&amp; make install &amp;&amp; make dev</code>）。</p>
+<p><strong>步骤 1：确认沙箱与工具组</strong>。检查 <code>config.yaml</code> 中 <code>tool_groups</code> 含 <code>bash</code> 与
+<code>file:read</code>/<code>file:write</code>（模板默认有，<code>config.example.yaml:836</code>）；生产/演示建议把沙箱
+切到 Docker 模式（<code>sandbox:</code> 段，第 8 章 8.5），确认 Docker 可用。</p>
+<p><strong>步骤 2：确认两个技能已启用</strong>。技能发现是懒加载的；<code>skills.public</code> 下的
+<code>data-analysis</code> 与 <code>chart-visualization</code> 默认随仓库提供。若你把技能目录指到了别处
+（<code>config.example.yaml:2173</code> 的 <code>skills.path</code>），确认这两个目录仍在内。可在会话里输入
+<code>/</code> 看技能斜杠命令，或直接让模型分析文件来触发。</p>
+<p><strong>步骤 3：确认产物注册表开启</strong>。<code>config.yaml</code> 里 <code>tool_artifacts.enabled: true</code>
+（模板默认值，<code>config.example.yaml:1463</code>）。</p>
+<p><strong>步骤 4：跑一次端到端</strong>。打开 <code>http://localhost:2026</code>，新建会话，上传一个 Excel
+（没有就 <code>pip install openpyxl</code> 造一个两列的销售表），输入：</p>
+<blockquote>
+<p>分析上传的销售数据：先看结构，然后统计每个品类的销售额，最后画一张柱状图。</p>
+</blockquote>
+<p>观察三个可验证现象：
+1. 模型先调用 <code>inspect</code>（终端 <code>logs/gateway.log</code> 里可见 bash 工具执行
+   <code>analyze.py --action inspect</code>）；
+2. 产物文件出现在对话的 artifacts 区，带 <code>art_</code> 句柄徽标（<code>tool_artifacts</code> 生效）；
+3. 图表 URL 由 <code>generate.js</code> 输出并渲染（退出码 0 才呈现 URL——技能约定）。</p>
+<p><strong>步骤 5：追加一个追问，验证句柄存活</strong>：开启较长对话后让它"把之前导出的 CSV 再按月
+透视"。若句柄解析正常（<code>resolve_handles_in_args: true</code>），即使早期消息已被摘要压缩，
+<code>analyze.py</code> 仍拿到正确路径。</p>
+<p><strong>步骤 6：沉淀为业务模板</strong>。把三样东西打包成团队模板（配置 + 技能 + 扩展三件套中的
+前两件即可，本场景无需扩展）：
+- <code>config.yaml</code> 增量片段：<code>tool_groups</code>/<code>tools</code>/<code>tool_artifacts</code>/<code>sandbox</code>；
+- 可选的领域技能：复制 <code>skills/public/data-analysis/</code> 到 <code>skills/custom/&lt;你的域&gt;/</code>，
+  改 frontmatter 的 <code>name</code>/<code>description</code>（触发词要写清业务文件类型），脚本按需替换；
+- 一份 README 说明上传格式约定。</p>
+<h2 id="174-c">17.4 实战 C：深度研报自动化<a class="headerlink" href="#174-c" title="Permanent link">&para;</a></h2>
+<p><strong>需求</strong>：每天早上 9 点自动产出一份带来源核验的行业研报，推送到飞书群。</p>
+<p><strong>分流</strong>：研报方法论 = Skill（<code>deep-research</code> 已有）；规模化 = 子代理批处理（核心已有，
+配置开启）；可信度 = verification 凭证（核心已有）；定时 = scheduler（核心已有，配置
+开启）。配置 + 一个现成技能的组合，唯一可能的新增是投放渠道（IM，见实战 D）。</p>
+<h3 id="1741-deep-research">17.4.1 研究方法论：deep-research 技能<a class="headerlink" href="#1741-deep-research" title="Permanent link">&para;</a></h3>
+<p><code>skills/public/deep-research/SKILL.md:1</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>---
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>name: deep-research
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>description: Use this skill instead of WebSearch for ANY question requiring web
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>  research. Trigger on queries like "what is X", "explain X", "compare X and Y",
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="gu">  "research X", or before content generation tasks. ...</span>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="gu">---</span>
+</code></pre></div>
+<p>正文的核心纪律（<code>SKILL.md:31</code>）："<strong>Never generate content based solely on general
+knowledge.</strong>" 四阶段方法论：Broad Exploration → Deep Dive → Diversity &amp; Validation →
+Synthesis Check，并强制检查 <code>&lt;current_date&gt;</code> 做时间敏感检索（<code>SKILL.md:135</code>）。它不引入
+任何新工具——全靠既有 <code>web_search</code>/<code>web_fetch</code>，所以它是"纯提示词工程也是一等功能"
+的最好例证。</p>
+<h3 id="1742">17.4.2 规模化：子代理运行时与批处理<a class="headerlink" href="#1742" title="Permanent link">&para;</a></h3>
+<p>子代理并发容量是进程级配置（<code>config.example.yaml:2011</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nt">subagent_runtime</span><span class="p">:</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">  </span><span class="nt">max_running</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">  </span><span class="nt">max_queued</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">64</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">  </span><span class="nt">admission_policy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">queue</span><span class="w">       </span><span class="c1"># queue or reject when all slots are occupied</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="w">  </span><span class="nt">queue_timeout_seconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">300</span>
+</code></pre></div>
+<p>要让一次研报委派几十个检索任务，开启持久批处理（<code>config.example.yaml:2102</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nt">subagent_batches</span><span class="p">:</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">  </span><span class="nt">poll_interval_seconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">  </span><span class="nt">lease_seconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">120</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">  </span><span class="nt">max_items_per_batch</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5000</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="w">  </span><span class="nt">default_max_live_items</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="w">  </span><span class="nt">max_live_items_per_batch</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span>
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="w">  </span><span class="nt">default_max_running_items</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="w">  </span><span class="nt">max_running_items_per_batch</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">64</span>
+<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="w">  </span><span class="nt">max_attempts</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a><span class="w">  </span><span class="nt">max_result_chars</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100000</span>
+<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a><span class="w">  </span><span class="nt">result_preview_max_chars</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2000</span>
+</code></pre></div>
+<p>段注释（<code>config.example.yaml:2096</code>）点明两件事：默认关闭是因为"enabling it can
+materially increase model usage"，且需要 <code>database.backend</code> 为 sqlite/postgres；三个
+限额（total / live / running）刻意分开——持久项、同时排队项、真正占执行槽项是三个
+不同的水位。若要给研报子代理单独配模型/技能白名单，用 <code>subagents.agents</code> 的 per-agent
+覆盖（<code>config.example.yaml:2049</code>，<code>general-purpose.timeout_seconds: 2700</code> 的示例）或
+<code>custom_agents</code> 定义专属研究员（<code>config.example.yaml:2069</code>，<code>skills:</code> 白名单写
+<code>data-analysis</code> 那种格式）。</p>
+<h3 id="1743-verification">17.4.3 可信度：verification 凭证<a class="headerlink" href="#1743-verification" title="Permanent link">&para;</a></h3>
+<p><code>config.example.yaml:2122</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nt">verification</span><span class="p">:</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="w">  </span><span class="nt">receipts_enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">  </span><span class="c1"># Lead-chain ledger rendering: 'delegation_only' renders only while</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">  </span><span class="c1"># processing subagent results (subagent chains always render).</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="w">  </span><span class="nt">receipts_render_mode</span><span class="p">:</span><span class="w"> </span><span class="s">"delegation_only"</span>
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="w">  </span><span class="nt">judge_enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="w">  </span><span class="nt">judge_model_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
+</code></pre></div>
+<p><code>receipts_enabled: true</code> 给每个工具结果盖上确定性凭证并注入模型上下文，最终研报可以
+引用"确实执行过的动作"（<code>config.example.yaml:2118</code> 的段注释）。选择性评审
+（<code>judge_enabled</code>）留给验收标准审查，默认关闭。</p>
+<h3 id="1744">17.4.4 定时与推送<a class="headerlink" href="#1744" title="Permanent link">&para;</a></h3>
+<p>定时任务三件配置（<code>config.example.yaml:2895</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nt">scheduler</span><span class="p">:</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">  </span><span class="nt">tool_enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w">          </span><span class="c1"># Offer schedule tools to authorized Gateway conversations</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">  </span><span class="nt">multi_instance</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w">       </span><span class="c1"># Opt into lease-aware recovery across Gateway instances</span>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="w">  </span><span class="nt">poll_interval_seconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="w">  </span><span class="nt">lease_seconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">120</span>
+<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="w">  </span><span class="nt">max_concurrent_runs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="w">  </span><span class="nt">max_concurrent_runs_per_user</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="w">  </span><span class="nt">queue_timeout_seconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3600</span>
+<a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a><span class="w">  </span><span class="nt">min_once_delay_seconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">60</span>
+<a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a><span class="w">  </span><span class="nt">recursion_limit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span>
+</code></pre></div>
+<p><code>enabled</code> 是后台轮询总闸；<code>tool_enabled</code> 通过 Gateway 能力准入把排程工具开放给对话
+（根 <code>AGENTS.md</code> 的 scheduled-task note：互动轮创建/管理计划，计划轮只能停自己的计划）。
+计划轮是<strong>非交互</strong>的——<code>ask_clarification</code> 被排除，所以研报提示词里不能依赖追问，必须
+把"检索不足时的降级策略"写进任务目标。</p>
+<p>推送走 IM 通知 worker：当 <code>channel_connections.enabled</code> 且渠道在运行时，scheduler 的
+<code>poll_interval_seconds</code> 同时驱动通知投递（<code>config.example.yaml:2873</code>），每次运行结束/
+失败/未达目标最多一条消息，且<strong>目前仅 WeCom 支持主动推送</strong>——飞书侧的"推送到群"要用
+实战 D 的渠道接入 + 群绑定实现，计划通知本身不会自动进飞书群，规划时别把两者混为一谈。</p>
+<h3 id="1745">17.4.5 组装清单<a class="headerlink" href="#1745" title="Permanent link">&para;</a></h3>
+<ol>
+<li><code>config.yaml</code>：<code>scheduler.enabled: true</code> + <code>scheduler.tool_enabled: true</code>；
+   视成本预算开 <code>subagent_batches.enabled</code>（先评估模型用量）；</li>
+<li>保持 <code>verification.receipts_enabled: true</code>；</li>
+<li>在 <code>/workspace/scheduled-tasks</code> 页面创建计划：cron 每日 09:00，任务目标写清
+   "用 deep-research 方法论产出《XX 行业日报》，含来源链接与凭证引用，无澄清降级策略"；</li>
+<li>从 IM 渠道（实战 D）绑定接收群；或用 Web 会话先手动试跑一次（手动 run now 不发
+   通知，<code>config.example.yaml:2881</code>）。</li>
+</ol>
+<h2 id="175-dim">17.5 实战 D：IM 智能客服<a class="headerlink" href="#175-dim" title="Permanent link">&para;</a></h2>
+<p><strong>需求</strong>：客户在飞书/Telegram 里咨询，机器人以公司客服知识回答，支持文件收发与选项
+澄清，且每个外部用户的数据归属正确。</p>
+<p><strong>分流</strong>：渠道接入是核心能力（<code>app/channels/</code> 已有六个平台 + GitHub webhooks + 用户
+连接层）；客服领域知识是 Skill；若要工单系统对接则补一条 MCP。扩展仅在你需要自定义
+渠道或深度改造路由时才上场。</p>
+<h3 id="1751">17.5.1 渠道架构速读<a class="headerlink" href="#1751" title="Permanent link">&para;</a></h3>
+<p><code>backend/app/channels/AGENTS.md:22</code> 的组件表是理解数据流的地图：</p>
+<ul>
+<li><code>message_bus.py</code>：入站队列 → 分发器；出站走 dispatch-start 时的监听器快照；</li>
+<li><code>manager.py</code>：核心分发器——经 <code>client.threads.create()</code> 建线程、路由 <code>/new</code> <code>/goal</code>
+  <code>/agent</code> <code>/model</code> 等命令；Slack/Discord 用 <code>runs.wait()</code>，飞书/Telegram 用
+  <code>runs.stream()</code> 增量编辑消息（<code>AGENTS.md:46</code>–<code>AGENTS.md:47</code> 的 Message Flow）；</li>
+<li><code>base.py</code>：渠道生命周期抽象（start/stop/send），SDK 回调必须用
+  <code>_submit_threadsafe_coroutine()</code> 跨线程投递；</li>
+<li><code>store.py</code>：<code>channel_name:chat_id[:topic_id] → thread_id</code> 绑定存储（SQL/JSON 双实现，
+  多副本共享绑定用 SQL）。</li>
+</ul>
+<p><strong>owner 归属与文件存储</strong>是客服场景的安全底座（<code>backend/app/channels/AGENTS.md:58</code>）：</p>
+<blockquote>
+<p><strong>Owner-scoped file storage</strong>: inbound files, uploads, and output artifacts are staged
+under the DeerFlow owner's bucket so they land where the agent run reads/writes
+(<code>users/{user_id}/threads/{thread_id}/user-data/{uploads,outputs}</code>).</p>
+</blockquote>
+<p>入站消息携带 <code>connection_id</code> 与 <code>owner_user_id</code>（<code>AGENTS.md:43</code>），后者成为 run 的
+<code>user_id</code>——客户的文件永远落在<strong>绑定的企业用户</strong>名下，而不是某个匿名桶。记忆个性化也
+因此天然按 owner 隔离（第 10 章）。</p>
+<h3 id="1752">17.5.2 配置面：渠道 + 交互卡片<a class="headerlink" href="#1752" title="Permanent link">&para;</a></h3>
+<p><code>config.example.yaml:3170</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1">#   feishu:</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="c1">#     enabled: false</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="c1">#     app_id: $FEISHU_APP_ID</span>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="c1">#     app_secret: $FEISHU_APP_SECRET</span>
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="c1">#     # domain: https://open.feishu.cn       # China (default)</span>
+<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="c1">#     # domain: https://open.larksuite.com   # International</span>
+<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="c1">#     # card_interaction_enabled: false      # render option clarifications as clickable button</span>
+<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="c1">#                                            # cards; requires subscribing card.action.trigger</span>
+<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="c1">#                                            # under the console's callback-configuration tab</span>
+<a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="c1">#                                            # (separate from event subscriptions) and</span>
+<a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a><span class="c1">#                                            # publishing a new app version</span>
+</code></pre></div>
+<p><code>card_interaction_enabled</code> 打开后，<code>ask_clarification</code> 的选项澄清会渲染成<strong>可点击按钮
+卡片</strong>——客服场景的关键体验（客户点"退货政策"而不是打字）。代码开关在
+<code>backend/app/channels/feishu.py:195</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="bp">self</span><span class="o">.</span><span class="n">_card_interaction_enabled</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"card_interaction_enabled"</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+</code></pre></div>
+<p>启用它有平台侧前置条件（<code>config.example.yaml:3176</code> 注释）：在飞书开放平台控制台的
+<strong>回调配置</strong>页订阅 <code>card.action.trigger</code>（与事件订阅是两回事），并发布新版应用。卡片
+交互的消费在 <code>feishu_card_interaction.py</code> 中按"来源者/选项校验 + 一次性消费"处理
+（<code>backend/app/channels/AGENTS.md:49</code>：Originator/option checks consume once；跨
+worker 消费 fail closed）。</p>
+<p><strong>用户连接层</strong>让企业员工自助绑定（<code>config.example.yaml:3063</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="c1"># channel_connections:</span>
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="c1">#   enabled: false</span>
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="c1">#   # Security: keep this enabled unless you intentionally want legacy open-bot behavior.</span>
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="c1">#   # Disabling it lets unbound external IM users create DeerFlow threads/runs.</span>
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="c1">#   require_bound_identity: true</span>
+</code></pre></div>
+<p>注释里的安全警告值得原样贴进运维手册：关掉 <code>require_bound_identity</code> 等于退回开放 bot
+行为——任何未绑定的外部用户都能创建 DeerFlow 线程和 run。客服机器人若面向外部客户，
+保持 <code>true</code> 并走 <code>/connect &lt;code&gt;</code> 绑定流（<code>AGENTS.md:75</code>：Telegram 深链 <code>/start &lt;code&gt;</code>，
+其余平台 <code>/connect &lt;code&gt;</code>；绑定码 <code>secrets.token_urlsafe(16)</code>、600 秒 TTL、一次性）。</p>
+<h3 id="1753">17.5.3 落地清单<a class="headerlink" href="#1753" title="Permanent link">&para;</a></h3>
+<ol>
+<li><code>config.yaml → channels.feishu</code>：填 <code>app_id</code>/<code>app_secret</code>，按需开
+   <code>card_interaction_enabled</code>（先在控制台完成卡片回调订阅）；</li>
+<li><code>channel_connections.enabled: true</code>、<code>require_bound_identity: true</code>；</li>
+<li>客服知识放 <code>skills/custom/support-kb/</code>（实战 A 的知识检索亦可并入）；</li>
+<li>记忆开启（第 10 章），客户偏好按 owner 隔离沉淀；</li>
+<li>验证：绑定一个测试用户 → 发"退货政策是什么" → 观察澄清卡片 → 上传一张发票图片 →
+   确认文件落在绑定 owner 的 <code>uploads/</code> 目录而非默认桶。</li>
+</ol>
+<h2 id="176-e">17.6 实战 E：自定义模型供应商<a class="headerlink" href="#176-e" title="Permanent link">&para;</a></h2>
+<p><strong>需求</strong>：企业有私有模型网关（vLLM / MindIE / LiteLLM / 一方云兼容端点），要接进
+DeerFlow，且深度思考、视觉、上下文窗口指示都表现正确。</p>
+<p><strong>分流</strong>：纯配置。DeerFlow 的模型抽象是"LangChain 类路径 + 能力位"——
+<code>create_chat_model()</code> 按 <code>use:</code> 指到的类构造客户端，任何 LangChain <code>BaseChatModel</code>
+子类都能接入。</p>
+<h3 id="1761">17.6.1 工厂走读<a class="headerlink" href="#1761" title="Permanent link">&para;</a></h3>
+<p>入口在 <code>backend/packages/harness/deerflow/models/factory.py:540</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">create_chat_model</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">thinking_enabled</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>                      <span class="n">app_config</span><span class="p">:</span> <span class="n">AppConfig</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">attach_tracing</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>                      <span class="n">model_overrides</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseChatModel</span><span class="p">:</span>
+</code></pre></div>
+<p>关键流程（读 <code>factory.py:568</code>–<code>factory.py:574</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>    <span class="n">config</span> <span class="o">=</span> <span class="n">app_config</span> <span class="ow">or</span> <span class="n">get_app_config</span><span class="p">()</span>
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>    <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>        <span class="n">name</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>    <span class="n">model_config</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get_model_config</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>    <span class="k">if</span> <span class="n">model_config</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Model </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> not found in config"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
+<a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a>    <span class="n">model_class</span> <span class="o">=</span> <span class="n">resolve_class</span><span class="p">(</span><span class="n">model_config</span><span class="o">.</span><span class="n">use</span><span class="p">,</span> <span class="n">BaseChatModel</span><span class="p">)</span>
+<a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a>    <span class="n">model_settings_from_config</span> <span class="o">=</span> <span class="n">model_config</span><span class="o">.</span><span class="n">model_dump</span><span class="p">(</span><span class="n">exclude_none</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="nb">set</span><span class="p">(</span><span class="n">_MODEL_METADATA_FIELDS</span><span class="p">))</span>
+</code></pre></div>
+<p>两个设计点：</p>
+<ol>
+<li><strong><code>resolve_class(model_config.use, BaseChatModel)</code></strong>（<code>backend/packages/harness/deerflow/reflection/resolvers.py:103</code>）
+   把 <code>use:</code> 字符串解析成类并校验基类——这就是"接任意 LangChain 模型类"的机制；</li>
+<li><strong><code>_MODEL_METADATA_FIELDS</code></strong>（<code>factory.py:19</code>–<code>factory.py:44</code>）把描述性字段
+   （<code>use/name/display_name/aliases/supports_thinking/supports_vision/context_window/
+   pricing/reasoning/...</code>）在进构造器之前剥掉——这些是 DeerFlow 的能力位与 UI 元数据，
+   不是 provider 参数，混进去会被 OpenAI SDK 在请求期以"unexpected keyword argument"
+   报错（<code>factory.py:349</code> 的 <code>_warn_unknown_model_settings</code> 会在构建期提前告警）。</li>
+</ol>
+<h3 id="1762">17.6.2 能力位配置样例<a class="headerlink" href="#1762" title="Permanent link">&para;</a></h3>
+<p>最小可用条目（<code>config.example.yaml:302</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="w">  </span><span class="c1"># Example: OpenAI model</span>
+<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="w">  </span><span class="c1"># - name: gpt-4</span>
+<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="w">  </span><span class="c1">#   display_name: GPT-4</span>
+<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="w">  </span><span class="c1">#   use: langchain_openai:ChatOpenAI</span>
+<a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a><span class="w">  </span><span class="c1">#   model: gpt-4</span>
+<a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a><span class="w">  </span><span class="c1">#   api_key: $OPENAI_API_KEY # Use environment variable</span>
+<a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a><span class="w">  </span><span class="c1">#   max_tokens: 4096          # Per-call output cap</span>
+<a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a><span class="w">  </span><span class="c1">#   context_window: 128000    # Total prompt + completion capacity</span>
+<a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a><span class="w">  </span><span class="c1">#   temperature: 0.7</span>
+<a id="__codelineno-19-10" name="__codelineno-19-10" href="#__codelineno-19-10"></a><span class="w">  </span><span class="c1">#   supports_vision: true # Enable vision support for view_image tool</span>
+</code></pre></div>
+<p>私有网关 + 必思考模型的完整示例（<code>config.example.yaml:266</code>，Z.AI GLM-5.3-Flash）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="w">  </span><span class="c1"># - name: glm-5.3-flash</span>
+<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="w">  </span><span class="c1">#   display_name: GLM-5.3-Flash</span>
+<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="w">  </span><span class="c1">#   use: deerflow.models.patched_deepseek:PatchedChatDeepSeek</span>
+<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="w">  </span><span class="c1">#   model: glm-5.3-flash</span>
+<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="w">  </span><span class="c1">#   api_base: https://api.z.ai/api/paas/v4</span>
+<a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a><span class="w">  </span><span class="c1">#   api_key: $ZAI_API_KEY</span>
+<a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a><span class="w">  </span><span class="c1">#   ...（省略 timeout / max_retries / temperature / top_p / max_tokens / stream_usage 数行）</span>
+<a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a><span class="w">  </span><span class="c1">#   context_window: 1000000</span>
+<a id="__codelineno-20-9" name="__codelineno-20-9" href="#__codelineno-20-9"></a><span class="w">  </span><span class="c1">#   supports_vision: true</span>
+<a id="__codelineno-20-10" name="__codelineno-20-10" href="#__codelineno-20-10"></a><span class="w">  </span><span class="c1">#   reasoning:</span>
+<a id="__codelineno-20-11" name="__codelineno-20-11" href="#__codelineno-20-11"></a><span class="w">  </span><span class="c1">#     thinking: required</span>
+<a id="__codelineno-20-12" name="__codelineno-20-12" href="#__codelineno-20-12"></a><span class="w">  </span><span class="c1">#     dialect: openai_extra_body</span>
+<a id="__codelineno-20-13" name="__codelineno-20-13" href="#__codelineno-20-13"></a><span class="w">  </span><span class="c1">#     history: clear</span>
+<a id="__codelineno-20-14" name="__codelineno-20-14" href="#__codelineno-20-14"></a><span class="w">  </span><span class="c1">#     effort:</span>
+<a id="__codelineno-20-15" name="__codelineno-20-15" href="#__codelineno-20-15"></a><span class="w">  </span><span class="c1">#       values: [low, high, max]</span>
+<a id="__codelineno-20-16" name="__codelineno-20-16" href="#__codelineno-20-16"></a><span class="w">  </span><span class="c1">#       default: high</span>
+<a id="__codelineno-20-17" name="__codelineno-20-17" href="#__codelineno-20-17"></a><span class="w">  </span><span class="c1">#       aliases:</span>
+<a id="__codelineno-20-18" name="__codelineno-20-18" href="#__codelineno-20-18"></a><span class="w">  </span><span class="c1">#         minimal: low</span>
+<a id="__codelineno-20-19" name="__codelineno-20-19" href="#__codelineno-20-19"></a><span class="w">  </span><span class="c1">#         medium: high</span>
+</code></pre></div>
+<p>各字段语义：</p>
+<ul>
+<li><strong><code>use:</code></strong> 选客户端类。OpenAI 兼容网关通常用
+  <code>deerflow.models.patched_deepseek:PatchedChatDeepSeek</code>（保留 reasoning_content）或
+  <code>langchain_openai:ChatOpenAI</code>；<strong>Ollama 必须用 <code>langchain_ollama:ChatOllama</code></strong>
+  （<code>config.example.yaml:336</code>：OpenAI 兼容端点不返回独立 reasoning_content，思考内容
+  会被压扁或丢弃）；DeerFlow 还内置 <code>vllm_provider.py</code>、<code>mindie_provider.py</code>、
+  <code>openai_codex_provider.py</code> 等（<code>backend/packages/harness/deerflow/models/</code> 目录）；</li>
+<li><strong><code>context_window</code></strong>：提示 + 回复总容量，驱动 UI 的"已用上下文 %"，并让基于比例的
+  摘要触发器能取到阈值（<code>config.example.yaml:135</code>；<code>factory.py:730</code> 会把它翻译成
+  LangChain profile 的 <code>max_input_tokens</code>）；</li>
+<li><strong><code>supports_vision</code></strong>：开启 <code>view_image</code> 工具的可用性（<code>config.example.yaml:313</code>）;</li>
+<li><strong><code>supports_thinking</code> / <code>reasoning:</code> 契约</strong>：声明思考开关是否存在、思考是否强制、
+  effort 词表与别名。<code>required</code> 思考的模型永远不会收到关闭载荷；<code>default: high</code> 让
+  标题/摘要这类后台调用也别落到最深的思考档（<code>config.example.yaml:272</code> 的注释）；</li>
+<li><strong><code>api_base</code> vs <code>base_url</code></strong>：工厂会把 OpenAI 兼容类上的 <code>api_base</code> 别名归一化成
+  <code>base_url</code>（<code>factory.py:318</code>），但 <code>langchain_deepseek</code> 这类自己声明 <code>api_base</code>
+  字段的类除外——拷贝配置时留意注释。</li>
+</ul>
+<h3 id="1763">17.6.3 验证<a class="headerlink" href="#1763" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="c1"># 配置写好后重启 Gateway，然后：</span>
+<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>curl<span class="w"> </span>-s<span class="w"> </span>http://localhost:2026/api/models<span class="w"> </span><span class="p">|</span><span class="w"> </span>head<span class="w">   </span><span class="c1"># 新模型应出现在目录里</span>
+</code></pre></div>
+<p>再到 Web 界面：模型选择器出现新条目 → 发消息看流式输出 → 让它"看这张图"验证
+<code>supports_vision</code> → 长对话验证 <code>context_window</code> 指示器 → 若配了 <code>reasoning:</code> 契约，
+在 UI 里切 effort 档位观察请求载荷（<code>logs/gateway.log</code> 或 tracing）。</p>
+<h2 id="177">17.7 常见坑<a class="headerlink" href="#177" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>把所有需求都做成扩展</strong>。能不能一句话说清"它钩哪个贡献点"？说不清就先考虑
+   Skill/MCP/配置。扩展的维护成本（快照升级、重启、契约版本）比配置高一个量级。</li>
+<li><strong>知识库只开 <code>knowledge_base.enabled</code> 就以为能用</strong>。开关只是能力位，真正把工具挂进
+   模型的是 <code>tools:</code> 里的 <code>knowledge_search</code> 条目（或已注册的知识提供者扩展）；两者缺一
+   不可，且 <code>scope_selection_enabled</code> 只在 provider 支持 <code>catalog</code>+<code>dataset_filter</code> 时
+   才会真正显示选择器。</li>
+<li><strong>数据分析平台忘了沙箱模式</strong>。本地 <code>LocalSandboxProvider</code> 是开发直执行，生产必须
+   Docker 隔离（第 8 章）；技能脚本路径 <code>/mnt/skills/...</code> 在沙箱里的映射由
+   <code>skills.container_path</code> 控制（<code>config.example.yaml:2191</code>），改了它要重启 Gateway。</li>
+<li><strong>计划轮里写"如果信息不足请问我"</strong>。计划轮非交互，<code>ask_clarification</code> 被排除，
+   <code>non_interactive</code>/<code>disable_clarification</code>/<code>github_token</code> 只对内部认证调用方生效
+   （run-context 信任边界）——研报任务必须自带降级策略。</li>
+<li><strong>飞书卡片开了开关却收不到按钮点击</strong>。<code>card_interaction_enabled</code> 需要控制台<strong>回调
+   配置</strong>页订阅 <code>card.action.trigger</code> 并发布新版本；它和"事件订阅"是两个独立开关
+   （<code>config.example.yaml:3176</code>–<code>config.example.yaml:3180</code>）。</li>
+<li><strong>模型配置键敲错</strong>。<code>ModelConfig</code> 是 extra=allow 的，<code>maxx_tokens</code> 这类笔误不会在
+   加载期报错，而是被 LangChain 转进 <code>model_kwargs</code> 在<strong>请求期</strong>炸出难排查的错误；
+   工厂在构建期会打告警（<code>factory.py:349</code> 的 <code>_warn_unknown_model_settings</code>），看日志
+   第一行就能定位。同理，描述性字段（<code>context_window</code>、<code>supports_vision</code>…）不是
+   provider 参数，会被工厂剥掉，不要指望它们透传。</li>
+</ol>
+<hr />
+<h2 id="_2">下一步<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<p>五个实战覆盖了决策树的全部分支：配置（B/C/E）、Skill（C 的方法论）、扩展与契约（A）、
+核心能力组合（D）。当业务需要自定义界面——新的产物预览卡片、新的 workspace 页面、
+渠道管理面板——就该把镜头转向前端了。请继续阅读第 18 章《前端二次开发》（Next.js
+App Router、<code>core/</code> 业务域与流式数据流，见 <code>frontend/AGENTS.md</code>；章节文件见教程目录
+索引）。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      教程基于开源项目 <a href='https://github.com/bytedance/deer-flow'>bytedance/deer-flow</a> 的真实源码编写
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.sections", "navigation.expand", "navigation.top", "navigation.indexes", "search.suggest", "search.highlight", "content.code.copy", "toc.follow"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.a5f9d56c.min.js"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

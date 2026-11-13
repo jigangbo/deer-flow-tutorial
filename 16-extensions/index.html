@@ -1,0 +1,3227 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="基于 DeerFlow 真实源码的中文系统教程：21 章 + 附录，覆盖环境配置、核心组件拆解、二次开发与 MCP 集成">
+      
+      
+      
+        <link rel="canonical" href="https://jigangbo.github.io/deer-flow-tutorial/16-extensions/">
+      
+      
+        <link rel="prev" href="../15-mcp/">
+      
+      
+        <link rel="next" href="../17-business-cases/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
+    
+    
+      
+        <title>第 16 章 扩展（Extensions）开发 - DeerFlow 从入门到精通 · 源码教程</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#16-extensions" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href=".." title="DeerFlow 从入门到精通 · 源码教程" class="md-header__button md-logo" aria-label="DeerFlow 从入门到精通 · 源码教程" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            DeerFlow 从入门到精通 · 源码教程
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              第 16 章 扩展（Extensions）开发
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jigangbo/deer-flow-tutorial" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="DeerFlow 从入门到精通 · 源码教程" class="md-nav__button md-logo" aria-label="DeerFlow 从入门到精通 · 源码教程" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    DeerFlow 从入门到精通 · 源码教程
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jigangbo/deer-flow-tutorial" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    导读
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    导读
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 0 章 全景鸟瞰
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第一篇 入门篇
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第一篇 入门篇
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-environment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 1 章 准备环境（Environment Setup）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 2 章 一键启动（Quick Start）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 3 章 配置系统入门
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-frontend-tour/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 4 章 前端界面与基本功能导览
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-run-modes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 5 章 更多运行方式
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第二篇 进阶篇
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第二篇 进阶篇
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-request-lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 6 章 一次请求的一生：Agent 运行时全链路
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-tools-and-skills/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 7 章 工具系统与 Skills
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-sandbox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 8 章 沙箱与代码执行
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-multi-agent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 9 章 Multi-Agent 路由与子代理委派
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10-memory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 10 章 记忆系统（Memory / DeerMem）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../11-context-engineering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 11 章 上下文工程与长对话治理
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../12-scheduled-tasks-and-im/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 12 章 定时任务与 IM 渠道
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../13-gateway-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 13 章 Gateway API 与编程接入
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第三篇 精通篇
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第三篇 精通篇
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../14-architecture-layers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 14 章 架构分层与开发规范（二次开发前必读）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../15-mcp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 15 章 MCP 集成（重点）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 16 章 扩展（Extensions）开发
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 16 章 扩展（Extensions）开发
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#160" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.0 学习目标
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        本章源码锚点
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#161" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.1 概念讲解：扩展优先哲学
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#162-a-deerflow-extension-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.2 源码走读 A：契约包 deerflow-extension-api
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="16.2 源码走读 A：契约包 deerflow-extension-api">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1621-extensionregistry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.2.1 注册面：ExtensionRegistry
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1622-extension" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.2.2 版本戳：@extension 装饰器
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1623" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.2.3 中间件的"语义位置"而不是"列表下标"
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1624" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.2.4 服务与运行时依赖注入
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#163-b-deerflow-extension-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.3 源码走读 B：解剖 deerflow-extension-example
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="16.3 源码走读 B：解剖 deerflow-extension-example">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1631" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.3.1 入口与注册
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1632" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.3.2 中间件：数工具调用
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1633" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.3.3 任务生命周期：把任务统计折叠回应用作用域
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1634" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.3.4 系统模型调用观察者
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1635" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.3.5 服务 + 路由：一套对象，两个阶段
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1636-entry-point" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.3.6 打包清单：唯一的 entry point
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#164-cextensionmanager-cli" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.4 源码走读 C：安装与管理——ExtensionManager 与 CLI
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="16.4 源码走读 C：安装与管理——ExtensionManager 与 CLI">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1641" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.4.1 命令面
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1642-install" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.4.2 install 的事务
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1643-gateway" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.4.3 为什么每次变更都要重启 Gateway
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#165-d" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.5 源码走读 D：两条配置通道
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="16.5 源码走读 D：两条配置通道">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1651-operator-configyaml-plugins" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.5.1 operator 专属：config.yaml → plugins:
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1652-api-extensions_configjson" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.5.2 API 可写：extensions_config.json
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1653" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.5.3 宿主加载链路
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#166" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.6 官方示例全景：选对起点
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="16.6 官方示例全景：选对起点">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1661-bookmarks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.6.1 全栈插件：bookmarks
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1662" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.6.2 知识提供者：一行注册
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1663" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.6.3 安装后的形态
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#167" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.7 动手实验：写一个"团队周报收集"扩展并走完生命周期
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="16.7 动手实验：写一个&#34;团队周报收集&#34;扩展并走完生命周期">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第 1 步：创建包骨架
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第 2 步：本地测试 + 打包检查
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第 3 步：安装 → 重启 → 验证
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第 4 步：禁用 → 卸载
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#168" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.8 常见坑
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        下一步
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../17-business-cases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 17 章 业务二次开发实战（综合案例）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../18-frontend-dev/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 18 章 前端二次开发
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../19-testing-quality/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 19 章 可观测性、测试与质量保障
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../20-production/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 20 章 生产部署与运维
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    附录
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    附录
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../appendices/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    附录
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#160" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.0 学习目标
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        本章源码锚点
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#161" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.1 概念讲解：扩展优先哲学
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#162-a-deerflow-extension-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.2 源码走读 A：契约包 deerflow-extension-api
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="16.2 源码走读 A：契约包 deerflow-extension-api">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1621-extensionregistry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.2.1 注册面：ExtensionRegistry
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1622-extension" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.2.2 版本戳：@extension 装饰器
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1623" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.2.3 中间件的"语义位置"而不是"列表下标"
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1624" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.2.4 服务与运行时依赖注入
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#163-b-deerflow-extension-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.3 源码走读 B：解剖 deerflow-extension-example
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="16.3 源码走读 B：解剖 deerflow-extension-example">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1631" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.3.1 入口与注册
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1632" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.3.2 中间件：数工具调用
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1633" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.3.3 任务生命周期：把任务统计折叠回应用作用域
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1634" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.3.4 系统模型调用观察者
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1635" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.3.5 服务 + 路由：一套对象，两个阶段
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1636-entry-point" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.3.6 打包清单：唯一的 entry point
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#164-cextensionmanager-cli" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.4 源码走读 C：安装与管理——ExtensionManager 与 CLI
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="16.4 源码走读 C：安装与管理——ExtensionManager 与 CLI">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1641" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.4.1 命令面
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1642-install" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.4.2 install 的事务
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1643-gateway" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.4.3 为什么每次变更都要重启 Gateway
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#165-d" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.5 源码走读 D：两条配置通道
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="16.5 源码走读 D：两条配置通道">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1651-operator-configyaml-plugins" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.5.1 operator 专属：config.yaml → plugins:
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1652-api-extensions_configjson" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.5.2 API 可写：extensions_config.json
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1653" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.5.3 宿主加载链路
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#166" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.6 官方示例全景：选对起点
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="16.6 官方示例全景：选对起点">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1661-bookmarks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.6.1 全栈插件：bookmarks
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1662" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.6.2 知识提供者：一行注册
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1663" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.6.3 安装后的形态
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#167" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.7 动手实验：写一个"团队周报收集"扩展并走完生命周期
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="16.7 动手实验：写一个&#34;团队周报收集&#34;扩展并走完生命周期">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第 1 步：创建包骨架
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第 2 步：本地测试 + 打包检查
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第 3 步：安装 → 重启 → 验证
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        第 4 步：禁用 → 卸载
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#168" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16.8 常见坑
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        下一步
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="16-extensions">第 16 章 扩展（Extensions）开发<a class="headerlink" href="#16-extensions" title="Permanent link">&para;</a></h1>
+<h2 id="160">16.0 学习目标<a class="headerlink" href="#160" title="Permanent link">&para;</a></h2>
+<p>读完本章，你应该能够：</p>
+<ol>
+<li>复述 DeerFlow 的<strong>扩展优先哲学</strong>：新功能优先做成打包扩展而不是改核心，核心只保留
+   bug 修复与 agent loop / 记忆 / 上下文压缩 / 认证这类属于框架本身的变更；</li>
+<li>说出九大贡献点（middleware、task lifecycle、system-model observer、agent-assembly
+   observer、context-compaction observer、Gateway service、router、full-stack plugin、
+   knowledge provider）分别"钩在宿主的哪个位置"，以及它们各自的注册方法名；</li>
+<li>读懂一个扩展的三件套结构：PEP 621 入口（<code>deerflow.extensions</code> 组）、<code>@extension</code>
+   版本戳、<code>install(registry, config)</code> 注册函数，并能独立写出一个最小扩展；</li>
+<li>走通扩展的完整生命周期：<code>make extension-install → list → enable → restart → 验证
+   → disable → remove</code>，并理解每一步在 <code>pyproject.toml</code> / <code>uv.lock</code> / <code>config.yaml</code> /
+   <code>backend/extensions/sources/</code> 里各改了什么；</li>
+<li>分清两条配置通道的边界：operator 专属的 <code>config.yaml → plugins:</code>（会导入代码）与
+   API 可写的 <code>extensions_config.json</code>（middlewares / mcpInterceptors / mcpServers /
+   skills），以及为什么这条边界是安全边界。</li>
+</ol>
+<h2 id="_1">本章源码锚点<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>主题</th>
+<th>锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>扩展规则权威文档</td>
+<td><code>backend/packages/harness/deerflow/extensions/AGENTS.md:171</code>（九大贡献点）</td>
+</tr>
+<tr>
+<td>注册契约（协议）</td>
+<td><code>backend/packages/extension-api/deerflow_extension_api/contracts.py:190</code>（<code>ExtensionRegistry</code>）</td>
+</tr>
+<tr>
+<td><code>@extension</code> 版本戳</td>
+<td><code>backend/packages/extension-api/deerflow_extension_api/contracts.py:248</code></td>
+</tr>
+<tr>
+<td>中间件语义位置</td>
+<td><code>backend/packages/extension-api/deerflow_extension_api/placement.py:20</code>（<code>Placement</code>）、<code>:43</code>（<code>AgentScope</code>）、<code>:59</code>（<code>MiddlewarePlacement</code>）</td>
+</tr>
+<tr>
+<td>任务生命周期协议</td>
+<td><code>backend/packages/extension-api/deerflow_extension_api/contracts.py:75</code>（<code>TaskLifecycleContributor</code>）</td>
+</tr>
+<tr>
+<td>系统模型调用观察者</td>
+<td><code>backend/packages/extension-api/deerflow_extension_api/contracts.py:138</code>（<code>SystemModelCallObserver</code>）</td>
+</tr>
+<tr>
+<td>服务与运行时依赖</td>
+<td><code>backend/packages/extension-api/deerflow_extension_api/contracts.py:178</code>（<code>ExtensionService</code>）、<code>:166</code>（<code>ExtensionRuntimeDeps</code>）</td>
+</tr>
+<tr>
+<td>最小示例入口</td>
+<td><code>examples/deerflow-extension-example/deerflow_extension_example/__init__.py:21</code></td>
+</tr>
+<tr>
+<td>五个贡献实现</td>
+<td><code>examples/deerflow-extension-example/deerflow_extension_example/plugin.py:96/136/151/172/184/204</code></td>
+</tr>
+<tr>
+<td>打包清单</td>
+<td><code>examples/deerflow-extension-example/pyproject.toml:14</code>（entry point）</td>
+</tr>
+<tr>
+<td>扩展管理器</td>
+<td><code>backend/packages/harness/deerflow/extensions/manager.py:153</code>（<code>ExtensionManager</code>）、<code>:168</code>（install）、<code>:257</code>（uv add）、<code>:546</code>（跨进程锁）、<code>:1125</code>（uv sync）</td>
+</tr>
+<tr>
+<td>操作员 CLI</td>
+<td><code>backend/packages/harness/deerflow/extensions/cli.py:19</code>（<code>build_parser</code>）、<code>:63</code>（<code>main</code>）</td>
+</tr>
+<tr>
+<td>根 Makefile 包装</td>
+<td><code>Makefile:122</code>–<code>Makefile:148</code>（<code>extension-*</code> targets）</td>
+</tr>
+<tr>
+<td>宿主加载与注册表</td>
+<td><code>backend/packages/harness/deerflow/extensions/loader.py:160</code>（<code>load_extensions</code>）、<code>backend/packages/harness/deerflow/extensions/registry.py:70</code></td>
+</tr>
+<tr>
+<td>中间件组合点</td>
+<td><code>backend/packages/harness/deerflow/extensions/stack.py</code>、<code>ordering.py</code>、<code>isolation.py</code>（IsolatedMiddleware 包装）</td>
+</tr>
+<tr>
+<td><code>plugins:</code> 配置块</td>
+<td><code>config.example.yaml:3674</code>–<code>config.example.yaml:3709</code></td>
+</tr>
+<tr>
+<td>API 可写配置通道</td>
+<td><code>extensions_config.example.json:1</code>–<code>extensions_config.example.json:5</code></td>
+</tr>
+<tr>
+<td>全栈插件契约</td>
+<td><code>backend/packages/extension-api/deerflow_extension_api/plugins.py:95</code>（<code>PluginContribution</code>）、<code>:56</code>（<code>ModelTool</code>）、<code>docs/full-stack-plugins.md</code></td>
+</tr>
+<tr>
+<td>书签全栈示例</td>
+<td><code>examples/deerflow-extension-bookmarks/deerflow_extension_bookmarks/__init__.py:139</code></td>
+</tr>
+<tr>
+<td>知识提供者示例</td>
+<td><code>examples/deerflow-extension-knowledge/deerflow_extension_knowledge/__init__.py:48</code></td>
+</tr>
+<tr>
+<td>打包检查脚本</td>
+<td><code>scripts/check_extension.py</code>、<code>examples/README.md</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="161">16.1 概念讲解：扩展优先哲学<a class="headerlink" href="#161" title="Permanent link">&para;</a></h2>
+<p>根目录 <code>AGENTS.md</code> 的 <strong>Extension-first evaluation</strong> 段写得很直接：在动手改核心代码实现
+一个功能之前，先评估它能不能作为一个打包扩展交付。只有两类情况留在核心——bug 修复，以及
+agent loop、记忆、上下文压缩、认证这类"改了就是框架行为"的变更。如果现有钩子表达不了这个
+功能，正确做法是给扩展契约加一个<strong>通用</strong>钩子，再写一个使用它的扩展，而不是把业务逻辑
+硬编码进核心。</p>
+<p>为什么要有这条哲学？看 DeerFlow 的三层包结构就明白了：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>backend/packages/extension-api/   → deerflow_extension_api（扩展公共契约，零框架依赖）
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>backend/packages/harness/         → deerflow.*（可发布的 agent 框架）
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>backend/app/                      → app.*（FastAPI Gateway + IM 渠道，不发布）
+</code></pre></div>
+<p>扩展只依赖第一层的公共契约，永不导入 <code>deerflow.*</code> 或 <code>app.*</code> 的内部模块。这样核心可以
+独立重构升级，扩展却不用跟着改——这是把业务装进 DeerFlow 而不被核心版本绑架的前提。</p>
+<p>扩展能"钩"进宿主的九个位置（<code>backend/packages/harness/deerflow/extensions/AGENTS.md:171</code>）：</p>
+<table>
+<thead>
+<tr>
+<th>贡献点</th>
+<th>注册方法</th>
+<th>钩在哪里</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>中间件贡献者</td>
+<td><code>registry.middlewares(contributor)</code></td>
+<td>lead agent / subagent 的中间件链</td>
+</tr>
+<tr>
+<td>任务生命周期</td>
+<td><code>registry.task_lifecycle(contributor)</code></td>
+<td>每次 run / subagent 的 start/stop</td>
+</tr>
+<tr>
+<td>系统模型调用观察者</td>
+<td><code>registry.system_model_observer(observer)</code></td>
+<td>目标评估、记忆抽取、标题、摘要这四类不经中间件的模型调用</td>
+</tr>
+<tr>
+<td>Agent 组装观察者</td>
+<td><code>registry.agent_assembly_observer(observer)</code></td>
+<td><code>assemble_lead_agent()</code> 组装完成时</td>
+</tr>
+<tr>
+<td>上下文压缩观察者</td>
+<td><code>registry.context_compaction_observer(observer)</code></td>
+<td><code>compact_state()</code> 摘要替换历史的那一刻</td>
+</tr>
+<tr>
+<td>Gateway 常驻服务</td>
+<td><code>registry.service(service)</code></td>
+<td>Gateway 启动/停止生命周期</td>
+</tr>
+<tr>
+<td>HTTP 路由</td>
+<td><code>registry.routers(...)</code></td>
+<td>挂在所有宿主路由<strong>之后</strong>的 FastAPI 路由</td>
+</tr>
+<tr>
+<td>全栈插件（实验性）</td>
+<td><code>registry.plugin(PluginContribution(...))</code></td>
+<td>浏览器页面 + 后端 action + 模型工具 三位一体</td>
+</tr>
+<tr>
+<td>只读知识提供者</td>
+<td><code>registry.knowledge_provider(name, provider)</code></td>
+<td><code>deerflow.knowledge</code> 检索层</td>
+</tr>
+</tbody>
+</table>
+<p>注意契约的设计取向（<code>contracts.py</code> 模块注释）：每个 Protocol 方法都带默认实现、每个
+dataclass 字段都带默认值，因此契约新增方法/字段对老扩展是<strong>可加性</strong>的——老扩展不用改一行
+代码就能在新宿主上继续跑。</p>
+<h2 id="162-a-deerflow-extension-api">16.2 源码走读 A：契约包 <code>deerflow-extension-api</code><a class="headerlink" href="#162-a-deerflow-extension-api" title="Permanent link">&para;</a></h2>
+<h3 id="1621-extensionregistry">16.2.1 注册面：<code>ExtensionRegistry</code><a class="headerlink" href="#1621-extensionregistry" title="Permanent link">&para;</a></h3>
+<p><code>install()</code> 函数拿到的第一个参数就是它（<code>backend/packages/extension-api/deerflow_extension_api/contracts.py:190</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nd">@runtime_checkable</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="k">class</span><span class="w"> </span><span class="nc">ExtensionRegistry</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="sd">"""The write-only registration surface handed to ``install()``.</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="sd">    Structural and minimal on purpose. ...</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="sd">    """</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">plugin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contribution</span><span class="p">:</span> <span class="n">PluginContribution</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">        </span><span class="sd">"""Return True when accepted; False means this host lacks plugin UI support."""</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>        <span class="k">return</span> <span class="kc">False</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">knowledge_provider</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">provider</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>        <span class="o">...</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>        <span class="k">return</span> <span class="kc">False</span>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">middlewares</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contributor</span><span class="p">:</span> <span class="n">MiddlewareContributor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>        <span class="k">return</span> <span class="kc">None</span>
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">task_lifecycle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contributor</span><span class="p">:</span> <span class="n">TaskLifecycleContributor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>        <span class="k">return</span> <span class="kc">None</span>
+<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>
+<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">system_model_observer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observer</span><span class="p">:</span> <span class="n">SystemModelCallObserver</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>        <span class="k">return</span> <span class="kc">None</span>
+<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a>
+<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">agent_assembly_observer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observer</span><span class="p">:</span> <span class="n">AgentAssemblyObserver</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a>        <span class="k">return</span> <span class="kc">None</span>
+<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a>
+<a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">context_compaction_observer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observer</span><span class="p">:</span> <span class="n">ContextCompactionObserver</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a>        <span class="k">return</span> <span class="kc">None</span>
+<a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a>
+<a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">service</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">service</span><span class="p">:</span> <span class="n">ExtensionService</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a>        <span class="k">return</span> <span class="kc">None</span>
+<a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a>
+<a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">routers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">routers</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a>        <span class="k">return</span> <span class="kc">None</span>
+</code></pre></div>
+<p>三个细节值得咀嚼：</p>
+<ol>
+<li><strong><code>plugin()</code> / <code>knowledge_provider()</code> 返回 <code>bool</code></strong>：老宿主不认识这两种贡献时返回
+   <code>False</code> 而不是抛错。扩展必须检查返回值——后面书签示例里那句
+   <code>raise RuntimeError("This example requires the full-stack plugin host contract")</code>
+   就是标准姿势：宿主太老就<strong>显式失败</strong>，而不是静默丢功能。</li>
+<li><strong><code>routers()</code> 的类型是 <code>Sequence[Any]</code></strong>：契约包刻意不依赖 FastAPI。路由对象是什么
+   形状由宿主在挂载时校验，契约包保持"零框架依赖"。</li>
+<li><strong>它是 write-only 的</strong>：<code>install()</code> 只能注册、不能反查宿主状态，运行期能力通过
+   <code>ExtensionService</code> 的 <code>start(deps)</code> 注入（见 16.2.3）。</li>
+</ol>
+<h3 id="1622-extension">16.2.2 版本戳：<code>@extension</code> 装饰器<a class="headerlink" href="#1622-extension" title="Permanent link">&para;</a></h3>
+<p><code>backend/packages/extension-api/deerflow_extension_api/contracts.py:248</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">extension</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">api</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">F</span><span class="p">],</span> <span class="n">F</span><span class="p">]:</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="sd">"""Stamp an install function with the API version it was written against.</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="sd">    Optional. pip's dependency resolution is the primary compatibility</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="sd">    mechanism; this covers `--no-deps` installs and editable monorepo checkouts</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="sd">    where versions can skew, and turns a deep AttributeError into an</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="sd">    actionable startup diagnostic.</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="sd">    """</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_decorate</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">F</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">F</span><span class="p">:</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>        <span class="n">func</span><span class="o">.</span><span class="n">__deerflow_api__</span> <span class="o">=</span> <span class="n">api</span>  <span class="c1"># type: ignore[attr-defined]</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>        <span class="n">func</span><span class="o">.</span><span class="n">__deerflow_name__</span> <span class="o">=</span> <span class="n">name</span>  <span class="c1"># type: ignore[attr-defined]</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>        <span class="k">return</span> <span class="n">func</span>
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>    <span class="k">return</span> <span class="n">_decorate</span>
+</code></pre></div>
+<p>正常情况下，<code>pyproject.toml</code> 里的 <code>deerflow-extension-api&gt;=0.2,&lt;0.3</code> 依赖范围才是
+兼容性的第一道闸；<code>@extension(api="0.2.0")</code> 是第二道保险——当有人用 <code>--no-deps</code> 安装、
+或可编辑安装导致版本错位时，加载器把"深层 AttributeError"提前变成一句能看懂的启动诊断。</p>
+<h3 id="1623">16.2.3 中间件的"语义位置"而不是"列表下标"<a class="headerlink" href="#1623" title="Permanent link">&para;</a></h3>
+<p><code>backend/packages/extension-api/deerflow_extension_api/placement.py:20</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">Placement</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="n">MODEL_LOGICAL</span> <span class="o">=</span> <span class="s2">"model_logical"</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="sd">"""Model axis, outer end. Guarantee: outer of retry and error handling.</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="sd">    Fires once per logical decision regardless of how many times the host</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="sd">    retries underneath."""</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>    <span class="n">MODEL_PHYSICAL</span> <span class="o">=</span> <span class="s2">"model_physical"</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">    </span><span class="sd">"""Model axis, inner end. ... Fires once per physical provider call; retries re-enter it."""</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>    <span class="n">TOOL_VISIBLE</span> <span class="o">=</span> <span class="s2">"tool_visible"</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">    </span><span class="sd">"""Tool axis, outer end. Guarantee: outer of truncation, sanitization and</span>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="sd">    error wrapping. Observes what the model finally sees."""</span>
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>    <span class="n">TOOL_RAW</span> <span class="o">=</span> <span class="s2">"tool_raw"</span>
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="w">    </span><span class="sd">"""Tool axis, inner end. Guarantee: adjacent to the real callable</span>
+<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="sd">    boundary. Observes the tool's raw return before any processing."""</span>
+<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>
+<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>    <span class="n">STANDARD</span> <span class="o">=</span> <span class="s2">"standard"</span>
+<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="w">    </span><span class="sd">"""No before/after-processing requirement. Relative order against other</span>
+<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="sd">    STANDARD contributors is not guaranteed."""</span>
+</code></pre></div>
+<p>扩展声明的是<strong>语义保证</strong>（"我要看模型最终看到的工具返回"），不是"把我插到第 3 层"。
+宿主因此保留了重构自己中间件栈的自由。配套的 <code>AgentScope</code>（<code>placement.py:43</code>）用 Flag
+声明这个中间件作用于 lead、subagent 还是两者（<code>LEAD | SUBAGENT = BOTH</code>）；
+<code>MiddlewarePlacement</code>（<code>placement.py:59</code>）把三者打包成一条贡献记录：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">class</span><span class="w"> </span><span class="nc">MiddlewarePlacement</span><span class="p">:</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="n">middleware</span><span class="p">:</span> <span class="n">Any</span>          <span class="c1"># 契约包不 import LangChain，宿主在注入时校验类型</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="n">placement</span><span class="p">:</span> <span class="n">Placement</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    <span class="n">scope</span><span class="p">:</span> <span class="n">AgentScope</span> <span class="o">=</span> <span class="n">AgentScope</span><span class="o">.</span><span class="n">BOTH</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>    <span class="n">order</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+</code></pre></div>
+<p>宿主侧的规则（<code>backend/packages/harness/deerflow/extensions/AGENTS.md:179</code> 附近）：
+<code>extensions/stack.py</code> 是唯一的最终组合点；贡献的中间件会被 <code>IsolatedMiddleware</code>
+（<code>extensions/isolation.py</code>）包裹——扩展抛出的异常只会变成一条诊断并 fail-open，不会
+炸掉整个 run，也不会重复触发下游的模型/工具副作用。</p>
+<h3 id="1624">16.2.4 服务与运行时依赖注入<a class="headerlink" href="#1624" title="Permanent link">&para;</a></h3>
+<p>路由在 <code>install()</code> 时就要构建，但那时 Gateway 的数据库、会话工厂都还没就绪。怎么办？
+把"注册期"和"运行期"分开（<code>backend/packages/extension-api/deerflow_extension_api/contracts.py:166</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="k">class</span><span class="w"> </span><span class="nc">ExtensionRuntimeDeps</span><span class="p">:</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">    </span><span class="sd">"""Host capabilities bound after Gateway infrastructure is ready."""</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="n">app_store</span><span class="p">:</span> <span class="n">ExtensionData</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>    <span class="n">policy</span><span class="p">:</span> <span class="n">HostPolicySnapshot</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">HostPolicySnapshot</span><span class="p">)</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>    <span class="n">session_factory</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>    <span class="n">run_evidence_reader</span><span class="p">:</span> <span class="n">RunEvidenceReader</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>    <span class="n">model_invoker</span><span class="p">:</span> <span class="n">ModelInvoker</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>    <span class="n">completed_run_evidence</span><span class="p">:</span> <span class="n">CompletedRunEvidenceReader</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>    <span class="n">skill_mutations</span><span class="p">:</span> <span class="n">SkillMutationService</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>
+<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>
+<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="k">class</span><span class="w"> </span><span class="nc">ExtensionService</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
+<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">deps</span><span class="p">:</span> <span class="n">ExtensionRuntimeDeps</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>        <span class="k">return</span> <span class="kc">None</span>
+<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a>
+<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a>        <span class="k">return</span> <span class="kc">None</span>
+</code></pre></div>
+<p><code>ExtensionData</code> 是扩展自己拥有的键值存储（应用作用域 + 每任务作用域两份），<code>policy</code> 是
+宿主策略的窄投影（<code>HostPolicySnapshot</code>，刻意不暴露完整 <code>AppConfig</code>，避免扩展被 harness
+的发版节奏绑死），<code>session_factory</code> 给需要查数据库的服务，<code>model_invoker</code> 只在
+<code>host_access.model_invocation</code> 授权后才有值。</p>
+<h2 id="163-b-deerflow-extension-example">16.3 源码走读 B：解剖 <code>deerflow-extension-example</code><a class="headerlink" href="#163-b-deerflow-extension-example" title="Permanent link">&para;</a></h2>
+<p><code>examples/deerflow-extension-example/</code> 是官方推荐的起点（<code>examples/README.md:8</code>：
+"Start here for backend extensions"）。它用最小代码演示五个贡献点。目录结构：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>deerflow-extension-example/
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>├── pyproject.toml                          # 打包清单 + entry point
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>├── README.md
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>├── deerflow_extension_example/
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>│   ├── __init__.py                         # install() 入口（带版本戳）
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>│   └── plugin.py                           # 五个贡献的实现
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>└── tests/
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>    ├── test_entry_point.py
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>    ├── test_plugin.py
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>    └── test_tool_stats.py
+</code></pre></div>
+<h3 id="1631">16.3.1 入口与注册<a class="headerlink" href="#1631" title="Permanent link">&para;</a></h3>
+<p><code>examples/deerflow-extension-example/deerflow_extension_example/__init__.py:21</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nd">@extension</span><span class="p">(</span><span class="n">api</span><span class="o">=</span><span class="s2">"0.2.0"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"example"</span><span class="p">)</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">install</span><span class="p">(</span><span class="n">registry</span><span class="p">:</span> <span class="n">ExtensionRegistry</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">    </span><span class="sd">"""Register one middleware, task lifecycle, system-model observer, service, and router."""</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>    <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"enabled"</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>        <span class="k">return</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>    <span class="n">service</span> <span class="o">=</span> <span class="n">ExampleService</span><span class="p">()</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>    <span class="n">registry</span><span class="o">.</span><span class="n">middlewares</span><span class="p">(</span><span class="n">ExampleMiddlewareContributor</span><span class="p">())</span>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>    <span class="n">registry</span><span class="o">.</span><span class="n">task_lifecycle</span><span class="p">(</span><span class="n">ExampleTaskLifecycle</span><span class="p">())</span>
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>    <span class="n">registry</span><span class="o">.</span><span class="n">system_model_observer</span><span class="p">(</span><span class="n">ExampleSystemObserver</span><span class="p">())</span>
+<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>    <span class="n">registry</span><span class="o">.</span><span class="n">service</span><span class="p">(</span><span class="n">service</span><span class="p">)</span>
+<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>    <span class="n">registry</span><span class="o">.</span><span class="n">routers</span><span class="p">((</span><span class="n">build_router</span><span class="p">(</span><span class="n">service</span><span class="p">),))</span>
+</code></pre></div>
+<p>注意三件事：</p>
+<ul>
+<li><strong><code>config</code> 是这条插件记录里 <code>config:</code> 键的私有配置</strong>（见 16.5 的 YAML 示例），扩展自己
+  定义它的 schema 并自己解析——这里约定 <code>enabled: false</code> 时整个扩展不注册任何东西；</li>
+<li><strong><code>service</code> 与 <code>router</code> 共享同一个对象</strong>：路由通过 FastAPI 依赖调用
+  <code>service.require_deps()</code>，保证"路由拓扑在 install 期固定，运行期能力后到"；</li>
+<li>每条 <code>registry.*</code> 调用都被宿主<strong>按位置记账与回滚</strong>：安装失败时前面已注册的贡献会被
+  一一撤销（宿主 registry 的 attribution/rollback 机制，见 <code>extensions/registry.py:70</code>）。</li>
+</ul>
+<h3 id="1632">16.3.2 中间件：数工具调用<a class="headerlink" href="#1632" title="Permanent link">&para;</a></h3>
+<p><code>examples/deerflow-extension-example/deerflow_extension_example/plugin.py:96</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">ExampleMiddleware</span><span class="p">(</span><span class="n">AgentMiddleware</span><span class="p">):</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>    <span class="nd">@contextmanager</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_observe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">ToolCallRequest</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="kc">None</span><span class="p">]:</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>        <span class="n">task_store</span> <span class="o">=</span> <span class="n">task_store_from_runtime</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s2">"runtime"</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>        <span class="n">task_stats</span> <span class="o">=</span> <span class="n">task_store</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ExampleStats</span><span class="p">)</span> <span class="k">if</span> <span class="n">task_store</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>        <span class="k">if</span> <span class="n">task_stats</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>            <span class="k">yield</span>
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>            <span class="k">return</span>
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>        <span class="n">task_stats</span><span class="o">.</span><span class="n">note_tool_call</span><span class="p">()</span>
+<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>        <span class="n">started</span> <span class="o">=</span> <span class="n">monotonic_ns</span><span class="p">()</span>
+<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>        <span class="n">outcome</span> <span class="o">=</span> <span class="s2">"returned"</span>
+<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a>        <span class="k">try</span><span class="p">:</span>
+<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>            <span class="k">yield</span>
+<a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a>        <span class="k">except</span> <span class="n">CancelledError</span><span class="p">:</span>
+<a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a>            <span class="n">outcome</span> <span class="o">=</span> <span class="s2">"cancelled"</span>
+<a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a>            <span class="k">raise</span>
+<a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a>        <span class="k">except</span> <span class="ne">BaseException</span><span class="p">:</span>
+<a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a>            <span class="c1"># Includes graph interrupts; observation must not consume control flow.</span>
+<a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a>            <span class="n">outcome</span> <span class="o">=</span> <span class="s2">"raised"</span>
+<a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a>            <span class="k">raise</span>
+<a id="__codelineno-8-21" name="__codelineno-8-21" href="#__codelineno-8-21"></a>        <span class="k">finally</span><span class="p">:</span>
+<a id="__codelineno-8-22" name="__codelineno-8-22" href="#__codelineno-8-22"></a>            <span class="n">task_stats</span><span class="o">.</span><span class="n">note_tool_outcome</span><span class="p">(</span><span class="n">outcome</span><span class="p">,</span> <span class="n">monotonic_ns</span><span class="p">()</span> <span class="o">-</span> <span class="n">started</span><span class="p">)</span>
+<a id="__codelineno-8-23" name="__codelineno-8-23" href="#__codelineno-8-23"></a>
+<a id="__codelineno-8-24" name="__codelineno-8-24" href="#__codelineno-8-24"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">wrap_tool_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">handler</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<a id="__codelineno-8-25" name="__codelineno-8-25" href="#__codelineno-8-25"></a>        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_observe</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+<a id="__codelineno-8-26" name="__codelineno-8-26" href="#__codelineno-8-26"></a>            <span class="k">return</span> <span class="n">handler</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+<a id="__codelineno-8-27" name="__codelineno-8-27" href="#__codelineno-8-27"></a>
+<a id="__codelineno-8-28" name="__codelineno-8-28" href="#__codelineno-8-28"></a>    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">awrap_tool_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">handler</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<a id="__codelineno-8-29" name="__codelineno-8-29" href="#__codelineno-8-29"></a>        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_observe</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+<a id="__codelineno-8-30" name="__codelineno-8-30" href="#__codelineno-8-30"></a>            <span class="k">return</span> <span class="k">await</span> <span class="n">handler</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+</code></pre></div>
+<p>这是观察类中间件的范本，四个要点：</p>
+<ol>
+<li><strong><code>task_store_from_runtime()</code></strong> 从 LangGraph runtime 里取回本任务的扩展数据存储；
+   取不到就 yield 直通——中间件绝不因为自己的统计需求而改变行为；</li>
+<li><strong>同步/异步成对实现</strong>：<code>wrap_tool_call</code> 与 <code>awrap_tool_call</code> 是同一个能力在两条执行
+   路径上的投影，只实现一边就只能观察到一条路径（<code>extensions/AGENTS.md</code> 明确了这一约定）；</li>
+<li><strong>异常透传</strong>：<code>except BaseException: raise</code>——观察者必须把 GraphInterrupt 这类控制流
+   原样上抛，统计完就放手；</li>
+<li><strong><code>cancelled</code> / <code>raised</code> / <code>returned</code> 三分</strong>：README 里特意说明 <code>returned</code> 不代表业务
+   成功——下游把异常转成错误 <code>ToolMessage</code> 也算 <code>returned</code>。</li>
+</ol>
+<p>中间件如何进入宿主？通过贡献者对象（<code>plugin.py:136</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">ExampleMiddlewareContributor</span><span class="p">:</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">contribute_middlewares</span><span class="p">(</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>        <span class="bp">self</span><span class="p">,</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>        <span class="n">app_store</span><span class="p">:</span> <span class="n">ExtensionData</span><span class="p">,</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>        <span class="n">ctx</span><span class="p">:</span> <span class="n">AgentBuildContext</span><span class="p">,</span>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">MiddlewarePlacement</span><span class="p">]:</span>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>        <span class="k">return</span> <span class="p">(</span>
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>            <span class="n">MiddlewarePlacement</span><span class="p">(</span>
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>                <span class="n">ExampleMiddleware</span><span class="p">(),</span>
+<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>                <span class="n">Placement</span><span class="o">.</span><span class="n">TOOL_VISIBLE</span><span class="p">,</span>
+<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>                <span class="n">AgentScope</span><span class="o">.</span><span class="n">BOTH</span><span class="p">,</span>
+<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>            <span class="p">),</span>
+<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a>        <span class="p">)</span>
+</code></pre></div>
+<p><code>ctx: AgentBuildContext</code> 里带着本次组装的 scope、agent 名、模型名与宿主策略快照，扩展可以
+据此决定"这个 agent 要不要加我的中间件"。<code>contribute_middlewares</code> 在<strong>每次 agent 组装</strong>
+时调用，所以同一扩展可以为不同 agent 返回不同的中间件集合。</p>
+<h3 id="1633">16.3.3 任务生命周期：把任务统计折叠回应用作用域<a class="headerlink" href="#1633" title="Permanent link">&para;</a></h3>
+<p><code>plugin.py:151</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">ExampleTaskLifecycle</span><span class="p">:</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">on_task_start</span><span class="p">(</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">app_store</span><span class="p">:</span> <span class="n">ExtensionData</span><span class="p">,</span> <span class="n">task_store</span><span class="p">:</span> <span class="n">ExtensionData</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="n">TaskInfo</span><span class="p">,</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>        <span class="n">task_store</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">ExampleStats</span><span class="p">())</span>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">on_task_stop</span><span class="p">(</span>
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">app_store</span><span class="p">:</span> <span class="n">ExtensionData</span><span class="p">,</span> <span class="n">task_store</span><span class="p">:</span> <span class="n">ExtensionData</span><span class="p">,</span>
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>        <span class="n">info</span><span class="p">:</span> <span class="n">TaskInfo</span><span class="p">,</span> <span class="n">outcome</span><span class="p">:</span> <span class="n">TaskOutcome</span><span class="p">,</span>
+<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>        <span class="n">task_stats</span> <span class="o">=</span> <span class="n">task_store</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">ExampleStats</span><span class="p">)</span>
+<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>        <span class="k">if</span> <span class="n">task_stats</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a>            <span class="n">_stats</span><span class="p">(</span><span class="n">app_store</span><span class="p">)</span><span class="o">.</span><span class="n">absorb_task</span><span class="p">(</span><span class="n">task_stats</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)</span>
+</code></pre></div>
+<p>每次 run（lead 或 subagent）开始时在任务作用域放一个全新统计对象，结束时移出并合并进
+应用作用域。<code>TaskInfo</code>（<code>contracts.py:63</code>）携带 <code>task_id / run_id / thread_id / kind</code>
+（<code>"lead"</code> 或 <code>"subagent"</code>）/ <code>parent_task_id</code>，<code>TaskOutcome</code> 只有三档保守值：
+<code>completed / aborted / failed</code>。注意生命周期钩子是 <strong>awaited</strong> 的（在 run 启动后、完成
+持久化后执行），失败只记日志不炸 run。</p>
+<h3 id="1634">16.3.4 系统模型调用观察者<a class="headerlink" href="#1634" title="Permanent link">&para;</a></h3>
+<p><code>plugin.py:172</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">ExampleSystemObserver</span><span class="p">:</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">on_system_model_call</span><span class="p">(</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">app_store</span><span class="p">:</span> <span class="n">ExtensionData</span><span class="p">,</span> <span class="n">task_store</span><span class="p">:</span> <span class="n">ExtensionData</span><span class="p">,</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>        <span class="n">kind</span><span class="p">:</span> <span class="n">SystemOperationKind</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">SystemModelRequest</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">SystemModelResult</span><span class="p">,</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>        <span class="n">_stats</span><span class="p">(</span><span class="n">app_store</span><span class="p">)</span><span class="o">.</span><span class="n">note_system_call</span><span class="p">(</span><span class="n">kind</span><span class="p">,</span> <span class="n">failed</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">error</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+<p>DeerFlow 有四类<strong>不经中间件</strong>的宿主自有模型调用：目标评估（goal）、记忆抽取（memory）、
+标题生成（title）、摘要（summarization）——对应 <code>SystemOperationKind</code> 的四个枚举值
+（<code>contracts.py:97</code>）。想在成本审计里看到这些"隐形调用"，就得用这个观察者。它拿到的是
+请求/结果快照（<code>SystemModelRequest.messages</code> 已规范化为 tuple）加耗时，拿不到原始模型对象。</p>
+<h3 id="1635">16.3.5 服务 + 路由：一套对象，两个阶段<a class="headerlink" href="#1635" title="Permanent link">&para;</a></h3>
+<p><code>plugin.py:184</code> 与 <code>plugin.py:204</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">ExampleService</span><span class="p">:</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_deps</span><span class="p">:</span> <span class="n">ExtensionRuntimeDeps</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">deps</span><span class="p">:</span> <span class="n">ExtensionRuntimeDeps</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_deps</span> <span class="o">=</span> <span class="n">deps</span>
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>
+<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_deps</span> <span class="o">=</span> <span class="kc">None</span>
+<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>
+<a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a>    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">require_deps</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ExtensionRuntimeDeps</span><span class="p">:</span>
+<a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a>        <span class="n">deps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deps</span>
+<a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a>        <span class="k">if</span> <span class="n">deps</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">deps</span><span class="o">.</span><span class="n">app_store</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a>            <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">503</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="s2">"extension-example is not running"</span><span class="p">)</span>
+<a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a>        <span class="k">return</span> <span class="n">deps</span>
+<a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a>
+<a id="__codelineno-12-17" name="__codelineno-12-17" href="#__codelineno-12-17"></a>
+<a id="__codelineno-12-18" name="__codelineno-12-18" href="#__codelineno-12-18"></a><span class="k">def</span><span class="w"> </span><span class="nf">build_router</span><span class="p">(</span><span class="n">service</span><span class="p">:</span> <span class="n">ExampleService</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">APIRouter</span><span class="p">:</span>
+<a id="__codelineno-12-19" name="__codelineno-12-19" href="#__codelineno-12-19"></a><span class="w">    </span><span class="sd">"""Build paths during registration, before runtime dependencies exist."""</span>
+<a id="__codelineno-12-20" name="__codelineno-12-20" href="#__codelineno-12-20"></a>    <span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">"/api/extension-example"</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">"extension-example"</span><span class="p">])</span>
+<a id="__codelineno-12-21" name="__codelineno-12-21" href="#__codelineno-12-21"></a>
+<a id="__codelineno-12-22" name="__codelineno-12-22" href="#__codelineno-12-22"></a>    <span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"/stats"</span><span class="p">)</span>
+<a id="__codelineno-12-23" name="__codelineno-12-23" href="#__codelineno-12-23"></a>    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">read_stats</span><span class="p">(</span>
+<a id="__codelineno-12-24" name="__codelineno-12-24" href="#__codelineno-12-24"></a>        <span class="n">deps</span><span class="p">:</span> <span class="n">ExtensionRuntimeDeps</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">service</span><span class="o">.</span><span class="n">require_deps</span><span class="p">),</span>
+<a id="__codelineno-12-25" name="__codelineno-12-25" href="#__codelineno-12-25"></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<a id="__codelineno-12-26" name="__codelineno-12-26" href="#__codelineno-12-26"></a>        <span class="o">...</span>
+<a id="__codelineno-12-27" name="__codelineno-12-27" href="#__codelineno-12-27"></a>        <span class="k">return</span> <span class="p">{</span>
+<a id="__codelineno-12-28" name="__codelineno-12-28" href="#__codelineno-12-28"></a>            <span class="s2">"scope_id"</span><span class="p">:</span> <span class="n">deps</span><span class="o">.</span><span class="n">app_store</span><span class="o">.</span><span class="n">scope_id</span><span class="p">,</span>
+<a id="__codelineno-12-29" name="__codelineno-12-29" href="#__codelineno-12-29"></a>            <span class="s2">"session_factory_available"</span><span class="p">:</span> <span class="n">deps</span><span class="o">.</span><span class="n">session_factory</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-12-30" name="__codelineno-12-30" href="#__codelineno-12-30"></a>            <span class="s2">"host_policy"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"max_subagents_per_run"</span><span class="p">:</span> <span class="n">deps</span><span class="o">.</span><span class="n">policy</span><span class="o">.</span><span class="n">max_subagents_per_run</span><span class="p">},</span>
+<a id="__codelineno-12-31" name="__codelineno-12-31" href="#__codelineno-12-31"></a>            <span class="o">**</span><span class="n">_stats</span><span class="p">(</span><span class="n">deps</span><span class="o">.</span><span class="n">app_store</span><span class="p">)</span><span class="o">.</span><span class="n">snapshot</span><span class="p">(),</span>
+<a id="__codelineno-12-32" name="__codelineno-12-32" href="#__codelineno-12-32"></a>        <span class="p">}</span>
+<a id="__codelineno-12-33" name="__codelineno-12-33" href="#__codelineno-12-33"></a>
+<a id="__codelineno-12-34" name="__codelineno-12-34" href="#__codelineno-12-34"></a>    <span class="k">return</span> <span class="n">router</span>
+</code></pre></div>
+<p>路由在 <code>install()</code> 期就构建好（路径拓扑固定），但每个 handler 通过
+<code>Depends(service.require_deps)</code> 在请求期才解析运行时依赖——Gateway 未运行/未就绪时
+统一返回 503。这就是 16.2.4 说的"注册期 vs 运行期"分离的标准实现。</p>
+<p>宿主对路由还有几条硬约束（<code>backend/packages/harness/deerflow/extensions/AGENTS.md:383</code> 附近）：</p>
+<ul>
+<li>挂载在<strong>所有宿主路由之后</strong>，同名路径宿主永远赢；冲突可被证明时整条路由<strong>原子拒绝</strong>；</li>
+<li>贡献路由<strong>强制走会话认证</strong>，不能退出；要区分管理员用
+  <code>deerflow_extension_api.auth.resolve_principal(request)</code> / <code>require_admin(request)</code>；</li>
+<li><code>Mount</code>、WebSocket 路由、自定义 lifespan 一律拒绝——长生命周期资源必须放进
+  <code>ExtensionService</code>。</li>
+</ul>
+<h3 id="1636-entry-point">16.3.6 打包清单：唯一的 entry point<a class="headerlink" href="#1636-entry-point" title="Permanent link">&para;</a></h3>
+<p><code>examples/deerflow-extension-example/pyproject.toml:14</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="k">[project.entry-points.</span><span class="s2">"deerflow.extensions"</span><span class="k">]</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="n">example</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"deerflow_extension_example:install"</span>
+</code></pre></div>
+<p>三条规则：</p>
+<ol>
+<li>必须放在 <code>deerflow.extensions</code> 组——管理器靠它发现扩展，且<strong>只认恰好一个</strong>入口；</li>
+<li>入口名 <code>example</code> 是操作员视角的稳定名字，<code>enable/disable/remove NAME=example</code> 用的
+   就是它（也接受发行包名或 <code>module:install</code> 值）；</li>
+<li>依赖里<strong>必须显式声明框架</strong>——契约包没有 FastAPI/LangChain/LangGraph 依赖，本例自己
+   声明了 <code>fastapi</code>、<code>langchain</code>、<code>langgraph</code>（<code>pyproject.toml:7-12</code>）。</li>
+</ol>
+<h2 id="164-cextensionmanager-cli">16.4 源码走读 C：安装与管理——<code>ExtensionManager</code> 与 CLI<a class="headerlink" href="#164-cextensionmanager-cli" title="Permanent link">&para;</a></h2>
+<h3 id="1641">16.4.1 命令面<a class="headerlink" href="#1641" title="Permanent link">&para;</a></h3>
+<p>根 Makefile 的五个包装（<code>Makefile:122</code>–<code>Makefile:148</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nf">extension-install</span><span class="o">:</span><span class="w"> </span><span class="n">export</span> <span class="n">DEER_FLOW_EXTENSION_SOURCE</span> := <span class="k">$(</span><span class="nv">value</span> <span class="nv">SOURCE</span><span class="k">)</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="nf">extension-install</span><span class="o">:</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">    </span><span class="k">$(if</span><span class="w"> </span><span class="k">$(</span>and<span class="w"> </span><span class="k">$(</span>filter<span class="w"> </span><span class="nb">command</span><span class="w"> </span>line,<span class="k">$(</span>origin<span class="w"> </span>SOURCE<span class="k">))</span>,...<span class="k">)</span>,,<span class="k">$(</span>error<span class="w"> </span>usage:<span class="w"> </span>make<span class="w"> </span>extension-install<span class="w"> </span><span class="nv">SOURCE</span><span class="o">=</span>&lt;package<span class="p">|</span>git-url<span class="p">|</span>dir&gt;<span class="k">))</span>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">    </span>@cd<span class="w"> </span>backend<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>--frozen<span class="w"> </span>--no-group<span class="w"> </span>extensions<span class="w"> </span>deerflow<span class="w"> </span>extensions<span class="w"> </span>install<span class="w"> </span>--source-env<span class="w"> </span>__deerflow_extension_source__
+</code></pre></div>
+<p>等价的直接 CLI（从 <code>backend/</code> 执行，见 <code>examples/deerflow-extension-example/README.md:150</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>uv run --frozen --no-group extensions deerflow extensions install &lt;source&gt; [--yes] [--required]
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>uv run --frozen --no-group extensions deerflow extensions list [--json]
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>uv run --frozen --no-group extensions deerflow extensions enable &lt;name&gt;
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>uv run --frozen --no-group extensions deerflow extensions disable &lt;name&gt;
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>uv run --frozen --no-group extensions deerflow extensions remove &lt;name&gt;
+</code></pre></div>
+<p>命令解析在 <code>backend/packages/harness/deerflow/extensions/cli.py:19</code>（<code>build_parser</code>），
+主流程在 <code>cli.py:63</code>（<code>main</code>）。<code>install</code>/<code>upgrade</code> 在没有 <code>--yes</code> 时会先打印警告并
+交互确认（<code>cli.py:72-80</code>）——因为扩展的构建钩子与运行时代码都以 Gateway 权限执行，
+这是刻意的信任闸门。Makefile 包装用 <code>DEER_FLOW_EXTENSION_SOURCE</code> / <code>DEER_FLOW_EXTENSION_NAME</code>
+环境变量传参（<code>cli.py:15-16</code>），并从 <code>backend/</code> 目录执行，所以<strong>文档一律建议 SOURCE 用
+绝对路径</strong>。</p>
+<h3 id="1642-install">16.4.2 install 的事务<a class="headerlink" href="#1642-install" title="Permanent link">&para;</a></h3>
+<p><code>ExtensionManager.install</code>（<code>backend/packages/harness/deerflow/extensions/manager.py:168</code>）
+是一次跨四个文件的受控事务。以本地目录安装为例，它按顺序做五件事：</p>
+<ol>
+<li><strong>校验源与配置</strong>：拒绝符号链接、路径逃逸的发行名、疑似凭证文件；校验 <code>config.yaml</code>
+   可写（因为 <code>uv add</code> 会执行包的构建后端，配置必须先验证后执行）；</li>
+<li><strong>快照</strong>：把目录拷贝到 <code>backend/extensions/sources/&lt;distribution&gt;/</code>（本地安装是
+   快照，不是可编辑链接——后续改源码要 <code>make extension-upgrade</code> 重新快照）；</li>
+<li><strong>依赖事务</strong>：执行
+   <code>uv add --project &lt;backend&gt; --group extensions --no-workspace --no-sync -- &lt;source&gt;</code>
+   （<code>manager.py:257</code>–<code>manager.py:262</code>），更新 <code>pyproject.toml</code> 的
+   <code>[dependency-groups].extensions</code> 与 <code>uv.lock</code>，随后一次
+   <code>uv sync --locked --all-packages</code>（<code>manager.py:1125</code>）落到环境；</li>
+<li><strong>锁审计</strong>：<code>uv add</code> 后审计新锁，凡 stock 后端镜像构建无法复现的本地引用
+   （绝对路径、<code>file:</code> URL、越界相对路径）直接让整个事务失败并回滚；</li>
+<li><strong>写回配置</strong>：在 <code>config.yaml</code> 里插入或收编一条托管 <code>plugins:</code> 记录
+   （<code>name/package/use/enabled/required/config</code>），新记录一律 <code>required: false</code>。</li>
+</ol>
+<p>整个 checkout 上的所有变更共享一把跨进程锁 <code>.deer-flow/extension-manager.lock</code>
+（<code>manager.py:546</code>），失败回滚会恢复 <code>pyproject.toml</code> 与 <code>uv.lock</code> 并重新同步环境。
+<code>required: true</code> 是 <code>install --required</code> 的显式选项——它把"以后某次加载失败"升级成
+"Gateway 启动中止"，默认的 fail-open（记录诊断并跳过）才是托管安装的默认。</p>
+<h3 id="1643-gateway">16.4.3 为什么每次变更都要重启 Gateway<a class="headerlink" href="#1643-gateway" title="Permanent link">&para;</a></h3>
+<p><code>create_app()</code> 在<strong>构建应用时</strong>一次性加载 <code>plugins:</code> 列表：导入入口模块、调用
+<code>install()</code>、把不可变注册表存到 <code>app.state</code>、最后挂载贡献路由。加载只在启动时发生——
+所以 install/upgrade/enable/disable/remove 以及手工改 <code>plugins:</code> 之后都必须重启
+Gateway 才生效（<code>backend/packages/harness/deerflow/extensions/AGENTS.md:162</code> 附近：
+"Every install, upgrade, enable, disable, remove, or config mutation also requires a
+Gateway restart because plugin loading is startup-only"）。</p>
+<h2 id="165-d">16.5 源码走读 D：两条配置通道<a class="headerlink" href="#165-d" title="Permanent link">&para;</a></h2>
+<h3 id="1651-operator-configyaml-plugins">16.5.1 operator 专属：<code>config.yaml → plugins:</code><a class="headerlink" href="#1651-operator-configyaml-plugins" title="Permanent link">&para;</a></h3>
+<p><code>config.example.yaml:3674</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="c1"># plugins:</span>
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="c1">#   - name: example                       # PEP 621 entry-point name</span>
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="c1">#     package: deerflow-extension-example # Python distribution managed by uv</span>
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="c1">#     use: deerflow_extension_example:install</span>
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="c1">#     enabled: true                       # false skips import and registration</span>
+<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="c1">#     required: false                     # true makes load failure abort Gateway startup</span>
+<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="c1">#     host_access:                        # optional host-owned grants (restart required)</span>
+<a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a><span class="c1">#       ...（此处省略 evidence / skill_mutations 授权示例数行）</span>
+<a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a><span class="c1">#       model_invocation:</span>
+<a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a><span class="c1">#         roles:</span>
+<a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a><span class="c1">#           default: my-configured-model</span>
+<a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a><span class="c1">#         max_concurrency: 2</span>
+<a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a><span class="c1">#     table_prefix: example_ext_          # optional: table-name prefix this extension owns</span>
+</code></pre></div>
+<p>这条通道<strong>会触发代码导入</strong>，所以永远只留在 operator 手工控制的 <code>config.yaml</code>，绝不放进
+API 可写的 <code>extensions_config.json</code>（根 <code>AGENTS.md</code> 与 <code>config.example.yaml:3664</code> 的
+注释都反复强调这一点）。<code>config:</code> 之外的几个键值得认识：</p>
+<ul>
+<li><code>host_access.model_invocation</code>：给扩展服务绑定一个宿主代理的模型调用器（并发/超时/
+  输入输出字符上限都由宿主把关，见 <code>backend/docs/extension-model-invocation.md</code>）；</li>
+<li><code>host_access.evidence</code> / <code>skill_mutations</code>：运行证据读取与技能变更授权（0.2.7 新增）；</li>
+<li><code>table_prefix</code>：扩展自带 Alembic 迁移链时的表名前缀，避免 autogenerate 误删扩展的表。</li>
+</ul>
+<h3 id="1652-api-extensions_configjson">16.5.2 API 可写：<code>extensions_config.json</code><a class="headerlink" href="#1652-api-extensions_configjson" title="Permanent link">&para;</a></h3>
+<p><code>extensions_config.example.json:1</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="p">{</span>
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="w">  </span><span class="nt">"middlewares"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="w">  </span><span class="nt">"mcpInterceptors"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="w">    </span><span class="s2">"my_package.mcp.auth:build_auth_interceptor"</span>
+<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="w">  </span><span class="p">],</span>
+<a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="w">  </span><span class="nt">"mcpServers"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="w">    </span><span class="nt">"github"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="w">      </span><span class="nt">"enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a><span class="w">      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"stdio"</span><span class="p">,</span>
+<a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a><span class="w">      </span><span class="err">...</span>
+</code></pre></div>
+<p>四个顶层键：<code>middlewares</code>（配置声明的中间件类路径，等价于 <code>config.yaml → extensions.middlewares</code>
+的固定槽位，见 <code>config.example.yaml:74</code>–<code>config.example.yaml:80</code>）、<code>mcpInterceptors</code>、
+<code>mcpServers</code>（第 15 章的主角）、<code>skills</code>。这份文件 Gateway 可以通过 HTTP 端点在运行时
+改写——因为它<strong>不导入新代码</strong>（中间件类路径除外，那条仍算受信 operator 配置）。</p>
+<p>一句话记住边界：<strong><code>plugins:</code> = 装新代码，只进 <code>config.yaml</code>；<code>extensions_config.json</code> =
+换配置，API 可写</strong>。</p>
+<h3 id="1653">16.5.3 宿主加载链路<a class="headerlink" href="#1653" title="Permanent link">&para;</a></h3>
+<p><code>backend/packages/harness/deerflow/extensions/loader.py:160</code> 的 <code>load_extensions()</code> 把
+<code>plugins:</code> 每条记录解析成 <code>ExtensionSpec</code>，做 API 版本兼容检查，然后导入入口并调用
+<code>install()</code>，产出 <code>LoadedExtensions</code>（不可变快照）+ 诊断列表。诊断 fail-open：可选插件
+加载失败只记录诊断；<code>required: true</code> 的插件加载失败则让 Gateway 构建直接失败。</p>
+<h2 id="166">16.6 官方示例全景：选对起点<a class="headerlink" href="#166" title="Permanent link">&para;</a></h2>
+<p><code>examples/README.md:6</code> 的选型表：</p>
+<table>
+<thead>
+<tr>
+<th>起点示例</th>
+<th>演示内容</th>
+<th>适合场景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>deerflow-extension-example</code></td>
+<td>中间件、任务生命周期、模型观察、服务、HTTP 路由</td>
+<td>后端扩展入门</td>
+</tr>
+<tr>
+<td><code>deerflow-extension-bookmarks</code></td>
+<td>浏览器页面 + 会话动作 + 后端 action + 打包资源 + 模型工具</td>
+<td>全栈插件</td>
+</tr>
+<tr>
+<td><code>deerflow-extension-agent-teams</code></td>
+<td>完整 Agent 编排（团队任务队列、@提及中间件、产物捕获）</td>
+<td>熟悉基础模式之后</td>
+</tr>
+<tr>
+<td><code>deerflow-extension-workflows</code></td>
+<td>脚本工作流：多步 Agent 任务、审批、会话授权恢复（<code>AGENTS.md</code> 定义 AgentRuns 公共语义：POSIX、单进程/存储、审批、不确定 admissions 需对账、无多 Gateway 故障切换）</td>
+<td>持久化多步业务流</td>
+</tr>
+<tr>
+<td><code>deerflow-extension-knowledge</code></td>
+<td>合成只读知识提供者</td>
+<td>知识检索接入</td>
+</tr>
+<tr>
+<td><code>deerflow-extension-knowledge-{management,platform}</code></td>
+<td>知识管理（各自带 scoped <code>AGENTS.md</code> 与 <code>CONTRACT.md</code>，管理契约是扩展自有、实验性的）</td>
+<td>企业知识库运营</td>
+</tr>
+</tbody>
+</table>
+<h3 id="1661-bookmarks">16.6.1 全栈插件：bookmarks<a class="headerlink" href="#1661-bookmarks" title="Permanent link">&para;</a></h3>
+<p><code>examples/deerflow-extension-bookmarks/deerflow_extension_bookmarks/__init__.py:139</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="nd">@extension</span><span class="p">(</span><span class="n">api</span><span class="o">=</span><span class="s2">"0.2.3"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"bookmarks"</span><span class="p">)</span>
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">install</span><span class="p">(</span><span class="n">registry</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>    <span class="n">enabled</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"enabled"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">enabled</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">bool</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"storage_path"</span><span class="p">),</span> <span class="nb">str</span><span class="p">):</span>
+<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+<a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a>            <span class="s2">"Configure boolean enabled and an absolute storage_path at deployment"</span>
+<a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a>        <span class="p">)</span>
+<a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a>    <span class="n">store</span> <span class="o">=</span> <span class="n">Bookmarks</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">"storage_path"</span><span class="p">])</span>
+<a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a>    <span class="n">search</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="s2">"search"</span><span class="p">)</span>
+<a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a>    <span class="k">if</span> <span class="p">(</span>
+<a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a>        <span class="n">registry</span><span class="o">.</span><span class="n">plugin</span><span class="p">(</span>
+<a id="__codelineno-18-12" name="__codelineno-18-12" href="#__codelineno-18-12"></a>            <span class="n">PluginContribution</span><span class="p">(</span>
+<a id="__codelineno-18-13" name="__codelineno-18-13" href="#__codelineno-18-13"></a>                <span class="n">namespace</span><span class="o">=</span><span class="s2">"community.bookmarks"</span><span class="p">,</span>
+<a id="__codelineno-18-14" name="__codelineno-18-14" href="#__codelineno-18-14"></a>                <span class="n">title</span><span class="o">=</span><span class="s2">"会话书签 / Bookmarks"</span><span class="p">,</span>
+<a id="__codelineno-18-15" name="__codelineno-18-15" href="#__codelineno-18-15"></a>                <span class="n">description</span><span class="o">=</span><span class="s2">"收藏有用的回答，在独立页面查找与整理。每位用户只访问自己的书签。"</span><span class="p">,</span>
+<a id="__codelineno-18-16" name="__codelineno-18-16" href="#__codelineno-18-16"></a>                <span class="n">enabled</span><span class="o">=</span><span class="n">enabled</span><span class="p">,</span>
+<a id="__codelineno-18-17" name="__codelineno-18-17" href="#__codelineno-18-17"></a>                <span class="n">frontend</span><span class="o">=</span><span class="n">BrowserAssets</span><span class="p">(</span><span class="s2">"bookmarks.v1"</span><span class="p">,</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="p">),</span>
+<a id="__codelineno-18-18" name="__codelineno-18-18" href="#__codelineno-18-18"></a>                <span class="n">backend</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span>
+<a id="__codelineno-18-19" name="__codelineno-18-19" href="#__codelineno-18-19"></a>                    <span class="n">BackendAction</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">store</span><span class="o">.</span><span class="n">handler</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+<a id="__codelineno-18-20" name="__codelineno-18-20" href="#__codelineno-18-20"></a>                    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"save"</span><span class="p">,</span> <span class="s2">"search"</span><span class="p">,</span> <span class="s2">"get"</span><span class="p">,</span> <span class="s2">"rename"</span><span class="p">,</span> <span class="s2">"delete"</span><span class="p">)</span>
+<a id="__codelineno-18-21" name="__codelineno-18-21" href="#__codelineno-18-21"></a>                <span class="p">),</span>
+<a id="__codelineno-18-22" name="__codelineno-18-22" href="#__codelineno-18-22"></a>                <span class="n">tools</span><span class="o">=</span><span class="p">(</span>
+<a id="__codelineno-18-23" name="__codelineno-18-23" href="#__codelineno-18-23"></a>                    <span class="n">ModelTool</span><span class="p">(</span><span class="s2">"search_bookmarks"</span><span class="p">,</span> <span class="s2">"..."</span><span class="p">,</span> <span class="p">{</span><span class="o">...</span><span class="n">json</span><span class="o">-</span><span class="n">schema</span><span class="o">...</span><span class="p">},</span> <span class="n">search</span><span class="p">),</span>
+<a id="__codelineno-18-24" name="__codelineno-18-24" href="#__codelineno-18-24"></a>                <span class="p">),</span>
+<a id="__codelineno-18-25" name="__codelineno-18-25" href="#__codelineno-18-25"></a>            <span class="p">)</span>
+<a id="__codelineno-18-26" name="__codelineno-18-26" href="#__codelineno-18-26"></a>        <span class="p">)</span>
+<a id="__codelineno-18-27" name="__codelineno-18-27" href="#__codelineno-18-27"></a>        <span class="ow">is</span> <span class="ow">not</span> <span class="kc">True</span>
+<a id="__codelineno-18-28" name="__codelineno-18-28" href="#__codelineno-18-28"></a>    <span class="p">):</span>
+<a id="__codelineno-18-29" name="__codelineno-18-29" href="#__codelineno-18-29"></a>        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"This example requires the full-stack plugin host contract"</span><span class="p">)</span>
+</code></pre></div>
+<p>一条贡献装下三块：<code>frontend=BrowserAssets(...)</code>（由 <code>ui_manifest.json</code> 声明的原生 ES
+模块与静态资源，见 <code>examples/deerflow-extension-bookmarks/deerflow_extension_bookmarks/ui_manifest.json:1</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="p">{</span>
+<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="w">  </span><span class="nt">"schema_version"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="w">  </span><span class="nt">"entry"</span><span class="p">:</span><span class="w"> </span><span class="s2">"static/dist/index.mjs"</span><span class="p">,</span>
+<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="w">  </span><span class="nt">"files"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"static/dist/index.mjs"</span><span class="p">,</span><span class="w"> </span><span class="s2">"static/dist/chunks/bookmarks.mjs"</span><span class="p">,</span>
+<a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a><span class="w">            </span><span class="s2">"static/dist/styles.css"</span><span class="p">,</span><span class="w"> </span><span class="s2">"static/dist/bookmark.svg"</span><span class="p">]</span>
+<a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a><span class="p">}</span>
+</code></pre></div>
+<p>）、<code>backend=BackendAction(...)</code> 元组（浏览器经
+<code>POST /api/plugins/{namespace}/actions/{name}</code> 调用，宿主注入已认证的
+<code>ActionContext.principal</code>）、<code>tools=ModelTool(...)</code>（挂进模型工具面）。宿主对浏览器 JS
+做哈希校验，action 强制认证，且<strong>没有在线设置写 API</strong>——代码可信但不沙箱，权限面是
+白名单式的。每个 action 里那句"SQL 参数 + 每条数据操作强制 owner 谓词"是全栈插件的
+多租户铁律。</p>
+<h3 id="1662">16.6.2 知识提供者：一行注册<a class="headerlink" href="#1662" title="Permanent link">&para;</a></h3>
+<p><code>examples/deerflow-extension-knowledge/deerflow_extension_knowledge/__init__.py:48</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="nd">@extension</span><span class="p">(</span><span class="n">api</span><span class="o">=</span><span class="s2">"0.2.7"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"knowledge-example"</span><span class="p">)</span>
+<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">install</span><span class="p">(</span><span class="n">registry</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">registry</span><span class="o">.</span><span class="n">knowledge_provider</span><span class="p">(</span><span class="s2">"synthetic-example"</span><span class="p">,</span> <span class="n">SyntheticKnowledgeProvider</span><span class="p">()):</span>
+<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a>        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"This host does not support knowledge provider registration"</span><span class="p">)</span>
+</code></pre></div>
+<p>Provider 声明 <code>KnowledgeCapabilities</code>（支持哪些只读操作：<code>search/sources/catalog/
+documents/dataset_filter/document_filter</code>），可选实现 <code>search_scoped(query, context)</code>
+接收宿主下发的范围选择。完整的契约语义（能力表、范围准入、引用证据）见
+<code>backend/docs/KNOWLEDGE.md:12</code>；这正是第 17 章实战 A 的地基。</p>
+<h3 id="1663">16.6.3 安装后的形态<a class="headerlink" href="#1663" title="Permanent link">&para;</a></h3>
+<p>按 <code>examples/deerflow-extension-example/README.md</code> 的流程，<code>make extension-install
+SOURCE="$PWD/examples/deerflow-extension-example"</code> 会让 <code>config.yaml</code> 多出：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="nt">plugins</span><span class="p">:</span>
+<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">example</span>
+<a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="w">    </span><span class="nt">package</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">deerflow-extension-example</span>
+<a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="w">    </span><span class="nt">use</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">deerflow_extension_example:install</span>
+<a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a><span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a><span class="w">    </span><span class="nt">required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a><span class="w">    </span><span class="nt">config</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+</code></pre></div>
+<p>重启后 <code>curl -s http://localhost:2026/api/extension-example/stats</code> 就能拿到扩展路由的
+聚合统计（该路由走 Gateway 正常认证中间件，启用认证时需已登录会话）。</p>
+<h2 id="167">16.7 动手实验：写一个"团队周报收集"扩展并走完生命周期<a class="headerlink" href="#167" title="Permanent link">&para;</a></h2>
+<p>目标：从零写一个最小扩展（路由 + 服务 + 中间件 + 一条生命周期折叠），打包检查 → 安装 →
+重启 → 验证 → 卸载，全程不碰核心代码。</p>
+<h3 id="1">第 1 步：创建包骨架<a class="headerlink" href="#1" title="Permanent link">&para;</a></h3>
+<p>在 DeerFlow 仓库<strong>之外</strong>建目录（练习用，避免污染仓库）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>weekly-report-extension/
+<a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>├── pyproject.toml
+<a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>└── weekly_report_extension/
+<a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a>    ├── __init__.py
+<a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a>    └── plugin.py
+</code></pre></div>
+<p><code>pyproject.toml</code>（对照 <code>examples/deerflow-extension-example/pyproject.toml</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="k">[project]</span>
+<a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"weekly-report-extension"</span>
+<a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="n">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"0.1.0"</span>
+<a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Tutorial extension: in-memory weekly report collection"</span>
+<a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a><span class="n">requires-python</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"&gt;=3.12"</span>
+<a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a><span class="n">dependencies</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a><span class="w">    </span><span class="s2">"deerflow-extension-api&gt;=0.2,&lt;0.3"</span><span class="p">,</span>
+<a id="__codelineno-23-8" name="__codelineno-23-8" href="#__codelineno-23-8"></a><span class="w">    </span><span class="s2">"fastapi&gt;=0.115.0,&lt;1"</span><span class="p">,</span>
+<a id="__codelineno-23-9" name="__codelineno-23-9" href="#__codelineno-23-9"></a><span class="w">    </span><span class="s2">"langchain&gt;=1.3,&lt;2"</span><span class="p">,</span>
+<a id="__codelineno-23-10" name="__codelineno-23-10" href="#__codelineno-23-10"></a><span class="p">]</span>
+<a id="__codelineno-23-11" name="__codelineno-23-11" href="#__codelineno-23-11"></a>
+<a id="__codelineno-23-12" name="__codelineno-23-12" href="#__codelineno-23-12"></a><span class="k">[project.entry-points.</span><span class="s2">"deerflow.extensions"</span><span class="k">]</span>
+<a id="__codelineno-23-13" name="__codelineno-23-13" href="#__codelineno-23-13"></a><span class="n">weekly-report</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"weekly_report_extension:install"</span>
+<a id="__codelineno-23-14" name="__codelineno-23-14" href="#__codelineno-23-14"></a>
+<a id="__codelineno-23-15" name="__codelineno-23-15" href="#__codelineno-23-15"></a><span class="k">[build-system]</span>
+<a id="__codelineno-23-16" name="__codelineno-23-16" href="#__codelineno-23-16"></a><span class="n">requires</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"hatchling"</span><span class="p">]</span>
+<a id="__codelineno-23-17" name="__codelineno-23-17" href="#__codelineno-23-17"></a><span class="n">build-backend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"hatchling.build"</span>
+<a id="__codelineno-23-18" name="__codelineno-23-18" href="#__codelineno-23-18"></a>
+<a id="__codelineno-23-19" name="__codelineno-23-19" href="#__codelineno-23-19"></a><span class="k">[tool.hatch.build.targets.wheel]</span>
+<a id="__codelineno-23-20" name="__codelineno-23-20" href="#__codelineno-23-20"></a><span class="n">packages</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"weekly_report_extension"</span><span class="p">]</span>
+</code></pre></div>
+<p><code>weekly_report_extension/__init__.py</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>
+<a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
+<a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+<a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a>
+<a id="__codelineno-24-6" name="__codelineno-24-6" href="#__codelineno-24-6"></a><span class="kn">from</span><span class="w"> </span><span class="nn">deerflow_extension_api</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExtensionRegistry</span><span class="p">,</span> <span class="n">extension</span>
+<a id="__codelineno-24-7" name="__codelineno-24-7" href="#__codelineno-24-7"></a>
+<a id="__codelineno-24-8" name="__codelineno-24-8" href="#__codelineno-24-8"></a><span class="kn">from</span><span class="w"> </span><span class="nn">weekly_report_extension.plugin</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+<a id="__codelineno-24-9" name="__codelineno-24-9" href="#__codelineno-24-9"></a>    <span class="n">WeeklyReportService</span><span class="p">,</span>
+<a id="__codelineno-24-10" name="__codelineno-24-10" href="#__codelineno-24-10"></a>    <span class="n">WeeklyToolCounterContributor</span><span class="p">,</span>
+<a id="__codelineno-24-11" name="__codelineno-24-11" href="#__codelineno-24-11"></a>    <span class="n">WeeklyToolLifecycle</span><span class="p">,</span>
+<a id="__codelineno-24-12" name="__codelineno-24-12" href="#__codelineno-24-12"></a>    <span class="n">build_router</span><span class="p">,</span>
+<a id="__codelineno-24-13" name="__codelineno-24-13" href="#__codelineno-24-13"></a><span class="p">)</span>
+<a id="__codelineno-24-14" name="__codelineno-24-14" href="#__codelineno-24-14"></a>
+<a id="__codelineno-24-15" name="__codelineno-24-15" href="#__codelineno-24-15"></a><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"install"</span><span class="p">]</span>
+<a id="__codelineno-24-16" name="__codelineno-24-16" href="#__codelineno-24-16"></a>
+<a id="__codelineno-24-17" name="__codelineno-24-17" href="#__codelineno-24-17"></a>
+<a id="__codelineno-24-18" name="__codelineno-24-18" href="#__codelineno-24-18"></a><span class="nd">@extension</span><span class="p">(</span><span class="n">api</span><span class="o">=</span><span class="s2">"0.2.0"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"weekly-report"</span><span class="p">)</span>
+<a id="__codelineno-24-19" name="__codelineno-24-19" href="#__codelineno-24-19"></a><span class="k">def</span><span class="w"> </span><span class="nf">install</span><span class="p">(</span><span class="n">registry</span><span class="p">:</span> <span class="n">ExtensionRegistry</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-24-20" name="__codelineno-24-20" href="#__codelineno-24-20"></a>    <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"enabled"</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+<a id="__codelineno-24-21" name="__codelineno-24-21" href="#__codelineno-24-21"></a>        <span class="k">return</span>
+<a id="__codelineno-24-22" name="__codelineno-24-22" href="#__codelineno-24-22"></a>    <span class="n">service</span> <span class="o">=</span> <span class="n">WeeklyReportService</span><span class="p">()</span>
+<a id="__codelineno-24-23" name="__codelineno-24-23" href="#__codelineno-24-23"></a>    <span class="n">registry</span><span class="o">.</span><span class="n">middlewares</span><span class="p">(</span><span class="n">WeeklyToolCounterContributor</span><span class="p">())</span>
+<a id="__codelineno-24-24" name="__codelineno-24-24" href="#__codelineno-24-24"></a>    <span class="n">registry</span><span class="o">.</span><span class="n">task_lifecycle</span><span class="p">(</span><span class="n">WeeklyToolLifecycle</span><span class="p">())</span>
+<a id="__codelineno-24-25" name="__codelineno-24-25" href="#__codelineno-24-25"></a>    <span class="n">registry</span><span class="o">.</span><span class="n">service</span><span class="p">(</span><span class="n">service</span><span class="p">)</span>
+<a id="__codelineno-24-26" name="__codelineno-24-26" href="#__codelineno-24-26"></a>    <span class="n">registry</span><span class="o">.</span><span class="n">routers</span><span class="p">((</span><span class="n">build_router</span><span class="p">(</span><span class="n">service</span><span class="p">),))</span>
+</code></pre></div>
+<p><code>weekly_report_extension/plugin.py</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>
+<a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+<a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">threading</span><span class="w"> </span><span class="kn">import</span> <span class="n">Lock</span>
+<a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+<a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a>
+<a id="__codelineno-25-7" name="__codelineno-25-7" href="#__codelineno-25-7"></a><span class="kn">from</span><span class="w"> </span><span class="nn">deerflow_extension_api</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+<a id="__codelineno-25-8" name="__codelineno-25-8" href="#__codelineno-25-8"></a>    <span class="n">AgentScope</span><span class="p">,</span>
+<a id="__codelineno-25-9" name="__codelineno-25-9" href="#__codelineno-25-9"></a>    <span class="n">ExtensionData</span><span class="p">,</span>
+<a id="__codelineno-25-10" name="__codelineno-25-10" href="#__codelineno-25-10"></a>    <span class="n">ExtensionRuntimeDeps</span><span class="p">,</span>
+<a id="__codelineno-25-11" name="__codelineno-25-11" href="#__codelineno-25-11"></a>    <span class="n">MiddlewarePlacement</span><span class="p">,</span>
+<a id="__codelineno-25-12" name="__codelineno-25-12" href="#__codelineno-25-12"></a>    <span class="n">Placement</span><span class="p">,</span>
+<a id="__codelineno-25-13" name="__codelineno-25-13" href="#__codelineno-25-13"></a>    <span class="n">task_store_from_runtime</span><span class="p">,</span>
+<a id="__codelineno-25-14" name="__codelineno-25-14" href="#__codelineno-25-14"></a><span class="p">)</span>
+<a id="__codelineno-25-15" name="__codelineno-25-15" href="#__codelineno-25-15"></a><span class="kn">from</span><span class="w"> </span><span class="nn">fastapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">APIRouter</span><span class="p">,</span> <span class="n">Depends</span><span class="p">,</span> <span class="n">HTTPException</span>
+<a id="__codelineno-25-16" name="__codelineno-25-16" href="#__codelineno-25-16"></a><span class="kn">from</span><span class="w"> </span><span class="nn">langchain.agents.middleware</span><span class="w"> </span><span class="kn">import</span> <span class="n">AgentMiddleware</span>
+<a id="__codelineno-25-17" name="__codelineno-25-17" href="#__codelineno-25-17"></a><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.prebuilt.tool_node</span><span class="w"> </span><span class="kn">import</span> <span class="n">ToolCallRequest</span>
+<a id="__codelineno-25-18" name="__codelineno-25-18" href="#__codelineno-25-18"></a>
+<a id="__codelineno-25-19" name="__codelineno-25-19" href="#__codelineno-25-19"></a>
+<a id="__codelineno-25-20" name="__codelineno-25-20" href="#__codelineno-25-20"></a><span class="nd">@dataclass</span>
+<a id="__codelineno-25-21" name="__codelineno-25-21" href="#__codelineno-25-21"></a><span class="k">class</span><span class="w"> </span><span class="nc">WeeklyStats</span><span class="p">:</span>
+<a id="__codelineno-25-22" name="__codelineno-25-22" href="#__codelineno-25-22"></a><span class="w">    </span><span class="sd">"""任务作用域的工具计数；run 结束时折叠进应用作用域。"""</span>
+<a id="__codelineno-25-23" name="__codelineno-25-23" href="#__codelineno-25-23"></a>
+<a id="__codelineno-25-24" name="__codelineno-25-24" href="#__codelineno-25-24"></a>    <span class="n">tool_calls</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+<a id="__codelineno-25-25" name="__codelineno-25-25" href="#__codelineno-25-25"></a>
+<a id="__codelineno-25-26" name="__codelineno-25-26" href="#__codelineno-25-26"></a>
+<a id="__codelineno-25-27" name="__codelineno-25-27" href="#__codelineno-25-27"></a><span class="nd">@dataclass</span>
+<a id="__codelineno-25-28" name="__codelineno-25-28" href="#__codelineno-25-28"></a><span class="k">class</span><span class="w"> </span><span class="nc">WeeklyReportData</span><span class="p">:</span>
+<a id="__codelineno-25-29" name="__codelineno-25-29" href="#__codelineno-25-29"></a><span class="w">    </span><span class="sd">"""应用作用域：已提交的周报 + 汇总统计。"""</span>
+<a id="__codelineno-25-30" name="__codelineno-25-30" href="#__codelineno-25-30"></a>
+<a id="__codelineno-25-31" name="__codelineno-25-31" href="#__codelineno-25-31"></a>    <span class="n">reports</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+<a id="__codelineno-25-32" name="__codelineno-25-32" href="#__codelineno-25-32"></a>    <span class="n">runs_observed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+<a id="__codelineno-25-33" name="__codelineno-25-33" href="#__codelineno-25-33"></a>    <span class="n">tool_calls_observed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+<a id="__codelineno-25-34" name="__codelineno-25-34" href="#__codelineno-25-34"></a>    <span class="n">_lock</span><span class="p">:</span> <span class="n">Lock</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">Lock</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">compare</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<a id="__codelineno-25-35" name="__codelineno-25-35" href="#__codelineno-25-35"></a>
+<a id="__codelineno-25-36" name="__codelineno-25-36" href="#__codelineno-25-36"></a>
+<a id="__codelineno-25-37" name="__codelineno-25-37" href="#__codelineno-25-37"></a><span class="k">def</span><span class="w"> </span><span class="nf">_report_data</span><span class="p">(</span><span class="n">store</span><span class="p">:</span> <span class="n">ExtensionData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">WeeklyReportData</span><span class="p">:</span>
+<a id="__codelineno-25-38" name="__codelineno-25-38" href="#__codelineno-25-38"></a>    <span class="k">return</span> <span class="n">store</span><span class="o">.</span><span class="n">get_or_init</span><span class="p">(</span><span class="n">WeeklyReportData</span><span class="p">,</span> <span class="n">WeeklyReportData</span><span class="p">)</span>
+<a id="__codelineno-25-39" name="__codelineno-25-39" href="#__codelineno-25-39"></a>
+<a id="__codelineno-25-40" name="__codelineno-25-40" href="#__codelineno-25-40"></a>
+<a id="__codelineno-25-41" name="__codelineno-25-41" href="#__codelineno-25-41"></a><span class="k">class</span><span class="w"> </span><span class="nc">WeeklyToolCounter</span><span class="p">(</span><span class="n">AgentMiddleware</span><span class="p">):</span>
+<a id="__codelineno-25-42" name="__codelineno-25-42" href="#__codelineno-25-42"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">wrap_tool_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">ToolCallRequest</span><span class="p">,</span> <span class="n">handler</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<a id="__codelineno-25-43" name="__codelineno-25-43" href="#__codelineno-25-43"></a>        <span class="n">store</span> <span class="o">=</span> <span class="n">task_store_from_runtime</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s2">"runtime"</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+<a id="__codelineno-25-44" name="__codelineno-25-44" href="#__codelineno-25-44"></a>        <span class="k">if</span> <span class="n">store</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-25-45" name="__codelineno-25-45" href="#__codelineno-25-45"></a>            <span class="n">stats</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="n">get_or_init</span><span class="p">(</span><span class="n">WeeklyStats</span><span class="p">,</span> <span class="n">WeeklyStats</span><span class="p">)</span>
+<a id="__codelineno-25-46" name="__codelineno-25-46" href="#__codelineno-25-46"></a>            <span class="n">stats</span><span class="o">.</span><span class="n">tool_calls</span> <span class="o">+=</span> <span class="mi">1</span>
+<a id="__codelineno-25-47" name="__codelineno-25-47" href="#__codelineno-25-47"></a>        <span class="k">return</span> <span class="n">handler</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+<a id="__codelineno-25-48" name="__codelineno-25-48" href="#__codelineno-25-48"></a>
+<a id="__codelineno-25-49" name="__codelineno-25-49" href="#__codelineno-25-49"></a>    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">awrap_tool_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">ToolCallRequest</span><span class="p">,</span> <span class="n">handler</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<a id="__codelineno-25-50" name="__codelineno-25-50" href="#__codelineno-25-50"></a>        <span class="n">store</span> <span class="o">=</span> <span class="n">task_store_from_runtime</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s2">"runtime"</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+<a id="__codelineno-25-51" name="__codelineno-25-51" href="#__codelineno-25-51"></a>        <span class="k">if</span> <span class="n">store</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-25-52" name="__codelineno-25-52" href="#__codelineno-25-52"></a>            <span class="n">stats</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="n">get_or_init</span><span class="p">(</span><span class="n">WeeklyStats</span><span class="p">,</span> <span class="n">WeeklyStats</span><span class="p">)</span>
+<a id="__codelineno-25-53" name="__codelineno-25-53" href="#__codelineno-25-53"></a>            <span class="n">stats</span><span class="o">.</span><span class="n">tool_calls</span> <span class="o">+=</span> <span class="mi">1</span>
+<a id="__codelineno-25-54" name="__codelineno-25-54" href="#__codelineno-25-54"></a>        <span class="k">return</span> <span class="k">await</span> <span class="n">handler</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+<a id="__codelineno-25-55" name="__codelineno-25-55" href="#__codelineno-25-55"></a>
+<a id="__codelineno-25-56" name="__codelineno-25-56" href="#__codelineno-25-56"></a>
+<a id="__codelineno-25-57" name="__codelineno-25-57" href="#__codelineno-25-57"></a><span class="k">class</span><span class="w"> </span><span class="nc">WeeklyToolCounterContributor</span><span class="p">:</span>
+<a id="__codelineno-25-58" name="__codelineno-25-58" href="#__codelineno-25-58"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">contribute_middlewares</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">app_store</span><span class="p">:</span> <span class="n">ExtensionData</span><span class="p">,</span> <span class="n">ctx</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<a id="__codelineno-25-59" name="__codelineno-25-59" href="#__codelineno-25-59"></a>        <span class="k">return</span> <span class="p">(</span><span class="n">MiddlewarePlacement</span><span class="p">(</span><span class="n">WeeklyToolCounter</span><span class="p">(),</span> <span class="n">Placement</span><span class="o">.</span><span class="n">STANDARD</span><span class="p">,</span> <span class="n">AgentScope</span><span class="o">.</span><span class="n">BOTH</span><span class="p">),)</span>
+<a id="__codelineno-25-60" name="__codelineno-25-60" href="#__codelineno-25-60"></a>
+<a id="__codelineno-25-61" name="__codelineno-25-61" href="#__codelineno-25-61"></a>
+<a id="__codelineno-25-62" name="__codelineno-25-62" href="#__codelineno-25-62"></a><span class="k">class</span><span class="w"> </span><span class="nc">WeeklyToolLifecycle</span><span class="p">:</span>
+<a id="__codelineno-25-63" name="__codelineno-25-63" href="#__codelineno-25-63"></a>    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">on_task_start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">app_store</span><span class="p">:</span> <span class="n">ExtensionData</span><span class="p">,</span> <span class="n">task_store</span><span class="p">:</span> <span class="n">ExtensionData</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-25-64" name="__codelineno-25-64" href="#__codelineno-25-64"></a>        <span class="n">task_store</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">WeeklyStats</span><span class="p">())</span>
+<a id="__codelineno-25-65" name="__codelineno-25-65" href="#__codelineno-25-65"></a>
+<a id="__codelineno-25-66" name="__codelineno-25-66" href="#__codelineno-25-66"></a>    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">on_task_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">app_store</span><span class="p">:</span> <span class="n">ExtensionData</span><span class="p">,</span> <span class="n">task_store</span><span class="p">:</span> <span class="n">ExtensionData</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-25-67" name="__codelineno-25-67" href="#__codelineno-25-67"></a>        <span class="n">stats</span> <span class="o">=</span> <span class="n">task_store</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">WeeklyStats</span><span class="p">)</span>
+<a id="__codelineno-25-68" name="__codelineno-25-68" href="#__codelineno-25-68"></a>        <span class="k">if</span> <span class="n">stats</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-25-69" name="__codelineno-25-69" href="#__codelineno-25-69"></a>            <span class="k">return</span>
+<a id="__codelineno-25-70" name="__codelineno-25-70" href="#__codelineno-25-70"></a>        <span class="n">data</span> <span class="o">=</span> <span class="n">_report_data</span><span class="p">(</span><span class="n">app_store</span><span class="p">)</span>
+<a id="__codelineno-25-71" name="__codelineno-25-71" href="#__codelineno-25-71"></a>        <span class="k">with</span> <span class="n">data</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+<a id="__codelineno-25-72" name="__codelineno-25-72" href="#__codelineno-25-72"></a>            <span class="n">data</span><span class="o">.</span><span class="n">runs_observed</span> <span class="o">+=</span> <span class="mi">1</span>
+<a id="__codelineno-25-73" name="__codelineno-25-73" href="#__codelineno-25-73"></a>            <span class="n">data</span><span class="o">.</span><span class="n">tool_calls_observed</span> <span class="o">+=</span> <span class="n">stats</span><span class="o">.</span><span class="n">tool_calls</span>
+<a id="__codelineno-25-74" name="__codelineno-25-74" href="#__codelineno-25-74"></a>
+<a id="__codelineno-25-75" name="__codelineno-25-75" href="#__codelineno-25-75"></a>
+<a id="__codelineno-25-76" name="__codelineno-25-76" href="#__codelineno-25-76"></a><span class="k">class</span><span class="w"> </span><span class="nc">WeeklyReportService</span><span class="p">:</span>
+<a id="__codelineno-25-77" name="__codelineno-25-77" href="#__codelineno-25-77"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-25-78" name="__codelineno-25-78" href="#__codelineno-25-78"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_deps</span><span class="p">:</span> <span class="n">ExtensionRuntimeDeps</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+<a id="__codelineno-25-79" name="__codelineno-25-79" href="#__codelineno-25-79"></a>
+<a id="__codelineno-25-80" name="__codelineno-25-80" href="#__codelineno-25-80"></a>    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">deps</span><span class="p">:</span> <span class="n">ExtensionRuntimeDeps</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-25-81" name="__codelineno-25-81" href="#__codelineno-25-81"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_deps</span> <span class="o">=</span> <span class="n">deps</span>
+<a id="__codelineno-25-82" name="__codelineno-25-82" href="#__codelineno-25-82"></a>
+<a id="__codelineno-25-83" name="__codelineno-25-83" href="#__codelineno-25-83"></a>    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-25-84" name="__codelineno-25-84" href="#__codelineno-25-84"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_deps</span> <span class="o">=</span> <span class="kc">None</span>
+<a id="__codelineno-25-85" name="__codelineno-25-85" href="#__codelineno-25-85"></a>
+<a id="__codelineno-25-86" name="__codelineno-25-86" href="#__codelineno-25-86"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_store</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ExtensionData</span><span class="p">:</span>
+<a id="__codelineno-25-87" name="__codelineno-25-87" href="#__codelineno-25-87"></a>        <span class="n">deps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deps</span>
+<a id="__codelineno-25-88" name="__codelineno-25-88" href="#__codelineno-25-88"></a>        <span class="k">if</span> <span class="n">deps</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">deps</span><span class="o">.</span><span class="n">app_store</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-25-89" name="__codelineno-25-89" href="#__codelineno-25-89"></a>            <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">503</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="s2">"weekly-report is not running"</span><span class="p">)</span>
+<a id="__codelineno-25-90" name="__codelineno-25-90" href="#__codelineno-25-90"></a>        <span class="k">return</span> <span class="n">deps</span><span class="o">.</span><span class="n">app_store</span>
+<a id="__codelineno-25-91" name="__codelineno-25-91" href="#__codelineno-25-91"></a>
+<a id="__codelineno-25-92" name="__codelineno-25-92" href="#__codelineno-25-92"></a>
+<a id="__codelineno-25-93" name="__codelineno-25-93" href="#__codelineno-25-93"></a><span class="k">def</span><span class="w"> </span><span class="nf">build_router</span><span class="p">(</span><span class="n">service</span><span class="p">:</span> <span class="n">WeeklyReportService</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">APIRouter</span><span class="p">:</span>
+<a id="__codelineno-25-94" name="__codelineno-25-94" href="#__codelineno-25-94"></a>    <span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">"/api/weekly-report"</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">"weekly-report"</span><span class="p">])</span>
+<a id="__codelineno-25-95" name="__codelineno-25-95" href="#__codelineno-25-95"></a>
+<a id="__codelineno-25-96" name="__codelineno-25-96" href="#__codelineno-25-96"></a>    <span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"/health"</span><span class="p">)</span>
+<a id="__codelineno-25-97" name="__codelineno-25-97" href="#__codelineno-25-97"></a>    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">health</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
+<a id="__codelineno-25-98" name="__codelineno-25-98" href="#__codelineno-25-98"></a>        <span class="k">return</span> <span class="p">{</span><span class="s2">"running"</span><span class="p">:</span> <span class="n">service</span><span class="o">.</span><span class="n">_deps</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">}</span>
+<a id="__codelineno-25-99" name="__codelineno-25-99" href="#__codelineno-25-99"></a>
+<a id="__codelineno-25-100" name="__codelineno-25-100" href="#__codelineno-25-100"></a>    <span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"/stats"</span><span class="p">)</span>
+<a id="__codelineno-25-101" name="__codelineno-25-101" href="#__codelineno-25-101"></a>    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">stats</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<a id="__codelineno-25-102" name="__codelineno-25-102" href="#__codelineno-25-102"></a>        <span class="n">data</span> <span class="o">=</span> <span class="n">_report_data</span><span class="p">(</span><span class="n">service</span><span class="o">.</span><span class="n">_store</span><span class="p">())</span>
+<a id="__codelineno-25-103" name="__codelineno-25-103" href="#__codelineno-25-103"></a>        <span class="k">with</span> <span class="n">data</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+<a id="__codelineno-25-104" name="__codelineno-25-104" href="#__codelineno-25-104"></a>            <span class="k">return</span> <span class="p">{</span><span class="s2">"runs_observed"</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">runs_observed</span><span class="p">,</span> <span class="s2">"tool_calls_observed"</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">tool_calls_observed</span><span class="p">}</span>
+<a id="__codelineno-25-105" name="__codelineno-25-105" href="#__codelineno-25-105"></a>
+<a id="__codelineno-25-106" name="__codelineno-25-106" href="#__codelineno-25-106"></a>    <span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"/reports"</span><span class="p">)</span>
+<a id="__codelineno-25-107" name="__codelineno-25-107" href="#__codelineno-25-107"></a>    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">list_reports</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<a id="__codelineno-25-108" name="__codelineno-25-108" href="#__codelineno-25-108"></a>        <span class="n">data</span> <span class="o">=</span> <span class="n">_report_data</span><span class="p">(</span><span class="n">service</span><span class="o">.</span><span class="n">_store</span><span class="p">())</span>
+<a id="__codelineno-25-109" name="__codelineno-25-109" href="#__codelineno-25-109"></a>        <span class="k">with</span> <span class="n">data</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+<a id="__codelineno-25-110" name="__codelineno-25-110" href="#__codelineno-25-110"></a>            <span class="k">return</span> <span class="p">{</span><span class="s2">"reports"</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">reports</span><span class="p">)}</span>
+<a id="__codelineno-25-111" name="__codelineno-25-111" href="#__codelineno-25-111"></a>
+<a id="__codelineno-25-112" name="__codelineno-25-112" href="#__codelineno-25-112"></a>    <span class="k">return</span> <span class="n">router</span>
+</code></pre></div>
+<h3 id="2">第 2 步：本地测试 + 打包检查<a class="headerlink" href="#2" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="nb">cd</span><span class="w"> </span>weekly-report-extension
+<a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>uv<span class="w"> </span>venv<span class="w"> </span>--python<span class="w"> </span><span class="m">3</span>.12
+<a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>&lt;deerflow-checkout&gt;/backend/packages/extension-api
+<a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
+<a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a>uv<span class="w"> </span>run<span class="w"> </span>--no-project<span class="w"> </span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"from weekly_report_extension import install; print('ok')"</span>
+</code></pre></div>
+<p>再从 DeerFlow 检出根目录跑官方打包检查（<code>examples/README.md:31</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>uv<span class="w"> </span>run<span class="w"> </span>--project<span class="w"> </span>backend<span class="w"> </span>--no-sync<span class="w"> </span>python<span class="w"> </span>scripts/check_extension.py<span class="w"> </span>/absolute/path/to/weekly-report-extension
+</code></pre></div>
+<p>它会构建 wheel、校验恰好一个 entry point、解析包内 Python 语法、确认 API 依赖范围
+接受当前契约版本。</p>
+<h3 id="3">第 3 步：安装 → 重启 → 验证<a class="headerlink" href="#3" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="nb">cd</span><span class="w"> </span>&lt;deerflow-checkout&gt;
+<a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>make<span class="w"> </span>extension-install<span class="w"> </span><span class="nv">SOURCE</span><span class="o">=</span>/absolute/path/to/weekly-report-extension
+<a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a><span class="c1"># 出现信任提示，输入 y（或加 --yes 的 CLI 等价命令）</span>
+<a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a>make<span class="w"> </span>extension-list
+<a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a><span class="c1"># NAME            STATE     PACKAGE                     ENTRY POINT</span>
+<a id="__codelineno-28-6" name="__codelineno-28-6" href="#__codelineno-28-6"></a><span class="c1"># weekly-report   enabled   weekly-report-extension     weekly_report_extension:install</span>
+</code></pre></div>
+<p>此时 <code>config.yaml</code> 末尾多了一条托管 <code>plugins:</code> 记录，<code>backend/extensions/sources/weekly-report-extension/</code>
+出现了快照，<code>backend/pyproject.toml</code> 的 <code>extensions</code> 依赖组与 <code>uv.lock</code> 已更新。
+重启加载：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>make<span class="w"> </span>dev<span class="w">        </span><span class="c1"># 或 make stop &amp;&amp; make start</span>
+</code></pre></div>
+<p>验证三个贡献点：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a><span class="c1"># 1) 路由贡献点：健康检查</span>
+<a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>curl<span class="w"> </span>-s<span class="w"> </span>http://localhost:2026/api/weekly-report/health
+<a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a><span class="c1"># {"running":true}</span>
+<a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a>
+<a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a><span class="c1"># 2) 服务贡献点：未启动时会 503（启动后返回应用作用域数据）</span>
+<a id="__codelineno-30-6" name="__codelineno-30-6" href="#__codelineno-30-6"></a>curl<span class="w"> </span>-s<span class="w"> </span>http://localhost:2026/api/weekly-report/stats
+<a id="__codelineno-30-7" name="__codelineno-30-7" href="#__codelineno-30-7"></a><span class="c1"># {"runs_observed":0,"tool_calls_observed":0}</span>
+<a id="__codelineno-30-8" name="__codelineno-30-8" href="#__codelineno-30-8"></a>
+<a id="__codelineno-30-9" name="__codelineno-30-9" href="#__codelineno-30-9"></a><span class="c1"># 3) 中间件贡献点：到 Web 界面随便发一轮会触发工具的消息（如"列出当前目录文件"），</span>
+<a id="__codelineno-30-10" name="__codelineno-30-10" href="#__codelineno-30-10"></a><span class="c1">#    让模型调用一次工具，然后再看统计</span>
+<a id="__codelineno-30-11" name="__codelineno-30-11" href="#__codelineno-30-11"></a>curl<span class="w"> </span>-s<span class="w"> </span>http://localhost:2026/api/weekly-report/stats
+<a id="__codelineno-30-12" name="__codelineno-30-12" href="#__codelineno-30-12"></a><span class="c1"># {"runs_observed":1,"tool_calls_observed":3}</span>
+</code></pre></div>
+<p>（启用认证的部署请用已登录的浏览器会话访问；贡献路由强制走会话认证，不能退出。）</p>
+<h3 id="4">第 4 步：禁用 → 卸载<a class="headerlink" href="#4" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>make<span class="w"> </span>extension-disable<span class="w"> </span><span class="nv">NAME</span><span class="o">=</span>weekly-report
+<a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>make<span class="w"> </span>extension-list<span class="w">          </span><span class="c1"># STATE 变为 disabled</span>
+<a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a>make<span class="w"> </span>stop<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>make<span class="w"> </span>dev<span class="w">        </span><span class="c1"># 重启后 /api/weekly-report/* 消失</span>
+<a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a>
+<a id="__codelineno-31-5" name="__codelineno-31-5" href="#__codelineno-31-5"></a>make<span class="w"> </span>extension-remove<span class="w"> </span><span class="nv">NAME</span><span class="o">=</span>weekly-report
+<a id="__codelineno-31-6" name="__codelineno-31-6" href="#__codelineno-31-6"></a>make<span class="w"> </span>stop<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>make<span class="w"> </span>dev
+<a id="__codelineno-31-7" name="__codelineno-31-7" href="#__codelineno-31-7"></a>make<span class="w"> </span>extension-list<span class="w">          </span><span class="c1"># 列表为空；config.yaml/plugins 记录、快照与依赖组条目全部移除</span>
+</code></pre></div>
+<h2 id="168">16.8 常见坑<a class="headerlink" href="#168" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>改了源码不生效</strong>。本地安装是<strong>快照</strong>（<code>backend/extensions/sources/</code>），不是可编辑
+   链接。改完源码必须 <code>make extension-upgrade SOURCE=/absolute/path/to/your-extension</code>
+   重新快照，然后重启 Gateway。只 restart 不 upgrade 也不行。</li>
+<li><strong>改了 <code>plugins:</code> 不重启</strong>。插件加载是 startup-only，enable/disable/install/remove
+   与手工编辑配置后都必须重启；这是最高频的"配置不生效"问题。</li>
+<li><strong>SOURCE 用了相对路径</strong>。<code>make extension-*</code> 从 <code>backend/</code> 目录执行包装命令，相对路径
+   会指错位置。文档与示例一律使用绝对路径（<code>examples/README.md:43</code> 的注记）。</li>
+<li><strong>扩展里 <code>import deerflow</code> / <code>import app</code></strong>。契约包 <code>deerflow_extension_api</code> 是唯一
+   允许的 DeerFlow 依赖；框架（FastAPI/LangChain/LangGraph）要在自己的 <code>pyproject.toml</code>
+   里显式声明。导入宿主内部模块会把扩展绑死在某一个核心版本上，还可能触发循环导入。</li>
+<li><strong>中间件按"列表下标"思维设计</strong>。扩展贡献的是语义 <code>Placement</code>，且 <code>STANDARD</code> 与其他
+   <code>STANDARD</code> 贡献的相对顺序<strong>没有保证</strong>；不要在共享基础 builder 里注入，<code>stack.py</code>
+   才是最终组合点。观察型中间件要同步/异步成对实现，且必须透传异常（包括
+   <code>CancelledError</code> 与 GraphInterrupt 控制流）。</li>
+<li><strong><code>required: true</code> 的使用</strong>。托管安装默认写 <code>required: false</code>（加载失败 = 记诊断并
+   跳过）。<code>--required</code> 会让以后任何一次加载失败（wheel 损坏、native 库缺失、快照被删）
+   直接中止 Gateway 启动，且只能进 shell 恢复——除非业务缺了它就错，否则别开。</li>
+</ol>
+<hr />
+<h2 id="_2">下一步<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<p>扩展系统解决了"把业务装进平台"的机制问题；下一章我们把视角切换到真实业务，用五个
+端到端案例演练<strong>需求分流决策树</strong>——什么该做成 Skill、什么走 MCP、什么做扩展、什么
+才值得改核心。请继续阅读 <a href="../17-business-cases/">17-business-cases.md</a>（第 17 章 业务
+二次开发实战），其后的第 18 章将转向前端二次开发。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      教程基于开源项目 <a href='https://github.com/bytedance/deer-flow'>bytedance/deer-flow</a> 的真实源码编写
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.sections", "navigation.expand", "navigation.top", "navigation.indexes", "search.suggest", "search.highlight", "content.code.copy", "toc.follow"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.a5f9d56c.min.js"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

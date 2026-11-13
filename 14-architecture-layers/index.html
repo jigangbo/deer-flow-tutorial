@@ -1,0 +1,2580 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="基于 DeerFlow 真实源码的中文系统教程：21 章 + 附录，覆盖环境配置、核心组件拆解、二次开发与 MCP 集成">
+      
+      
+      
+        <link rel="canonical" href="https://jigangbo.github.io/deer-flow-tutorial/14-architecture-layers/">
+      
+      
+        <link rel="prev" href="../13-gateway-api/">
+      
+      
+        <link rel="next" href="../15-mcp/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
+    
+    
+      
+        <title>第 14 章 架构分层与开发规范（二次开发前必读） - DeerFlow 从入门到精通 · 源码教程</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#14" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href=".." title="DeerFlow 从入门到精通 · 源码教程" class="md-header__button md-logo" aria-label="DeerFlow 从入门到精通 · 源码教程" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            DeerFlow 从入门到精通 · 源码教程
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              第 14 章 架构分层与开发规范（二次开发前必读）
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jigangbo/deer-flow-tutorial" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="DeerFlow 从入门到精通 · 源码教程" class="md-nav__button md-logo" aria-label="DeerFlow 从入门到精通 · 源码教程" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    DeerFlow 从入门到精通 · 源码教程
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jigangbo/deer-flow-tutorial" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    导读
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    导读
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 0 章 全景鸟瞰
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第一篇 入门篇
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第一篇 入门篇
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-environment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 1 章 准备环境（Environment Setup）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 2 章 一键启动（Quick Start）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 3 章 配置系统入门
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-frontend-tour/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 4 章 前端界面与基本功能导览
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-run-modes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 5 章 更多运行方式
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第二篇 进阶篇
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第二篇 进阶篇
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-request-lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 6 章 一次请求的一生：Agent 运行时全链路
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-tools-and-skills/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 7 章 工具系统与 Skills
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-sandbox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 8 章 沙箱与代码执行
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-multi-agent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 9 章 Multi-Agent 路由与子代理委派
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10-memory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 10 章 记忆系统（Memory / DeerMem）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../11-context-engineering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 11 章 上下文工程与长对话治理
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../12-scheduled-tasks-and-im/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 12 章 定时任务与 IM 渠道
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../13-gateway-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 13 章 Gateway API 与编程接入
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第三篇 精通篇
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第三篇 精通篇
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 14 章 架构分层与开发规范（二次开发前必读）
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 14 章 架构分层与开发规范（二次开发前必读）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        本章源码锚点
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#140" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.0 学习目标
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#141" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.1 概念讲解：三层结构与依赖方向
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="14.1 概念讲解：三层结构与依赖方向">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1411" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.1.1 两层主干 + 一层契约
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1412" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.1.2 为什么要分层
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1413-import" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.1.3 依赖方向的正反例（import 约定）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#142-ci" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.2 源码走读：边界如何被 CI 强制
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="14.2 源码走读：边界如何被 CI 强制">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1421-test_harness_boundarypy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.2.1 精读 test_harness_boundary.py
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1422-deerflow-extension-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.2.2 第三层契约包：deerflow-extension-api
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1423" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.2.3 版本锁步
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#143" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.3 源码走读：轻量导入纪律
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="14.3 源码走读：轻量导入纪律">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1431-import" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.3.1 问题：包根 import 会引爆依赖图
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1432-agents__init__py" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.3.2 精读 agents/__init__.py
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1433-subagents__init__py" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.3.3 精读 subagents/__init__.py
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1434" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.3.4 写代码时怎么遵守
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#144-tdd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.4 源码走读：TDD 门禁与测试布局
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="14.4 源码走读：TDD 门禁与测试布局">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1441" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.4.1 测试目录全景
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1442-backendmakefile-target" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.4.2 精读 backend/Makefile 的测试 target
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1443-make-migrate-rev" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.4.3 数据库迁移：make migrate-rev 与一个真实迁移
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#145" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.5 动手实验：定位一处中间件并跑通全部门禁
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        常见坑
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        下一步
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../15-mcp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 15 章 MCP 集成（重点）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../16-extensions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 16 章 扩展（Extensions）开发
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../17-business-cases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 17 章 业务二次开发实战（综合案例）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../18-frontend-dev/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 18 章 前端二次开发
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../19-testing-quality/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 19 章 可观测性、测试与质量保障
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../20-production/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 20 章 生产部署与运维
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    附录
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    附录
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../appendices/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    附录
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        本章源码锚点
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#140" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.0 学习目标
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#141" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.1 概念讲解：三层结构与依赖方向
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="14.1 概念讲解：三层结构与依赖方向">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1411" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.1.1 两层主干 + 一层契约
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1412" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.1.2 为什么要分层
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1413-import" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.1.3 依赖方向的正反例（import 约定）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#142-ci" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.2 源码走读：边界如何被 CI 强制
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="14.2 源码走读：边界如何被 CI 强制">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1421-test_harness_boundarypy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.2.1 精读 test_harness_boundary.py
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1422-deerflow-extension-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.2.2 第三层契约包：deerflow-extension-api
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1423" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.2.3 版本锁步
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#143" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.3 源码走读：轻量导入纪律
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="14.3 源码走读：轻量导入纪律">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1431-import" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.3.1 问题：包根 import 会引爆依赖图
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1432-agents__init__py" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.3.2 精读 agents/__init__.py
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1433-subagents__init__py" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.3.3 精读 subagents/__init__.py
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1434" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.3.4 写代码时怎么遵守
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#144-tdd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.4 源码走读：TDD 门禁与测试布局
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="14.4 源码走读：TDD 门禁与测试布局">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1441" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.4.1 测试目录全景
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1442-backendmakefile-target" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.4.2 精读 backend/Makefile 的测试 target
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1443-make-migrate-rev" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.4.3 数据库迁移：make migrate-rev 与一个真实迁移
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#145" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.5 动手实验：定位一处中间件并跑通全部门禁
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        常见坑
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        下一步
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="14">第 14 章 架构分层与开发规范（二次开发前必读）<a class="headerlink" href="#14" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>精通篇从本章开始。前两篇你一直在"用"DeerFlow；从本章起你要"改"它。改代码之前
+必须先回答三个问题：代码分几层、依赖朝哪边流、CI 用什么门禁拦住违规改动。
+本章用真实源码回答：Harness/App 两条层的单向依赖（CI 强制）、第三层契约包
+<code>deerflow-extension-api</code>、TDD/分片测试/Alembic 迁移的工程规范，以及包根懒加载
+的导入纪律。读完再动手，你会少踩 90% 的"改一行、CI 全红"的坑。</p>
+</blockquote>
+<h2 id="_1">本章源码锚点<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>主题</th>
+<th>锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>分层总览</td>
+<td><code>docs/ARCHITECTURE.md</code> §3、<code>backend/AGENTS.md</code>（Harness / App Split 节）</td>
+</tr>
+<tr>
+<td>边界 CI 门禁</td>
+<td><code>backend/tests/test_harness_boundary.py</code>（47 行，精读）</td>
+</tr>
+<tr>
+<td>契约包</td>
+<td><code>backend/packages/extension-api/deerflow_extension_api/__init__.py</code></td>
+</tr>
+<tr>
+<td>契约包元数据</td>
+<td><code>backend/packages/extension-api/pyproject.toml</code></td>
+</tr>
+<tr>
+<td>Harness 包元数据</td>
+<td><code>backend/packages/harness/pyproject.toml</code></td>
+</tr>
+<tr>
+<td>App 包元数据 / uv workspace</td>
+<td><code>backend/pyproject.toml</code></td>
+</tr>
+<tr>
+<td>懒加载包根 ①</td>
+<td><code>backend/packages/harness/deerflow/agents/__init__.py</code></td>
+</tr>
+<tr>
+<td>懒加载包根 ②</td>
+<td><code>backend/packages/harness/deerflow/subagents/__init__.py</code></td>
+</tr>
+<tr>
+<td>后端命令</td>
+<td><code>backend/Makefile</code></td>
+</tr>
+<tr>
+<td>测试布局</td>
+<td><code>backend/tests/</code>（约 1340 个文件）+ <code>backend/tests/conftest.py</code></td>
+</tr>
+<tr>
+<td>迁移示例</td>
+<td><code>backend/packages/harness/deerflow/persistence/migrations/versions/0047_mcp_oauth_tokens.py</code></td>
+</tr>
+<tr>
+<td>导入约定（权威）</td>
+<td><code>backend/AGENTS.md</code> "Import conventions" 与 "Package import hygiene" 节</td>
+</tr>
+</tbody>
+</table>
+<h2 id="140">14.0 学习目标<a class="headerlink" href="#140" title="Permanent link">&para;</a></h2>
+<p>读完本章，你应该能够：</p>
+<ol>
+<li>画出后端三层结构（<code>app.*</code> → <code>deerflow.*</code> ← <code>deerflow_extension_api.*</code>）并解释
+   每一层的发布属性：谁是可发布框架、谁是 unpublished 应用、谁是宿主无关契约；</li>
+<li>说清 <code>test_harness_boundary.py</code> 如何用 AST 扫描在 CI 里强制"Harness 永不
+   <code>import app</code>"，以及违规 import 长什么样、报错长什么样；</li>
+<li>遵守工程规范跑通一个完整后端改动闭环：TDD 写测试 → <code>make test</code> 四分片 →
+   <code>make test-blocking-io</code> Blockbuster 门禁 → <code>make migrate-rev</code> 生成迁移；</li>
+<li>解释 <code>deerflow.agents</code> / <code>deerflow.subagents</code> 包根为什么必须懒加载，写出
+   "轻量导入"风格的内部模块 import；</li>
+<li>独立完成一次"harness 内定位一处中间件 + 跑绿全部门禁"的演练（动手实验）。</li>
+</ol>
+<h2 id="141">14.1 概念讲解：三层结构与依赖方向<a class="headerlink" href="#141" title="Permanent link">&para;</a></h2>
+<h3 id="1411">14.1.1 两层主干 + 一层契约<a class="headerlink" href="#1411" title="Permanent link">&para;</a></h3>
+<p><code>docs/ARCHITECTURE.md</code> §3 给出主干规则：</p>
+<blockquote>
+<p><strong>Harness</strong>（<code>backend/packages/harness/deerflow/</code>，import 前缀 <code>deerflow.*</code>）——
+可发布的 agent 框架：编排、工具、沙箱、模型、MCP、技能、记忆、配置，即"构建和
+运行 agent 所需的一切"。
+<strong>App</strong>（<code>backend/app/</code>，import 前缀 <code>app.*</code>）——unpublished 应用代码：FastAPI
+Gateway 与 IM 渠道集成。</p>
+</blockquote>
+<p>在这两层之间还有一个"第三层"：<code>deerflow-extension-api</code>
+（<code>backend/packages/extension-api/</code>），它定义与宿主无关的扩展契约。三者的依赖
+关系是严格单向的：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>        app.*  ──import──▶  deerflow.*  ◀──import──  扩展(extension)代码
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>          │                     ▲                        │
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>          └──import──▶ deerflow_extension_api ◀──import──┘
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>                    （deerflow 宿主实现这份契约，
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>                      契约包自己谁也不 import）
+</code></pre></div>
+<p>三个关键性质，每个都有源码证据：</p>
+<ul>
+<li><strong>App 可以 import Harness</strong>：<code>backend/pyproject.toml:8</code> 把
+  <code>deerflow-harness</code> 声明为 <code>deer-flow</code> 的第一个运行时依赖。</li>
+<li><strong>Harness 永不 import App</strong>：这是 CI 强制规则（下一节精读测试）。</li>
+<li><strong>契约包不 import 任何人</strong>：<code>backend/packages/extension-api/pyproject.toml:8</code>
+  的 <code>dependencies = []</code>——它连 <code>deerflow</code> 都不依赖（14.2 节精读）。</li>
+</ul>
+<h3 id="1412">14.1.2 为什么要分层<a class="headerlink" href="#1412" title="Permanent link">&para;</a></h3>
+<p>一句话：<strong>框架要能独立发布，应用才有自由重构的权利</strong>。</p>
+<ul>
+<li><code>deerflow-harness</code> 是 <code>backend/packages/harness/pyproject.toml:1-4</code> 里一个
+  正式的 PyPI 风格包（name <code>deerflow-harness</code>，version <code>2.3.0-dev</code>）。它可以被
+  任何第三方项目 <code>uv add deerflow-harness</code> 后单独用来构建 agent——不需要 Gateway、
+  不需要 IM 渠道。<code>backend/pyproject.toml:114-119</code> 把两个包登记进 uv workspace：</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">[tool.uv.workspace]</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">members</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"packages/harness"</span><span class="p">,</span><span class="w"> </span><span class="s2">"packages/extension-api"</span><span class="p">]</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="k">[tool.uv.sources]</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">deerflow-harness</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">workspace</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="n">deerflow-extension-api</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">workspace</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+<p>（<code>backend/pyproject.toml:114-119</code>）workspace 内源码引用让 monorepo 开发时
+  三个包共享同一份源码，发布时又能各自独立出包。</p>
+<ul>
+<li><code>app.*</code> 里的 Gateway 拼装了 FastAPI 路由、IM 渠道、调度器等"部署形态"的代码。
+  这一层<strong>不发布</strong>。把产品逻辑写进 <code>deerflow.*</code> 会让框架背上产品包袱；写进
+  <code>app.*</code> 又无法被其他 DeerFlow 复用——所以有了第三层的扩展契约：平台能力
+  （第 16 章的扩展系统）通过 <code>deerflow_extension_api</code> 的稳定接口注入，实现
+  代码住在扩展包里，宿主与扩展可以分别演进。</li>
+</ul>
+<h3 id="1413-import">14.1.3 依赖方向的正反例（import 约定）<a class="headerlink" href="#1413-import" title="Permanent link">&para;</a></h3>
+<p><code>backend/AGENTS.md</code> "Import conventions" 节（<code>backend/AGENTS.md:159-173</code>）给出
+权威示例，逐条对照源码：</p>
+<p><strong>正确写法 ①：Harness 内部互相引用</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Harness internal</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">deerflow.agents</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_lead_agent</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">deerflow.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_chat_model</span>
+</code></pre></div>
+<p><strong>正确写法 ②：App 内部互相引用</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># App internal</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">app.gateway.app</span><span class="w"> </span><span class="kn">import</span> <span class="n">app</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">app.channels.service</span><span class="w"> </span><span class="kn">import</span> <span class="n">start_channel_service</span>
+</code></pre></div>
+<p><strong>正确写法 ③：App → Harness（唯一允许的跨层方向）</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># App → Harness (allowed)</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">deerflow.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_app_config</span>
+</code></pre></div>
+<p>真实例子随手可查：Gateway 的服务层取配置就是这条路径（第 13 章里
+<code>start_run</code> 读 <code>get_app_config()</code> 即属此类）。</p>
+<p><strong>错误写法：Harness → App（CI 直接拒绝）</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Harness → App (FORBIDDEN — enforced by test_harness_boundary.py)</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="c1"># from app.gateway.routers.uploads import ...  # ← will fail CI</span>
+</code></pre></div>
+<p>假设你想在 harness 的某个工具里"顺手"调 Gateway 的上传路由——这个 import 一旦
+落盘，<code>make test</code>（本地）与 CI（远端）都会在 <code>test_harness_boundary.py</code> 失败，
+报错信息会把违规文件与行号列出来（见下一节摘录）。正确的改法是把需要的能力
+抽象成 harness 内的接口，或走扩展契约注入（第 16 章）。</p>
+<p>还有一条容易被忽略的<strong>反向纪律</strong>：契约包不 import 宿主。<code>deerflow_extension_api</code>
+的模块里找不到任何 <code>from deerflow...</code>——如果扩展作者在契约层"借"了宿主的实现，
+契约包的独立性就名存实亡。</p>
+<h2 id="142-ci">14.2 源码走读：边界如何被 CI 强制<a class="headerlink" href="#142-ci" title="Permanent link">&para;</a></h2>
+<h3 id="1421-test_harness_boundarypy">14.2.1 精读 <code>test_harness_boundary.py</code><a class="headerlink" href="#1421-test_harness_boundarypy" title="Permanent link">&para;</a></h3>
+<p>整个测试只有 47 行，没有 mock、没有网络、没有 fixture——它就是一次纯静态的
+AST 扫描。先看扫描范围与禁用前缀（<code>backend/tests/test_harness_boundary.py:13-16</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">HARNESS_ROOT</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">"packages"</span> <span class="o">/</span> <span class="s2">"harness"</span> <span class="o">/</span> <span class="s2">"deerflow"</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="n">BANNED_PREFIXES</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"app."</span><span class="p">,)</span>
+</code></pre></div>
+<p><code>HARNESS_ROOT</code> 从测试文件位置反推出 <code>packages/harness/deerflow</code>，即 Harness 层
+的完整源码树；<code>BANNED_PREFIXES</code> 目前只有一个成员 <code>"app."</code>。注意元组的设计：
+未来若出现新的禁用方向（比如禁止契约包 import 宿主），加一个前缀即可。</p>
+<p>收集 import 的函数把源码解析成 AST，遍历两种节点（<code>backend/tests/test_harness_boundary.py:18-34</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">_collect_imports</span><span class="p">(</span><span class="n">filepath</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">    </span><span class="sd">"""Return (line_number, module_path) for every import in *filepath*."""</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="n">source</span> <span class="o">=</span> <span class="n">filepath</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>    <span class="k">try</span><span class="p">:</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>        <span class="n">tree</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">filepath</span><span class="p">))</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>    <span class="k">except</span> <span class="ne">SyntaxError</span><span class="p">:</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>        <span class="k">return</span> <span class="p">[]</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>    <span class="n">results</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">ast</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">tree</span><span class="p">):</span>
+<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Import</span><span class="p">):</span>
+<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>            <span class="k">for</span> <span class="n">alias</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">names</span><span class="p">:</span>
+<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a>                <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">node</span><span class="o">.</span><span class="n">lineno</span><span class="p">,</span> <span class="n">alias</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+<a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a>        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">ImportFrom</span><span class="p">):</span>
+<a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a>            <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">module</span><span class="p">:</span>
+<a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a>                <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">node</span><span class="o">.</span><span class="n">lineno</span><span class="p">,</span> <span class="n">node</span><span class="o">.</span><span class="n">module</span><span class="p">))</span>
+<a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a>    <span class="k">return</span> <span class="n">results</span>
+</code></pre></div>
+<p>三个细节值得学：</p>
+<ol>
+<li><strong><code>ast.parse</code> 而不是正则</strong>——<code>from app import x</code>、<code>import app.gateway</code>、
+   字符串拼接的动态 import（<code>importlib.import_module("app.x")</code> 除外）都能被
+   语法层面覆盖，注释里的假 import 不会误报；</li>
+<li><strong>同时覆盖 <code>ast.Import</code> 与 <code>ast.ImportFrom</code></strong>——<code>import app.gateway.routers</code>
+   和 <code>from app.gateway.routers import x</code> 是两种不同的 AST 节点；</li>
+<li><strong>SyntaxError 静默跳过</strong>——边界测试不为语法错误负责，那是 ruff 的职责，
+   分层测试保持单一职责。</li>
+</ol>
+<p>断言本体在 <code>backend/tests/test_harness_boundary.py:37-46</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">test_harness_does_not_import_app</span><span class="p">():</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>    <span class="n">violations</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="k">for</span> <span class="n">py_file</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">HARNESS_ROOT</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s2">"*.py"</span><span class="p">)):</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>        <span class="k">for</span> <span class="n">lineno</span><span class="p">,</span> <span class="n">module</span> <span class="ow">in</span> <span class="n">_collect_imports</span><span class="p">(</span><span class="n">py_file</span><span class="p">):</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">module</span> <span class="o">==</span> <span class="n">prefix</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">"."</span><span class="p">)</span> <span class="ow">or</span> <span class="n">module</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span> <span class="k">for</span> <span class="n">prefix</span> <span class="ow">in</span> <span class="n">BANNED_PREFIXES</span><span class="p">):</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>                <span class="n">rel</span> <span class="o">=</span> <span class="n">py_file</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">HARNESS_ROOT</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>                <span class="n">violations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">rel</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">lineno</span><span class="si">}</span><span class="s2">  imports </span><span class="si">{</span><span class="n">module</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>
+<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>    <span class="k">assert</span> <span class="ow">not</span> <span class="n">violations</span><span class="p">,</span> <span class="s2">"Harness layer must not import from app layer:</span><span class="se">\n</span><span class="s2">"</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">violations</span><span class="p">)</span>
+</code></pre></div>
+<ul>
+<li><code>rglob("*.py")</code> 扫到 Harness 的每一个 Python 文件（包括子包），<code>sorted()</code>
+  保证报错顺序稳定、diff 可读；</li>
+<li>匹配规则是 <code>module == prefix.rstrip(".") or module.startswith(prefix)</code>——
+  两个分支分别捕获 <code>import app</code>（裸模块名，<code>module == "app"</code>）与
+  <code>import app.gateway.routers</code>（子模块，<code>startswith("app.")</code>）两种形态，
+  都拦；</li>
+<li>失败消息逐行列出 <code>相对路径:行号 imports 模块</code>，你 push 之后在 CI 日志里
+  能直接定位到行。</li>
+</ul>
+<blockquote>
+<p>注意这个测试跑在 <code>backend/tests/</code> 里，属于四分片离线套件的一员——它不需要
+任何运行时环境，几毫秒完成。<strong>边界是"测试"而不是 lint 插件</strong>是有意为之：
+ruff 的规则是风格约束，这个测试是架构约束，放在 pytest 里意味着它和功能
+测试一起跑，绕不过去。</p>
+</blockquote>
+<h3 id="1422-deerflow-extension-api">14.2.2 第三层契约包：<code>deerflow-extension-api</code><a class="headerlink" href="#1422-deerflow-extension-api" title="Permanent link">&para;</a></h3>
+<p>打开 <code>backend/packages/extension-api/deerflow_extension_api/__init__.py:1-6</code>，
+包级 docstring 把规则写在第一行：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="sd">"""Public contracts for DeerFlow extensions.</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="sd">This package MUST NOT import `deerflow`. Every host contract an extension</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="sd">needs lives here, while framework imports remain direct extension dependencies;</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="sd">extensions can therefore be released independently of the host.</span>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="sd">"""</span>
+</code></pre></div>
+<p>"This package MUST NOT import <code>deerflow</code>" —— 契约包的独立性是<strong>文档声明的
+不变量</strong>（第 14.1.3 节的"反向纪律"）。文件随后用 100 余行 re-export 列出全部
+公开契约（<code>backend/packages/extension-api/deerflow_extension_api/__init__.py:10-101</code>）：
+<code>ExtensionRegistry</code> / <code>ExtensionService</code> / <code>MiddlewareContributor</code> /
+<code>TaskLifecycleContributor</code> / <code>SystemModelRequest</code>…… 这些名字是第 16 章扩展
+开发时的完整词汇表。版本号管理在第 103-105 行：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1">#: Contract version. Before 1.0, minors may break and patches are additive.</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="c1">#: From 1.0 on, bump the major for breaking changes.</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="n">API_VERSION</span> <span class="o">=</span> <span class="s2">"0.2.11"</span>
+</code></pre></div>
+<p>1.0 之前 minor 可破坏、patch 只做增量——宿主与扩展的兼容性由此协商。
+Harness 侧对这份契约用<strong>精确 pin</strong>（<code>backend/packages/harness/pyproject.toml:12-16</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># Exact pin by design (extension-system version contract): the host pins</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="c1"># the contract version it implements, extensions declare ranges. A range</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="c1"># here would let pip resolve a newer contract package than this harness</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="c1"># implements, making newer extensions look supported at runtime.</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="s2">"deerflow-extension-api==0.2.11"</span><span class="err">,</span>
+</code></pre></div>
+<p>注释解释了 pin 的理由：<strong>宿主钉死它实现的契约版本，扩展声明范围</strong>。如果宿主
+声明范围，pip 可能解析出比宿主实现更新的契约包，让"新扩展"在运行时才炸出
+"宿主不认识这个接口"。</p>
+<p>契约包自身的 <code>backend/packages/extension-api/pyproject.toml:6-8</code> 则用空依赖
+兑现了 docstring 的承诺：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1"># Keep the contract package import-light and independent from the host. Public</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="c1"># values are stdlib-based; concrete middleware types are validated by DeerFlow.</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="n">dependencies</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span>
+</code></pre></div>
+<p>零依赖意味着"import 这个包不会有任何传递安装"，扩展作者可以放心把它作为
+自己包的轻量依赖。</p>
+<p>App 层对契约包也显式声明依赖，<code>backend/pyproject.toml:9-15</code> 的注释同样值得
+精读（这是本仓库注释文化的代表）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="w">    </span><span class="c1"># Direct dependency on purpose, even though deerflow-harness already pulls</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="w">    </span><span class="c1"># it in: app/gateway/app.py and app/gateway/services.py import the public</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">    </span><span class="c1"># contract package themselves (the extension principal resolver, and the</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">    </span><span class="c1"># provenance key set the state route strips). Those are the app layer's own</span>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="w">    </span><span class="c1"># imports of a package whose whole point is a stable public surface, so the</span>
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="w">    </span><span class="c1"># app declares them rather than relying on the harness to keep supplying it.</span>
+<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="w">    </span><span class="s2">"deerflow-extension-api"</span><span class="err">,</span>
+</code></pre></div>
+<p>"自己 import 的包自己声明，而不是搭 Harness 传递依赖的便车"——否则哪天
+Harness 内部不再 import 契约包，App 会无声地丢依赖。</p>
+<h3 id="1423">14.2.3 版本锁步<a class="headerlink" href="#1423" title="Permanent link">&para;</a></h3>
+<p>三个包的版本由仓库级约定锁步（根 <code>AGENTS.md</code> "Version lockstep" 节）：
+<code>backend/pyproject.toml:3</code>（<code>2.3.0-dev</code>）、<code>backend/packages/harness/pyproject.toml:3</code>
+（<code>2.3.0-dev</code>）、<code>frontend/package.json</code> 的 <code>version</code> 字段（<code>2.3.0-dev</code>）、
+<code>deploy/helm/deer-flow/Chart.yaml</code> 的 <code>version</code>/<code>appVersion</code>（均为
+<code>2.3.0-dev</code>）四处必须一致，<code>backend/uv.lock</code> 必须同步。改版本统一用
+<code>scripts/bump_version.sh &lt;ver&gt;</code>，<code>v*</code> tag 的 CI 会跑 <code>scripts/verify_versions.sh</code>
+阻断漂移。手改其中一处版本号是新人最常见的 CI 红灯来源之一。</p>
+<h2 id="143">14.3 源码走读：轻量导入纪律<a class="headerlink" href="#143" title="Permanent link">&para;</a></h2>
+<h3 id="1431-import">14.3.1 问题：包根 import 会引爆依赖图<a class="headerlink" href="#1431-import" title="Permanent link">&para;</a></h3>
+<p><code>deerflow.agents</code> 和 <code>deerflow.subagents</code> 是 Harness 里两个"重灾区"：
+<code>agents</code> 包根连接着 lead agent 的整张工具图（进而拖出沙箱、MCP、技能……），
+<code>subagents</code> 包根连接着子代理执行器。如果包根 <code>__init__.py</code> 把它们 eager import，
+那么任何"只想读一个轻量类型"的模块（例如运行时配置类）都会连锁拉起整张依赖图。
+<code>backend/AGENTS.md</code> "Package import hygiene" 节
+（<code>backend/AGENTS.md:175-183</code>）总结了这条纪律：</p>
+<blockquote>
+<p>the <code>deerflow.agents</code> and <code>deerflow.subagents</code> package roots expose
+heavyweight graph/executor entrypoints lazily. The
+<code>deerflow.agents:make_lead_agent</code> LangGraph Server entrypoint is a concrete
+thin module-level function because the server resolves graph factories
+directly from the module dictionary; the wrapper keeps the lead-agent and
+skill-cache imports inside the function so importing the package remains
+lightweight. Internal modules that only need lightweight types, config, or
+registries should import the concrete submodule instead of adding eager
+package-root imports that pull in the tool graph or subagent executor during
+state/schema imports.</p>
+</blockquote>
+<h3 id="1432-agents__init__py">14.3.2 精读 <code>agents/__init__.py</code><a class="headerlink" href="#1432-agents__init__py" title="Permanent link">&para;</a></h3>
+<p><code>backend/packages/harness/deerflow/agents/__init__.py:20-31</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">make_lead_agent</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="s2">"RunnableConfig"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="w">    </span><span class="sd">"""Build the lead graph while keeping package-root imports lightweight.</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="sd">    LangGraph Server resolves configured graph factories directly from a</span>
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="sd">    module's ``__dict__``, so this entrypoint must be a concrete module-level</span>
+<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="sd">    function rather than a value supplied only through ``__getattr__``.</span>
+<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="sd">    """</span>
+<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>    <span class="kn">from</span><span class="w"> </span><span class="nn">.lead_agent</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_lead_agent</span> <span class="k">as</span> <span class="n">factory</span>
+<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a>    <span class="kn">from</span><span class="w"> </span><span class="nn">.lead_agent.prompt</span><span class="w"> </span><span class="kn">import</span> <span class="n">prime_enabled_skills_cache</span>
+<a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a>
+<a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a>    <span class="n">prime_enabled_skills_cache</span><span class="p">()</span>
+<a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a>    <span class="k">return</span> <span class="n">factory</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+</code></pre></div>
+<p>两层设计意图：</p>
+<ol>
+<li><strong>函数体内部 import</strong>——<code>lead_agent</code>（以及它拖出的整张工具图）只在真正
+   构建 lead agent 的那一刻才被加载；<code>import deerflow.agents</code> 本身是廉价的。</li>
+<li><strong>为什么不能全用 <code>__getattr__</code> 懒加载</strong>——docstring 写明：LangGraph Server
+   解析 graph factory 时是<strong>直接查模块 <code>__dict__</code></strong>，<code>__getattr__</code> 只在属性
+   访问路径上生效，Server 的工厂查找不会触发它。所以 <code>make_lead_agent</code> 必须
+   是一个真实的模块级函数（薄壳），内部再做懒 import。这是"懒加载纪律"与
+   "外部框架解析约定"的折中，值得记住：<strong>懒加载不是无脑全懒，要尊重消费方
+   的发现机制</strong>。</li>
+</ol>
+<p>其余重符号走 <code>__getattr__</code>（<code>backend/packages/harness/deerflow/agents/__init__.py:34-50</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="k">def</span><span class="w"> </span><span class="fm">__getattr__</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>    <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">"create_deerflow_agent"</span><span class="p">:</span>
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>        <span class="kn">from</span><span class="w"> </span><span class="nn">.factory</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_deerflow_agent</span>
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>        <span class="nb">globals</span><span class="p">()[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">create_deerflow_agent</span>
+<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>        <span class="k">return</span> <span class="n">create_deerflow_agent</span>
+<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>    <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">"DeltaThreadState"</span><span class="p">,</span> <span class="s2">"SandboxState"</span><span class="p">,</span> <span class="s2">"ThreadState"</span><span class="p">}:</span>
+<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>        <span class="kn">from</span><span class="w"> </span><span class="nn">.thread_state</span><span class="w"> </span><span class="kn">import</span> <span class="n">DeltaThreadState</span><span class="p">,</span> <span class="n">SandboxState</span><span class="p">,</span> <span class="n">ThreadState</span>
+<a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a>
+<a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a>        <span class="n">exports</span> <span class="o">=</span> <span class="p">{</span>
+<a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a>            <span class="s2">"DeltaThreadState"</span><span class="p">:</span> <span class="n">DeltaThreadState</span><span class="p">,</span>
+<a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a>            <span class="s2">"SandboxState"</span><span class="p">:</span> <span class="n">SandboxState</span><span class="p">,</span>
+<a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a>            <span class="s2">"ThreadState"</span><span class="p">:</span> <span class="n">ThreadState</span><span class="p">,</span>
+<a id="__codelineno-15-14" name="__codelineno-15-14" href="#__codelineno-15-14"></a>        <span class="p">}</span>
+<a id="__codelineno-15-15" name="__codelineno-15-15" href="#__codelineno-15-15"></a>        <span class="nb">globals</span><span class="p">()</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">exports</span><span class="p">)</span>
+<a id="__codelineno-15-16" name="__codelineno-15-16" href="#__codelineno-15-16"></a>        <span class="k">return</span> <span class="n">exports</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+<a id="__codelineno-15-17" name="__codelineno-15-17" href="#__codelineno-15-17"></a>    <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"module </span><span class="si">{</span><span class="vm">__name__</span><span class="si">!r}</span><span class="s2"> has no attribute </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<p>注意 <code>globals().update(exports)</code> 这一行：首次懒加载后把符号写回模块字典，
+后续访问不再走 <code>__getattr__</code> 分支——一次付费，之后免费。</p>
+<h3 id="1433-subagents__init__py">14.3.3 精读 <code>subagents/__init__.py</code><a class="headerlink" href="#1433-subagents__init__py" title="Permanent link">&para;</a></h3>
+<p>同样的模式在 <code>backend/packages/harness/deerflow/subagents/__init__.py:1-12</code>
+先给出一个反差：<strong>轻量符号是 eager 的</strong>——</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">SubagentConfig</span>
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">.registry</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_available_subagent_names</span><span class="p">,</span> <span class="n">get_subagent_config</span><span class="p">,</span> <span class="n">list_subagents</span>
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>    <span class="s2">"SubagentConfig"</span><span class="p">,</span>
+<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>    <span class="s2">"SubagentExecutor"</span><span class="p">,</span>
+<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>    <span class="s2">"SubagentResult"</span><span class="p">,</span>
+<a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>    <span class="s2">"SubagentRuntime"</span><span class="p">,</span>
+<a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a>    <span class="s2">"get_available_subagent_names"</span><span class="p">,</span>
+<a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a>    <span class="s2">"get_subagent_config"</span><span class="p">,</span>
+<a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a>    <span class="s2">"list_subagents"</span><span class="p">,</span>
+<a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a><span class="p">]</span>
+</code></pre></div>
+<p><code>config</code>（Pydantic 配置模型）和 <code>registry</code>（名字注册表）是轻量模块，eager
+import 无伤大雅；<code>__all__</code> 里的 <code>SubagentExecutor</code> / <code>SubagentResult</code> /
+<code>SubagentRuntime</code> 才是重量级，走懒加载（<code>backend/packages/harness/deerflow/subagents/__init__.py:15-30</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="k">def</span><span class="w"> </span><span class="fm">__getattr__</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>    <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">"SubagentExecutor"</span><span class="p">,</span> <span class="s2">"SubagentResult"</span><span class="p">}:</span>
+<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>        <span class="kn">from</span><span class="w"> </span><span class="nn">.executor</span><span class="w"> </span><span class="kn">import</span> <span class="n">SubagentExecutor</span><span class="p">,</span> <span class="n">SubagentResult</span>
+<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>
+<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>        <span class="n">exports</span> <span class="o">=</span> <span class="p">{</span>
+<a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a>            <span class="s2">"SubagentExecutor"</span><span class="p">:</span> <span class="n">SubagentExecutor</span><span class="p">,</span>
+<a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a>            <span class="s2">"SubagentResult"</span><span class="p">:</span> <span class="n">SubagentResult</span><span class="p">,</span>
+<a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a>        <span class="p">}</span>
+<a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a>        <span class="nb">globals</span><span class="p">()</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">exports</span><span class="p">)</span>
+<a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a>        <span class="k">return</span> <span class="n">exports</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+<a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a>    <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">"SubagentRuntime"</span><span class="p">:</span>
+<a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a>        <span class="kn">from</span><span class="w"> </span><span class="nn">.runtime</span><span class="w"> </span><span class="kn">import</span> <span class="n">SubagentRuntime</span>
+<a id="__codelineno-17-13" name="__codelineno-17-13" href="#__codelineno-17-13"></a>
+<a id="__codelineno-17-14" name="__codelineno-17-14" href="#__codelineno-17-14"></a>        <span class="nb">globals</span><span class="p">()[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">SubagentRuntime</span>
+<a id="__codelineno-17-15" name="__codelineno-17-15" href="#__codelineno-17-15"></a>        <span class="k">return</span> <span class="n">SubagentRuntime</span>
+<a id="__codelineno-17-16" name="__codelineno-17-16" href="#__codelineno-17-16"></a>    <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"module </span><span class="si">{</span><span class="vm">__name__</span><span class="si">!r}</span><span class="s2"> has no attribute </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="1434">14.3.4 写代码时怎么遵守<a class="headerlink" href="#1434" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>内部模块</strong>只依赖轻量类型/配置/注册表时，直接 import 具体子模块
+  （<code>from deerflow.subagents.config import SubagentConfig</code>），不要通过包根
+  拉执行器；</li>
+<li><strong>循环导入的自救</strong>：如果确实无法避免生产代码里的循环链，测试侧可以在
+  <code>backend/tests/conftest.py</code> 注入 <code>sys.modules</code> mock。仓库里现成的例子
+  （<code>backend/tests/conftest.py:21-40</code>）把这条链注释得一清二楚：</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="c1"># Break the circular import chain that exists in production code:</span>
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="c1">#   deerflow.subagents.__init__</span>
+<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="c1">#     -&gt; .executor (SubagentExecutor, SubagentResult)</span>
+<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="c1">#       -&gt; deerflow.agents.thread_state</span>
+<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="c1">#         -&gt; deerflow.agents.__init__</span>
+<a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a><span class="c1">#           -&gt; lead_agent.agent</span>
+<a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="c1">#             -&gt; subagent_limit_middleware</span>
+<a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a><span class="c1">#               -&gt; deerflow.subagents.executor  &lt;-- circular!</span>
+<a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a><span class="c1">#</span>
+<a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a><span class="c1"># By injecting a mock for deerflow.subagents.executor *before* any test module</span>
+<a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a><span class="c1"># triggers the import, __init__.py's "from .executor import ..." succeeds</span>
+<a id="__codelineno-18-12" name="__codelineno-18-12" href="#__codelineno-18-12"></a><span class="c1"># immediately without running the real executor module.</span>
+<a id="__codelineno-18-13" name="__codelineno-18-13" href="#__codelineno-18-13"></a><span class="n">_executor_mock</span> <span class="o">=</span> <span class="n">MagicMock</span><span class="p">()</span>
+<a id="__codelineno-18-14" name="__codelineno-18-14" href="#__codelineno-18-14"></a><span class="n">_executor_mock</span><span class="o">.</span><span class="n">SubagentExecutor</span> <span class="o">=</span> <span class="n">MagicMock</span>
+<a id="__codelineno-18-15" name="__codelineno-18-15" href="#__codelineno-18-15"></a><span class="n">_executor_mock</span><span class="o">.</span><span class="n">SubagentResult</span> <span class="o">=</span> <span class="n">MagicMock</span>
+<a id="__codelineno-18-16" name="__codelineno-18-16" href="#__codelineno-18-16"></a><span class="n">_executor_mock</span><span class="o">.</span><span class="n">SubagentStatus</span> <span class="o">=</span> <span class="n">MagicMock</span>
+<a id="__codelineno-18-17" name="__codelineno-18-17" href="#__codelineno-18-17"></a><span class="n">_executor_mock</span><span class="o">.</span><span class="n">MAX_CONCURRENT_SUBAGENTS</span> <span class="o">=</span> <span class="mi">3</span>
+<a id="__codelineno-18-18" name="__codelineno-18-18" href="#__codelineno-18-18"></a><span class="n">_executor_mock</span><span class="o">.</span><span class="n">get_background_task_result</span> <span class="o">=</span> <span class="n">MagicMock</span><span class="p">()</span>
+<a id="__codelineno-18-19" name="__codelineno-18-19" href="#__codelineno-18-19"></a>
+<a id="__codelineno-18-20" name="__codelineno-18-20" href="#__codelineno-18-20"></a><span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="s2">"deerflow.subagents.executor"</span><span class="p">]</span> <span class="o">=</span> <span class="n">_executor_mock</span>
+</code></pre></div>
+<p>注意顺序：mock 必须在任何测试模块触发真实 import <strong>之前</strong>注入——conftest
+  在收集阶段执行，正好满足这个时机。<code>backend/AGENTS.md:224</code> 明确说：轻量
+  配置/工具模块遇到循环导入问题时，照这个现有例子加 <code>sys.modules</code> mock。</p>
+<h2 id="144-tdd">14.4 源码走读：TDD 门禁与测试布局<a class="headerlink" href="#144-tdd" title="Permanent link">&para;</a></h2>
+<h3 id="1441">14.4.1 测试目录全景<a class="headerlink" href="#1441" title="Permanent link">&para;</a></h3>
+<p><code>backend/tests/</code> 约 1340 个文件，布局规则（<code>backend/AGENTS.md</code> TDD 节 +
+目录实况）：</p>
+<table>
+<thead>
+<tr>
+<th>位置</th>
+<th>内容</th>
+<th>运行方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>backend/tests/test_&lt;feature&gt;.py</code></td>
+<td>常规单元/集成测试（默认离线）</td>
+<td><code>make test</code> 四分片</td>
+</tr>
+<tr>
+<td><code>backend/tests/blocking_io/</code></td>
+<td>Blockbuster 严格门禁套件（阻塞 I/O 检测）</td>
+<td><code>make test-blocking-io</code></td>
+</tr>
+<tr>
+<td><code>backend/tests/fixtures/</code>、<code>conftest.py</code>、<code>_*.py</code> 辅助模块</td>
+<td>共享 fixture 与 helper</td>
+<td>被上述两者引用</td>
+</tr>
+<tr>
+<td>标记 <code>live</code> 的测试</td>
+<td>真实外部 API，需 <code>DEER_FLOW_RUN_LIVE_TESTS=1</code> 显式开启</td>
+<td><code>make test-live</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>backend/pyproject.toml:86-92</code> 用 pytest markers 固化了这套语言：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="k">[tool.pytest.ini_options]</span>
+<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="n">markers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="w">    </span><span class="s2">"no_auto_user: disable the conftest autouse contextvar fixture for this test"</span><span class="p">,</span>
+<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="w">    </span><span class="s2">"allow_blocking_io: opt out of the strict Blockbuster gate in tests/blocking_io/"</span><span class="p">,</span>
+<a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a><span class="w">    </span><span class="s2">"integration: tests that require an external service (e.g. Redis); skipped when unavailable"</span><span class="p">,</span>
+<a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a><span class="w">    </span><span class="s2">"live: tests that call real external APIs and require explicit opt-in"</span><span class="p">,</span>
+<a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a><span class="p">]</span>
+</code></pre></div>
+<h3 id="1442-backendmakefile-target">14.4.2 精读 <code>backend/Makefile</code> 的测试 target<a class="headerlink" href="#1442-backendmakefile-target" title="Permanent link">&para;</a></h3>
+<p>TDD 是<strong>强制</strong>的（<code>backend/AGENTS.md:216-222</code>："Every new feature or bug fix
+MUST be accompanied by unit tests. No exceptions."）。落地命令在
+<code>backend/Makefile:22-36</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="c"># Run all four duration-balanced shards locally; wait for every shard on failure.</span>
+<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="nv">TEST_JOBS</span><span class="w"> </span><span class="o">?=</span><span class="w"> </span><span class="m">4</span>
+<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="nv">TEST_SHARD_TARGETS</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span>test-shard-1<span class="w"> </span>test-shard-2<span class="w"> </span>test-shard-3<span class="w"> </span>test-shard-4
+<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="nf">.PHONY</span><span class="o">:</span><span class="w"> </span><span class="n">test</span> <span class="n">test</span>-<span class="n">shard</span> <span class="k">$(</span><span class="nv">TEST_SHARD_TARGETS</span><span class="k">)</span>
+<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="nf">test</span><span class="o">:</span>
+<a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a><span class="w">    </span><span class="k">$(</span>MAKE<span class="k">)</span><span class="w"> </span>--no-print-directory<span class="w"> </span>-k<span class="w"> </span>-j<span class="k">$(</span>TEST_JOBS<span class="k">)</span><span class="w"> </span><span class="k">$(</span>TEST_SHARD_TARGETS<span class="k">)</span>
+<a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a>
+<a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a><span class="nf">$(TEST_SHARD_TARGETS)</span><span class="o">:</span>
+<a id="__codelineno-20-9" name="__codelineno-20-9" href="#__codelineno-20-9"></a><span class="w">    </span><span class="k">$(</span>MAKE<span class="k">)</span><span class="w"> </span>--no-print-directory<span class="w"> </span>test-shard<span class="w"> </span><span class="nv">SPLITS</span><span class="o">=</span><span class="m">4</span><span class="w"> </span><span class="nv">GROUP</span><span class="o">=</span><span class="k">$(</span>patsubst<span class="w"> </span>test-shard-%,%,<span class="nv">$@</span><span class="k">)</span>
+<a id="__codelineno-20-10" name="__codelineno-20-10" href="#__codelineno-20-10"></a>
+<a id="__codelineno-20-11" name="__codelineno-20-11" href="#__codelineno-20-11"></a><span class="nf">test-live</span><span class="o">:</span>
+<a id="__codelineno-20-12" name="__codelineno-20-12" href="#__codelineno-20-12"></a><span class="w">    </span><span class="nv">DEER_FLOW_RUN_LIVE_TESTS</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">PYTHONPATH</span><span class="o">=</span>.<span class="w"> </span><span class="nv">PYTHONIOENCODING</span><span class="o">=</span>utf-8<span class="w"> </span><span class="nv">PYTHONUTF8</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>-m<span class="w"> </span>live<span class="w"> </span>tests/<span class="w"> </span>-v<span class="w"> </span>-s
+<a id="__codelineno-20-13" name="__codelineno-20-13" href="#__codelineno-20-13"></a>
+<a id="__codelineno-20-14" name="__codelineno-20-14" href="#__codelineno-20-14"></a><span class="nf">test-blocking-io</span><span class="o">:</span>
+<a id="__codelineno-20-15" name="__codelineno-20-15" href="#__codelineno-20-15"></a><span class="w">    </span><span class="nv">PYTHONPATH</span><span class="o">=</span>.<span class="w"> </span><span class="nv">PYTHONIOENCODING</span><span class="o">=</span>utf-8<span class="w"> </span><span class="nv">PYTHONUTF8</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>tests/blocking_io<span class="w"> </span>-q<span class="w"> </span>--tb<span class="o">=</span>short
+</code></pre></div>
+<p>三个看点：</p>
+<ol>
+<li><strong>四分片并行</strong>——<code>make test</code> 用 <code>-j4</code> 同时跑四个 <code>test-shard-N</code>，分片不是
+   按目录切，而是<strong>按时长均衡</strong>；</li>
+<li><strong>时长基线文件</strong>——<code>backend/Makefile:46-52</code> 的 <code>test-shard</code>：</li>
+</ol>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="nv">SPLITS</span><span class="w"> </span><span class="o">?=</span><span class="w"> </span><span class="m">1</span>
+<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="nv">GROUP</span><span class="w"> </span><span class="o">?=</span><span class="w"> </span><span class="m">1</span>
+<a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="nv">DURATIONS_FILE</span><span class="w"> </span><span class="o">?=</span><span class="w"> </span>.test_durations
+<a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="nf">test-shard</span><span class="o">:</span>
+<a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a><span class="w"> </span>@test<span class="w"> </span>-f<span class="w"> </span><span class="s2">"</span><span class="k">$(</span>DURATIONS_FILE<span class="k">)</span><span class="s2">"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a><span class="w">     </span><span class="o">(</span><span class="nb">echo</span><span class="w"> </span><span class="s2">"error: </span><span class="k">$(</span>DURATIONS_FILE<span class="k">)</span><span class="s2"> is missing; run 'make test-shard-durations' to regenerate the duration baseline"</span><span class="w"> </span>&gt;<span class="p">&amp;</span><span class="m">2</span><span class="p">;</span><span class="w"> </span><span class="nb">exit</span><span class="w"> </span><span class="m">1</span><span class="o">)</span>
+<a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a><span class="w"> </span><span class="nv">PYTHONPATH</span><span class="o">=</span>.<span class="w"> </span><span class="nv">PYTHONIOENCODING</span><span class="o">=</span>utf-8<span class="w"> </span><span class="nv">PYTHONUTF8</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>-m<span class="w"> </span><span class="s2">"not live"</span><span class="w"> </span>--ignore<span class="o">=</span>tests/blocking_io<span class="w"> </span>--splits<span class="w"> </span><span class="k">$(</span>SPLITS<span class="k">)</span><span class="w"> </span>--group<span class="w"> </span><span class="k">$(</span>GROUP<span class="k">)</span><span class="w"> </span>--splitting-algorithm<span class="w"> </span>least_duration<span class="w"> </span>--durations-path<span class="o">=</span><span class="k">$(</span>DURATIONS_FILE<span class="k">)</span><span class="w"> </span>tests/<span class="w"> </span>-q
+</code></pre></div>
+<p>pytest-split 按 <code>.test_durations</code> 里记录的真实耗时做 <code>least_duration</code>
+   分桶；文件缺失直接报错（而不是退化成不分片），避免 CI 分片意外失衡。
+   刷新基线用 <code>make test-shard-durations</code>（<code>backend/Makefile:57-58</code>），它会
+   <code>--store-durations --clean-durations</code> 重测全量离线套件。
+3. <strong>两套门禁都要跑</strong>——提交前 <code>make test</code> + <code>make test-blocking-io</code> 一起过
+   （<code>backend/AGENTS.md:222</code>）。<code>tests/blocking_io/</code> 里跑的是 Blockbuster：
+   事件循环上出现未授权的阻塞 I/O（同步文件、同步网络）直接判红。第 15 章
+   会看到 <code>tests/blocking_io/test_mcp_oauth_token_store.py</code> 这样的成对回归。</p>
+<p>代码风格同样有门禁：ruff，行宽 240（<code>backend/AGENTS.md</code> Code Style 节，
+"Line length: 240 characters"）；<code>backend/Makefile:60-62</code> 的 <code>lint</code> 同时跑
+<code>ruff check</code> 与 <code>ruff format --check</code>，CI 后者强制。</p>
+<h3 id="1443-make-migrate-rev">14.4.3 数据库迁移：<code>make migrate-rev</code> 与一个真实迁移<a class="headerlink" href="#1443-make-migrate-rev" title="Permanent link">&para;</a></h3>
+<p>迁移系统是 Alembic，目录在 Harness 侧：
+<code>backend/packages/harness/deerflow/persistence/migrations/</code>。<code>backend/Makefile:77-79</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="nf">migrate-rev</span><span class="o">:</span>
+<a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="w">    </span>@if<span class="w"> </span><span class="o">[</span><span class="w"> </span>-z<span class="w"> </span><span class="s2">"</span><span class="k">$(</span>MSG<span class="k">)</span><span class="s2">"</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s1">'usage: make migrate-rev MSG="describe the change"'</span><span class="p">;</span><span class="w"> </span><span class="nb">exit</span><span class="w"> </span><span class="m">1</span><span class="p">;</span><span class="w"> </span><span class="k">fi</span>
+<a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="w">    </span><span class="nv">PYTHONPATH</span><span class="o">=</span>.<span class="w"> </span><span class="nv">PYTHONIOENCODING</span><span class="o">=</span>utf-8<span class="w"> </span><span class="nv">PYTHONUTF8</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>scripts/_autogen_revision.py<span class="w"> </span><span class="s2">"</span><span class="k">$(</span>MSG<span class="k">)</span><span class="s2">"</span>
+</code></pre></div>
+<p><code>backend/Makefile:70-76</code> 的注释解释了为什么<strong>没有</strong> <code>make migrate</code> / 
+<code>migrate-stash</code> 之类的 target：Gateway 启动时通过 <code>bootstrap_schema</code> 自动
+<code>alembic upgrade head</code>——唯一执行路径，把运维失误挡在门外。自动生成的算法
+是"先在一个临时 SQLite 上升到 head，再把 live ORM 模型与它做 diff"，所以
+干净 checkout（没有现成 <code>./data/deerflow.db</code>）也能用。</p>
+<p>一个真实的版本文件长什么样？看 <code>backend/packages/harness/deerflow/persistence/migrations/versions/0047_mcp_oauth_tokens.py:32-41</code>（这张表正是第 15 章
+MCP OAuth token 存储的底座，此处先看迁移结构）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="n">revision</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"0047_mcp_oauth_tokens"</span>
+<a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="n">down_revision</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="s2">"0046_skill_mutations"</span>
+<a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="n">branch_labels</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+<a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a><span class="n">depends_on</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+<a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a>
+<a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a><span class="n">_TABLE</span> <span class="o">=</span> <span class="s2">"mcp_oauth_tokens"</span>
+<a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a>
+<a id="__codelineno-23-8" name="__codelineno-23-8" href="#__codelineno-23-8"></a>
+<a id="__codelineno-23-9" name="__codelineno-23-9" href="#__codelineno-23-9"></a><span class="k">def</span><span class="w"> </span><span class="nf">_has_table</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<a id="__codelineno-23-10" name="__codelineno-23-10" href="#__codelineno-23-10"></a>    <span class="k">return</span> <span class="n">sa</span><span class="o">.</span><span class="n">inspect</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">get_bind</span><span class="p">())</span><span class="o">.</span><span class="n">has_table</span><span class="p">(</span><span class="n">_TABLE</span><span class="p">)</span>
+</code></pre></div>
+<p><code>revision</code> / <code>down_revision</code> 组成链表——这就是"为什么迁移文件不能重命名、
+不能跳号"的原因。再看它的幂等守卫（<code>0047_mcp_oauth_tokens.py:44-47</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">upgrade</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>    <span class="k">if</span> <span class="n">_has_table</span><span class="p">():</span>
+<a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a>        <span class="k">return</span>
+<a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a>    <span class="n">op</span><span class="o">.</span><span class="n">create_table</span><span class="p">(</span>
+</code></pre></div>
+<p>docstring（<code>0047_mcp_oauth_tokens.py:18-23</code>）解释了守卫的必要性：升级时如果
+表已存在（早前中断的尝试，或空库 bootstrap 已跑过 <code>create_all</code>），直接完成；
+降级时如果表已消失，也要继续移动版本行。<strong>迁移必须可在任意中间状态下重放</strong>
+——这是多实例部署（第 20 章）的地基。</p>
+<h2 id="145">14.5 动手实验：定位一处中间件并跑通全部门禁<a class="headerlink" href="#145" title="Permanent link">&para;</a></h2>
+<p>目标：在 Harness 中找到并读懂一个真实中间件，然后体验完整的改动闭环。
+全程离线，约 15 分钟。</p>
+<p><strong>步骤 1：定位中间件。</strong> 第 6 章见过 <code>ClarificationMiddleware</code> 在中间件链的
+位置。它住在 Harness：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="nb">cd</span><span class="w"> </span>backend
+<a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>grep<span class="w"> </span>-rn<span class="w"> </span><span class="s2">"class ClarificationMiddleware"</span><span class="w"> </span>packages/harness/deerflow/
+<a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="c1"># → packages/harness/deerflow/agents/middlewares/clarification_middleware.py:75</span>
+</code></pre></div>
+<p>读 <code>clarification_middleware.py</code> 的类定义与其 <code>AgentMiddleware</code> 基类用法，
+确认它只 import 了 <code>deerflow.*</code> 与第三方库——没有任何 <code>from app...</code>。</p>
+<p><strong>步骤 2：验证边界测试只扫静态结构（跑一次它）。</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="nb">cd</span><span class="w"> </span>backend
+<a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>tests/test_harness_boundary.py<span class="w"> </span>-v
+<a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a><span class="c1"># → test_harness_does_not_import_app PASSED</span>
+</code></pre></div>
+<p><strong>步骤 3：制造一次违规，观察 CI 门的报错（在本地复现）。</strong>
+随便在 <code>clarification_middleware.py</code> 顶部加一行
+<code>from app.gateway import app  # boundary demo, will remove</code>，再跑：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>tests/test_harness_boundary.py<span class="w"> </span>-v
+<a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a><span class="c1"># FAILED — Harness layer must not import from app layer:</span>
+<a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a><span class="c1">#   packages/harness/deerflow/agents/middlewares/clarification_middleware.py:1  imports app.gateway.app</span>
+</code></pre></div>
+<p>报错精确到文件与行号——这正是将来 push 后 CI 给你的反馈。<strong>删掉这行</strong>，
+确认恢复绿色。</p>
+<p><strong>步骤 4：跑全量门禁（体会时长与分片）。</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="nb">cd</span><span class="w"> </span>backend
+<a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>make<span class="w"> </span><span class="nb">test</span><span class="w">                 </span><span class="c1"># 四分片并行；首次运行若缺 .test_durations 先跑步骤 5</span>
+<a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a>make<span class="w"> </span>test-blocking-io<span class="w">     </span><span class="c1"># Blockbuster 套件</span>
+<a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a>make<span class="w"> </span>lint<span class="w">                 </span><span class="c1"># ruff check + ruff format --check</span>
+</code></pre></div>
+<p><strong>步骤 5（可选）：刷新时长基线。</strong> 如果 <code>make test</code> 报
+<code>.test_durations is missing</code>，执行 <code>make test-shard-durations</code> 生成基线后再
+跑 <code>make test</code>。注意基线文件是提交进仓库的——不要顺手改了它内容。</p>
+<p><strong>验收标准</strong>：<code>make test</code>、<code>make test-blocking-io</code>、<code>make lint</code> 全绿；
+你能口头说出 <code>ClarificationMiddleware</code> 所在文件、它在中间件链中的位置、
+以及是谁保证它永远不会 <code>import app</code>。</p>
+<h2 id="_2">常见坑<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>把产品逻辑写进 Harness</strong>。症状：harness 模块里出现了 <code>app.gateway</code>、
+   <code>app.channels</code> 的 import 或对 Gateway 单例的引用。CI 红灯
+   （<code>test_harness_boundary.py</code>）。正确姿势：抽象进 harness 接口、走
+   <code>deerflow_extension_api</code> 契约注入（第 16 章），或直接放 <code>app.*</code>。</li>
+<li><strong>改了版本号但只改一处</strong>。<code>backend/pyproject.toml</code>、
+   <code>backend/packages/harness/pyproject.toml</code>、<code>frontend/package.json</code>、
+   <code>deploy/helm/deer-flow/Chart.yaml</code>（<code>version</code> 与 <code>appVersion</code>）四处 +
+   <code>backend/uv.lock</code> 必须一致。手改必然漂移，用 <code>scripts/bump_version.sh &lt;ver&gt;</code>，
+   验证用 <code>scripts/verify_versions.sh &lt;ver&gt;</code>。</li>
+<li><strong>绕过 <code>make test</code> 直接跑单个 pytest</strong>。四分片的意义是均衡 CI 时长；
+   本地可以用 <code>uv run pytest tests/test_xxx.py -q</code> 快速迭代单文件，但提交前
+   必须跑完整 <code>make test</code> + <code>make test-blocking-io</code>。缺
+   <code>.test_durations</code> 时 <code>make test-shard</code> 会直接报错——先跑
+   <code>make test-shard-durations</code>。</li>
+<li><strong>在轻量模块里加包根 eager import</strong>。<code>from deerflow.agents import ...</code>
+   出现在配置/状态模块顶部会拉起整张工具图，测试里还可能触发循环导入
+   （conftest 里那条注释链）。写"轻量导入"风格：直接 import 具体子模块，
+   重符号延迟到函数体内。</li>
+<li><strong>手写 Alembic 迁移不写幂等守卫</strong>。迁移会在多实例、中断重放、
+   空库 bootstrap 等各种中间状态下执行。照 <code>0047_mcp_oauth_tokens.py</code> 的
+   样子：升级前 <code>_has_table()</code> 探测、降级同样探测；列级守卫用现成的
+   <code>migrations/_helpers.py</code>。迁移文件一旦合入不要重命名——<code>revision</code> 链表
+   会断。</li>
+<li><strong>忘记 App 层"自己 import 的包自己声明"</strong>。如果你在 <code>app.*</code> 新增了对
+   <code>deerflow-extension-api</code>（或任何传递依赖）的直接 import，记得同步加进
+   <code>backend/pyproject.toml</code> 的 <code>dependencies</code>——否则 Harness 侧重构传递
+   依赖时会无声破坏 App。这个纪律的成文理由见 <code>backend/pyproject.toml:9-15</code>
+   的注释。</li>
+</ol>
+<h2 id="_3">下一步<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<p>分层与规范就位后，接下来是精通篇的重头戏：<strong>MCP 集成</strong>——DeerFlow 如何把
+外部系统工具化、如何用进程隔离的 MCP server 扩展 agent 能力、以及第 15 章
+动手"接入 GitHub MCP server + 自建 stdio MCP server"的两个实验。见
+《第 15 章 MCP 集成》（<code>docs/tutorials/15-mcp.md</code>）；第 15 章之后的第 16 章
+（<code>docs/tutorials/16-extensions.md</code>）再把本章的契约包落到扩展开发实战。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      教程基于开源项目 <a href='https://github.com/bytedance/deer-flow'>bytedance/deer-flow</a> 的真实源码编写
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.sections", "navigation.expand", "navigation.top", "navigation.indexes", "search.suggest", "search.highlight", "content.code.copy", "toc.follow"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.a5f9d56c.min.js"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

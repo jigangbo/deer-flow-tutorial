@@ -1,0 +1,2796 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="基于 DeerFlow 真实源码的中文系统教程：21 章 + 附录，覆盖环境配置、核心组件拆解、二次开发与 MCP 集成">
+      
+      
+      
+        <link rel="canonical" href="https://jigangbo.github.io/deer-flow-tutorial/06-request-lifecycle/">
+      
+      
+        <link rel="prev" href="../05-run-modes/">
+      
+      
+        <link rel="next" href="../07-tools-and-skills/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
+    
+    
+      
+        <title>第 6 章 一次请求的一生：Agent 运行时全链路 - DeerFlow 从入门到精通 · 源码教程</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#6-agent" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href=".." title="DeerFlow 从入门到精通 · 源码教程" class="md-header__button md-logo" aria-label="DeerFlow 从入门到精通 · 源码教程" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            DeerFlow 从入门到精通 · 源码教程
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              第 6 章 一次请求的一生：Agent 运行时全链路
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jigangbo/deer-flow-tutorial" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="DeerFlow 从入门到精通 · 源码教程" class="md-nav__button md-logo" aria-label="DeerFlow 从入门到精通 · 源码教程" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    DeerFlow 从入门到精通 · 源码教程
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jigangbo/deer-flow-tutorial" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    导读
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    导读
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 0 章 全景鸟瞰
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第一篇 入门篇
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第一篇 入门篇
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-environment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 1 章 准备环境（Environment Setup）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 2 章 一键启动（Quick Start）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 3 章 配置系统入门
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-frontend-tour/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 4 章 前端界面与基本功能导览
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-run-modes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 5 章 更多运行方式
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第二篇 进阶篇
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第二篇 进阶篇
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 6 章 一次请求的一生：Agent 运行时全链路
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 6 章 一次请求的一生：Agent 运行时全链路
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#60" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.0 学习目标
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        本章源码锚点
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#61" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 概念讲解：一条请求要穿过哪些层
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6.1 概念讲解：一条请求要穿过哪些层">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#streambridge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        为什么需要 StreamBridge
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#62-ahttp-start_run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 源码走读 A：HTTP 准入——start_run
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#63-brun_agent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 源码走读 B：后台执行——run_agent
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#64-c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.4 源码走读 C：图工厂与完整中间件链
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6.4 源码走读 C：图工厂与完整中间件链">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#make_lead_agent-runnableconfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        make_lead_agent：从 RunnableConfig 到编译后的图
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lead-agent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        完整中间件链（lead agent）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#65-dthreadstate-checkpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.5 源码走读 D：ThreadState 与 checkpoint
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6.5 源码走读 D：ThreadState 与 checkpoint">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#threadstate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ThreadState 定义
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        线程数据目录
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#66-esse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.6 源码走读 E：SSE 流协议
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6.6 源码走读 E：SSE 流协议">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#messages-tuple-vs-messages" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        模式名翻译：messages-tuple vs messages
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        序列化与 SSE 帧名
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        子图命名空间帧
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#task_" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        task_* 自定义事件
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#heartbeatgapend" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        控制帧：heartbeat、gap、end
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#67-sse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.7 动手实验：抓一次完整 SSE 流
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#68" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.8 常见坑
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        下一步
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-tools-and-skills/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 7 章 工具系统与 Skills
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-sandbox/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 8 章 沙箱与代码执行
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-multi-agent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 9 章 Multi-Agent 路由与子代理委派
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10-memory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 10 章 记忆系统（Memory / DeerMem）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../11-context-engineering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 11 章 上下文工程与长对话治理
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../12-scheduled-tasks-and-im/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 12 章 定时任务与 IM 渠道
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../13-gateway-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 13 章 Gateway API 与编程接入
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第三篇 精通篇
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第三篇 精通篇
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../14-architecture-layers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 14 章 架构分层与开发规范（二次开发前必读）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../15-mcp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 15 章 MCP 集成（重点）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../16-extensions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 16 章 扩展（Extensions）开发
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../17-business-cases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 17 章 业务二次开发实战（综合案例）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../18-frontend-dev/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 18 章 前端二次开发
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../19-testing-quality/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 19 章 可观测性、测试与质量保障
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../20-production/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 20 章 生产部署与运维
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    附录
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    附录
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../appendices/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    附录
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#60" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.0 学习目标
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        本章源码锚点
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#61" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 概念讲解：一条请求要穿过哪些层
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6.1 概念讲解：一条请求要穿过哪些层">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#streambridge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        为什么需要 StreamBridge
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#62-ahttp-start_run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 源码走读 A：HTTP 准入——start_run
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#63-brun_agent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 源码走读 B：后台执行——run_agent
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#64-c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.4 源码走读 C：图工厂与完整中间件链
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6.4 源码走读 C：图工厂与完整中间件链">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#make_lead_agent-runnableconfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        make_lead_agent：从 RunnableConfig 到编译后的图
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lead-agent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        完整中间件链（lead agent）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#65-dthreadstate-checkpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.5 源码走读 D：ThreadState 与 checkpoint
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6.5 源码走读 D：ThreadState 与 checkpoint">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#threadstate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ThreadState 定义
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        线程数据目录
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#66-esse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.6 源码走读 E：SSE 流协议
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6.6 源码走读 E：SSE 流协议">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#messages-tuple-vs-messages" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        模式名翻译：messages-tuple vs messages
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        序列化与 SSE 帧名
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        子图命名空间帧
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#task_" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        task_* 自定义事件
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#heartbeatgapend" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        控制帧：heartbeat、gap、end
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#67-sse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.7 动手实验：抓一次完整 SSE 流
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#68" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.8 常见坑
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        下一步
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="6-agent">第 6 章 一次请求的一生：Agent 运行时全链路<a class="headerlink" href="#6-agent" title="Permanent link">&para;</a></h1>
+<h2 id="60">6.0 学习目标<a class="headerlink" href="#60" title="Permanent link">&para;</a></h2>
+<p>读完本章，你应该能够：</p>
+<ol>
+<li>画出一次对话请求的端到端时序：前端 <code>core/threads/</code> → Nginx <code>/api/langgraph/*</code> →
+   Gateway 的 <code>start_run()</code> → <code>RunManager + run_agent() + StreamBridge</code> → SSE 流回前端；</li>
+<li>说清楚 <code>make_lead_agent()</code> 如何组装 lead agent，并<strong>逐一列出</strong>完整中间件链上的
+   每个中间件类名与所在文件行号，理解"模型调用前依次执行"的顺序从哪里来；</li>
+<li>解释 <code>ThreadState</code> 在 LangGraph <code>AgentState</code> 之上扩展了哪些字段（<code>sandbox</code>、
+   <code>artifacts</code>、<code>thread_data</code>、<code>title</code>、<code>todos</code>、<code>viewed_images</code>…），以及每个字段的
+   reducer 语义；线程数据为什么落在 <code>backend/.deer-flow/threads/{thread_id}/</code>；</li>
+<li>掌握 SSE 流协议的四种帧：<code>messages-tuple</code>（token 级增量）、有界 <code>values</code> 快照、
+   <code>task_*</code> 自定义事件（子代理进度）、以及 <code>stream_subgraphs</code> 的 <code>values|&lt;ns&gt;</code> 命名
+   空间帧，外加 <code>heartbeat</code> / <code>gap</code> / <code>end</code> 三个控制帧；</li>
+<li>用脚本抓取一次完整 SSE 流，把事件时序与中间件生效点对上号。</li>
+</ol>
+<h2 id="_1">本章源码锚点<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>主题</th>
+<th>锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LangGraph 图工厂注册</td>
+<td><code>backend/langgraph.json:9</code>（<code>"lead_agent": "deerflow.agents:make_lead_agent"</code>）</td>
+</tr>
+<tr>
+<td>HTTP 路由入口</td>
+<td><code>backend/app/gateway/routers/thread_runs.py:1069</code>（<code>POST /{thread_id}/runs/stream</code>）</td>
+</tr>
+<tr>
+<td>Run 准入</td>
+<td><code>backend/app/gateway/services.py:2206</code>（<code>start_run</code>）</td>
+</tr>
+<tr>
+<td>后台执行</td>
+<td><code>backend/packages/harness/deerflow/runtime/runs/worker.py:1000</code>（<code>run_agent</code>）</td>
+</tr>
+<tr>
+<td>流桥</td>
+<td><code>backend/packages/harness/deerflow/runtime/stream_bridge/base.py:66</code>（<code>StreamBridge</code>）</td>
+</tr>
+<tr>
+<td>SSE 消费端</td>
+<td><code>backend/app/gateway/services.py:3060</code>（<code>sse_consumer</code>）、<code>backend/app/gateway/services.py:221</code>（<code>format_sse</code>）</td>
+</tr>
+<tr>
+<td>中间件链组装</td>
+<td><code>backend/packages/harness/deerflow/agents/lead_agent/agent.py:485</code>（<code>build_middlewares</code>）</td>
+</tr>
+<tr>
+<td>共享运行时中间件</td>
+<td><code>backend/packages/harness/deerflow/agents/middlewares/tool_error_handling_middleware.py:347</code>（<code>_build_runtime_middlewares</code>）</td>
+</tr>
+<tr>
+<td>状态定义</td>
+<td><code>backend/packages/harness/deerflow/agents/thread_state.py:379</code>（<code>ThreadState</code>）</td>
+</tr>
+<tr>
+<td>流模式翻译</td>
+<td><code>backend/packages/harness/deerflow/runtime/stream_modes.py:43</code>（<code>to_langgraph_stream_modes</code>）</td>
+</tr>
+<tr>
+<td>事件契约</td>
+<td><code>backend/docs/RUN_EVENT_STREAM.md</code>、<code>backend/docs/STREAMING.md</code>、<code>backend/docs/middleware-execution-flow.md</code>、<code>backend/docs/THREAD_LIFECYCLE.md</code></td>
+</tr>
+<tr>
+<td>递归/用量配置</td>
+<td><code>config.example.yaml:120</code>（<code>recursion_limit</code>）、<code>config.example.yaml:96</code>（<code>token_usage</code>）</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="61">6.1 概念讲解：一条请求要穿过哪些层<a class="headerlink" href="#61" title="Permanent link">&para;</a></h2>
+<p>DeerFlow 的所有运行模式（本地 <code>make dev</code>、Docker、生产）都以同一条路径执行 agent：
+Gateway 内嵌的 LangGraph 兼容运行时。<code>docs/ARCHITECTURE.md</code> §3 把这条路径概括为
+<code>RunManager + run_agent() + StreamBridge</code>。拆开看，一次"用户在输入框敲下回车"会经历：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>浏览器 (frontend/src/core/threads/)
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>  │  POST /api/langgraph/threads/{thread_id}/runs/stream
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>  ▼
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>Nginx :2026                      ← 唯一公网入口，/api/langgraph/* 重写为 Gateway 原生 /api/*
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>  ▼
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>FastAPI 路由 thread_runs.py:1069 → services.py::start_run (services.py:2206)
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>  │  准入检查（权限/幂等/模型白名单/run-context 信任边界）
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>  │  RunManager.create() 生成 RunRecord
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>  │  asyncio.create_task(run_agent(...))      ← agent 在后台任务里跑
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>  ▼
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>run_agent (runtime/runs/worker.py:1000)
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>  │  1. 读取 checkpoint → 2. 组图 make_lead_agent()
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>  │  3. agent.astream(stream_mode=["values","messages","custom"])
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>  │  4. 每个 chunk → serialize() → bridge.publish()
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>  ▼
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>StreamBridge (asyncio Queue / Redis Stream)   ← 生产者/消费者解耦
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>  ▼
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>sse_consumer (services.py:3060) → format_sse (services.py:221)
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>  │  "event: messages\ndata: {...}\n\n"
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>  ▼
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>HTTP SSE 流 → 前端 useStream hook
+</code></pre></div>
+<p>两个容易混淆的要点：</p>
+<ul>
+<li><strong>Gateway 与 LangGraph Server 的关系</strong>：DeerFlow 没有部署独立的 LangGraph Server，
+  而是在 Gateway 进程里内嵌了 LangGraph 兼容运行时。<code>backend/langgraph.json:9</code> 把
+  <code>lead_agent</code> 图工厂声明为 <code>deerflow.agents:make_lead_agent</code>，标准 LangGraph SDK
+  因此可以直连 DeerFlow——这是第 13 章的主题。</li>
+<li><strong>两条并行的流式路径</strong>：<code>backend/docs/STREAMING.md</code> 开篇就强调，HTTP SSE 路径
+  （async + Queue + JSON 序列化）与嵌入式 <code>DeerFlowClient.stream()</code>（sync、进程内、
+  原生 LangChain 对象）<strong>无法合并</strong>，因为消费者模型根本不同。本章聚焦 Gateway 路径。</li>
+</ul>
+<h3 id="streambridge">为什么需要 StreamBridge<a class="headerlink" href="#streambridge" title="Permanent link">&para;</a></h3>
+<p><code>run_agent</code> 在一个 <code>asyncio.Task</code> 里跑图，而 HTTP 连接活在另一个 task 里。生产者和
+消费者必须解耦：<code>StreamBridge</code> 抽象了这个队列，同时承担断线重连缓冲（<code>Last-Event-ID</code>
+重放）、多订阅者 fan-out 和心跳。<code>runtime/stream_bridge/base.py:66</code> 定义了抽象接口：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">StreamBridge</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">publish</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">run_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> <span class="o">...</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">publish_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">run_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> <span class="o">...</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">subscribe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">run_id</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">last_event_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">...</span><span class="p">):</span> <span class="o">...</span>
+</code></pre></div>
+<p>（摘自 <code>backend/packages/harness/deerflow/runtime/stream_bridge/base.py:92-100</code>，节选）</p>
+<p>DeerFlow 提供两个实现：<code>MemoryStreamBridge</code>（单机默认）与 Redis 实现（多实例部署，
+见第 20 章）。<code>stream_bridge.heartbeat_interval_seconds</code> 默认 15 秒（<code>backend/docs/STREAMING.md</code>
+Gateway 路径一节）。</p>
+<hr />
+<h2 id="62-ahttp-start_run">6.2 源码走读 A：HTTP 准入——<code>start_run</code><a class="headerlink" href="#62-ahttp-start_run" title="Permanent link">&para;</a></h2>
+<p>SSE 端点定义在 <code>backend/app/gateway/routers/thread_runs.py:1069</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">"/</span><span class="si">{thread_id}</span><span class="s2">/runs/stream"</span><span class="p">)</span>
+</code></pre></div>
+<p>它调用 <code>services.py::start_run</code>（<code>backend/app/gateway/services.py:2206</code>）。这个函数是
+<strong>所有</strong> run 创建路径的唯一咽喉（HTTP 路由、定时任务、IM 渠道都汇到这里），因此承担
+了大部分安全检查。摘录开头（<code>backend/app/gateway/services.py:2233-2242</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Cancel-capability gate. interrupt/rollback strategies terminate an already</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="c1"># active run — runs:cancel capability, not runs:create — so a create-only</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="c1"># PAT must not reach them. Enforced here, the single choke point every</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1"># run-creation path flows through (HTTP routes and internal launchers</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="c1"># alike), so no entry point can bypass it; regenerate launches pass</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="c1"># multitask_strategy="reject" and are unaffected.</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="n">require_cancel_permission_if</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">body</span><span class="o">.</span><span class="n">multitask_strategy</span> <span class="o">!=</span> <span class="s2">"reject"</span><span class="p">)</span>
+</code></pre></div>
+<p>讲解：注释直接点明设计意图——<code>interrupt</code> / <code>rollback</code> 这类 multitask 策略会终止
+正在运行的其他 run，属于"取消"能力而非"创建"能力，所以只持有 <code>runs:create</code>
+权限的凭证不能借道创建端点达到取消效果。把门禁放在唯一咽喉 <code>start_run</code> 里，
+任何入口都无法绕过。</p>
+<p><code>start_run</code> 依次完成：</p>
+<ol>
+<li><strong>线程 ID 校验与模型白名单</strong>（<code>services.py:2244-2283</code>）：<code>model_name</code> 若提供，
+   必须命中 <code>config.yaml → models</code> 允许列表，否则 400；</li>
+<li><strong>run-context 信任边界</strong>（见 <code>backend/AGENTS.md:189</code> 一节）：<code>body.context</code> 与
+   <code>body.config</code> 都是客户端可写表面，服务端产生的键（<code>non_interactive</code>、
+   <code>disable_clarification</code>、<code>github_token</code>）只对内部认证调用方生效；</li>
+<li><strong>RunManager 准入</strong>：<code>RunManager</code>（<code>backend/packages/harness/deerflow/runtime/runs/manager.py:334</code>）
+   生成 <code>RunRecord</code>，做同线程并发准入与幂等重试去重；</li>
+<li><strong>拉起后台任务</strong>（<code>services.py:2831</code>）：<code>record.task = asyncio.create_task(worker)</code>，
+   <code>worker</code> 即 <code>run_agent</code>；</li>
+<li><strong>返回 SSE</strong>：路由用 <code>StreamingResponse(sse_consumer(...))</code> 把 bridge 订阅变成
+   HTTP 事件流。</li>
+</ol>
+<h2 id="63-brun_agent">6.3 源码走读 B：后台执行——<code>run_agent</code><a class="headerlink" href="#63-brun_agent" title="Permanent link">&para;</a></h2>
+<p><code>run_agent</code>（<code>backend/packages/harness/deerflow/runtime/runs/worker.py:1000</code>）是整个
+运行时的心脏，签名本身就是一份"运行一个 run 需要什么"的清单：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">run_agent</span><span class="p">(</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="n">bridge</span><span class="p">:</span> <span class="n">StreamBridge</span><span class="p">,</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="n">run_manager</span><span class="p">:</span> <span class="n">RunManager</span><span class="p">,</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="n">record</span><span class="p">:</span> <span class="n">RunRecord</span><span class="p">,</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    <span class="o">*</span><span class="p">,</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>    <span class="n">ctx</span><span class="p">:</span> <span class="n">RunContext</span><span class="p">,</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>    <span class="n">agent_factory</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>    <span class="n">graph_input</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="n">Command</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>    <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>    <span class="n">thread_incarnation</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">object</span> <span class="o">=</span> <span class="n">_THREAD_INCARNATION_UNSET</span><span class="p">,</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>    <span class="n">stream_modes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>    <span class="n">stream_subgraphs</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>    <span class="n">interrupt_before</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">"*"</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>    <span class="n">interrupt_after</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">"*"</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>    <span class="n">knowledge_scope</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="w">    </span><span class="sd">"""Execute an agent in the background, publishing events to *bridge*."""</span>
+</code></pre></div>
+<p>（摘自 <code>backend/packages/harness/deerflow/runtime/runs/worker.py:1000-1016</code>）</p>
+<p>讲解几个参数：</p>
+<ul>
+<li><code>bridge</code> / <code>run_manager</code> / <code>record</code>：流桥、run 生命周期管理器、本次 run 的记录
+  （含 <code>abort_event</code>，取消就是设置这个事件）；</li>
+<li><code>agent_factory</code>：图工厂，Gateway 默认传 <code>make_lead_agent</code>；</li>
+<li><code>stream_subgraphs</code>：是否订阅子图流。DeerFlow Web 前端<strong>不开</strong>子图流，子代理进度
+  走根命名空间的 <code>task_*</code> 自定义事件（第 9 章）；开启后子代理帧带命名空间（见 6.6）。</li>
+</ul>
+<p><code>run_agent</code> 的主体很长（约 3000 行），但骨架是一个五步循环：</p>
+<ol>
+<li><strong>预检</strong>：读取 thread 的 checkpoint 状态，收集 <code>pre_existing_message_ids</code>——本轮
+   之前已存在的消息 ID 集合，用于把历史里的错误回退标记与本轮区分开
+   （<code>worker.py:1057-1061</code> 的注释解释了：没有这个过滤，一次历史残留会让同线程后续
+   所有 run 都被误判为 <code>error</code>）；</li>
+<li><strong>组图</strong>：调用 <code>agent_factory(config)</code> → <code>make_lead_agent</code> → 完整中间件链组装
+   （下一节）；</li>
+<li><strong>流式执行</strong>：<code>_stream_once</code>（<code>worker.py:1598</code>）内持有每线程的 checkpoint 锁，
+   调 <code>agent.astream(input_payload, config=stream_config, stream_mode=lg_modes)</code>，
+   对每个 chunk 做三件事：解析 <code>(mode, chunk, namespace)</code>、序列化、<code>bridge.publish</code>：</li>
+<li><strong>终止提交</strong>：写回最终状态（<code>success</code> / <code>error</code> / <code>interrupted</code>）、workspace 变更
+   快照、token 用量聚合；</li>
+<li><strong>收尾</strong>：关闭 journal、释放沙箱租约、清理 bridge（<code>finally</code> 保证取消路径也执行）。</li>
+</ol>
+<p>其中第 3 步的单模式分支最直观（<code>backend/packages/harness/deerflow/runtime/runs/worker.py:1604-1628</code>，节选）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">async</span> <span class="k">with</span> <span class="n">_checkpoint_thread_lock</span><span class="p">(</span><span class="n">thread_id</span><span class="p">):</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lg_modes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">stream_subgraphs</span><span class="p">:</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>        <span class="n">single_mode</span> <span class="o">=</span> <span class="n">lg_modes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>        <span class="n">stream</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">astream</span><span class="p">(</span><span class="n">input_payload</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">stream_config</span><span class="p">,</span> <span class="n">stream_mode</span><span class="o">=</span><span class="n">single_mode</span><span class="p">)</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>        <span class="o">...</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>        <span class="k">async</span> <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">stream</span><span class="p">:</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>            <span class="k">if</span> <span class="n">record</span><span class="o">.</span><span class="n">abort_event</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>                <span class="n">broke_on_abort</span> <span class="o">=</span> <span class="kc">True</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Run </span><span class="si">%s</span><span class="s2"> abort requested — stopping"</span><span class="p">,</span> <span class="n">run_id</span><span class="p">)</span>
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>                <span class="k">break</span>
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>            <span class="o">...</span>
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>            <span class="n">sse_event</span> <span class="o">=</span> <span class="n">_lg_mode_to_sse_event</span><span class="p">(</span><span class="n">single_mode</span><span class="p">)</span>
+<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>            <span class="n">single_payload</span> <span class="o">=</span> <span class="n">serialize</span><span class="p">(</span><span class="n">chunk</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">single_mode</span><span class="p">)</span>
+<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>            <span class="k">if</span> <span class="n">single_mode</span> <span class="o">==</span> <span class="s2">"values"</span> <span class="ow">and</span> <span class="n">seq_stamper</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>                <span class="n">single_payload</span> <span class="o">=</span> <span class="k">await</span> <span class="n">seq_stamper</span><span class="o">.</span><span class="n">stamp</span><span class="p">(</span><span class="n">single_payload</span><span class="p">)</span>
+<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>            <span class="k">await</span> <span class="n">bridge</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">run_id</span><span class="p">,</span> <span class="n">sse_event</span><span class="p">,</span> <span class="n">single_payload</span><span class="p">)</span>
+</code></pre></div>
+<p>讲解：<code>record.abort_event.is_set()</code> 是取消的协作式检查点——用户点"停止"后，下一次
+chunk 到达时循环退出；<code>_checkpoint_thread_lock</code> 保证同一线程的 checkpoint 读改写
+串行；<code>seq_stamper.stamp</code> 给 <code>values</code> 帧里的每条消息补上事件存储里的 feed 序号，
+解决"摘要压缩后老消息在分页历史窗口之外、客户端无法定位"的问题（<code>worker.py:3820</code>
+的 <code>_MessageSeqStamper</code> 文档字符串详述了 #4666）。</p>
+<h2 id="64-c">6.4 源码走读 C：图工厂与完整中间件链<a class="headerlink" href="#64-c" title="Permanent link">&para;</a></h2>
+<h3 id="make_lead_agent-runnableconfig"><code>make_lead_agent</code>：从 RunnableConfig 到编译后的图<a class="headerlink" href="#make_lead_agent-runnableconfig" title="Permanent link">&para;</a></h3>
+<p>LangGraph Server 通过 <code>backend/langgraph.json:9</code> 找到图工厂：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nt">"graphs"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span><span class="nt">"lead_agent"</span><span class="p">:</span><span class="w"> </span><span class="s2">"deerflow.agents:make_lead_agent"</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="p">}</span>
+</code></pre></div>
+<p><code>make_lead_agent</code>（<code>backend/packages/harness/deerflow/agents/lead_agent/agent.py:845</code>）
+是个薄包装，真正的组装在 <code>assemble_lead_agent</code>（<code>agent.py:850</code>）→
+<code>_assemble_lead_agent</code>（<code>agent.py:967</code>）。后者做四类事：</p>
+<ol>
+<li><strong>解析运行时选项</strong>：模型名（请求 &gt; 自定义 agent 配置 &gt; 全局默认，<code>agent.py:1077</code>）、
+   thinking/reasoning 优先级（<code>agent.py:1066-1069</code>）、<code>is_plan_mode</code>、<code>subagent_enabled</code>；</li>
+<li><strong>技能与授权</strong>：加载启用技能列表，经 <code>filter_available_skills_by_authorization</code>
+   过滤（<code>agent.py:1052</code>），工具经 <code>apply_tool_authorization</code> 过滤（<code>agent.py:1360</code>）；</li>
+<li><strong>组装工具</strong>：<code>get_available_tools(...)</code>（第 7 章主角）+ <code>update_agent</code> 等额外工具；</li>
+<li><strong>组装中间件</strong>：调用 <code>build_middlewares</code>（<code>agent.py:485</code>），最后
+   <code>create_agent(model=..., tools=..., middleware=..., system_prompt=..., state_schema=...)</code>
+   交给 LangChain 的 <code>create_agent</code> 原语（<code>agent.py:1416-1423</code>）。</li>
+</ol>
+<p><code>build_middlewares</code> 前有一段珍贵的顺序注释（<code>backend/packages/harness/deerflow/agents/lead_agent/agent.py:474-484</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># ThreadDataMiddleware must be before SandboxMiddleware to ensure thread_id is available</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="c1"># UploadsMiddleware should be after ThreadDataMiddleware to access thread_id</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="c1"># DanglingToolCallMiddleware patches missing ToolMessages before model sees the history</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1"># SummarizationMiddleware should be early to reduce context before other processing</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="c1"># TodoListMiddleware should be before ClarificationMiddleware to allow todo management</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="c1"># TitleMiddleware generates title after first exchange</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="c1"># MemoryMiddleware queues conversation for memory update (after TitleMiddleware)</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="c1"># ViewImageMiddleware should be before ClarificationMiddleware to inject image details before LLM</span>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="c1"># ToolErrorHandlingMiddleware should be before ClarificationMiddleware to convert tool exceptions to ToolMessages</span>
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="c1"># ModelContentCompatibilityMiddleware sanitizes model-incompatible URL content blocks in the request view; register near the end so it sees the near-final message list</span>
+<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="c1"># ClarificationMiddleware should be last to intercept clarification requests after model calls</span>
+</code></pre></div>
+<p>讲解：LangChain <code>create_agent</code> 的钩子规则是——<code>before_agent</code> / <code>before_model</code> /
+<code>wrap_model_call</code> 按列表正序执行，<code>after_model</code> / <code>after_agent</code> 按列表<strong>反序</strong>执行。
+所以"列表最后的 <code>ClarificationMiddleware</code>"的 <code>after_model</code>/<code>wrap_tool_call</code> 最先
+拦截模型输出。这个规则在 <code>backend/docs/middleware-execution-flow.md</code> 的"洋葱模型"
+一节有完整推导，该文档强调：DeerFlow 的中间件链<strong>不是洋葱，是管道</strong>——大部分
+中间件只用一个钩子，真正对称的只有 <code>SandboxMiddleware</code>（<code>before_agent</code> 获取 /
+<code>after_agent</code> 释放）。</p>
+<h3 id="lead-agent">完整中间件链（lead agent）<a class="headerlink" href="#lead-agent" title="Permanent link">&para;</a></h3>
+<p>中间件链分三段拼装：共享运行时段（<code>_build_runtime_middlewares</code>，<code>backend/packages/harness/deerflow/agents/middlewares/tool_error_handling_middleware.py:347</code>，末尾
+<code>tool_error_handling_middleware.py:534</code> 一行 <code>middlewares = [*outer_wrappers, *thread_hooks, *tail]</code> 点明分层）+ lead 专属段（<code>build_middlewares</code>，<code>agent.py:542-820</code>）+
+扩展合并（<code>compose_with_extensions</code>，<code>agent.py:791-820</code>）。下表按<strong>列表位置</strong>列出
+默认配置全开时的完整链（✱ 表示条件启用）：</p>
+<p><strong>共享运行时段 —— Layer 1 外层包装器</strong>（<code>tool_error_handling_middleware.py:379-393</code>）</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>中间件类</th>
+<th>定义位置</th>
+<th>挂钩</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>InputSanitizationMiddleware</code></td>
+<td><code>backend/packages/harness/deerflow/agents/middlewares/input_sanitization_middleware.py:259</code></td>
+<td><code>wrap_model_call</code>（最外层，净化注入标签）</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>KnowledgeScopeMiddleware</code></td>
+<td><code>backend/packages/harness/deerflow/agents/middlewares/knowledge_scope_middleware.py:40</code></td>
+<td><code>wrap_model_call</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>ToolOutputBudgetMiddleware</code></td>
+<td><code>backend/packages/harness/deerflow/agents/middlewares/tool_output_budget_middleware.py:1158</code></td>
+<td><code>wrap_model_call</code>（超长工具输出落盘）</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>ToolResultSanitizationMiddleware</code></td>
+<td><code>backend/packages/harness/deerflow/agents/middlewares/tool_result_sanitization_middleware.py:122</code></td>
+<td><code>wrap_model_call</code>（远端工具结果净化）</td>
+</tr>
+<tr>
+<td>5✱</td>
+<td><code>PiiRedactionMiddleware</code></td>
+<td><code>backend/packages/harness/deerflow/agents/middlewares/pii_redaction_middleware.py:396</code></td>
+<td><code>wrap_model_call</code>（<code>pii_redaction.enabled</code>）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>共享运行时段 —— Layer 2 线程钩子</strong>（<code>tool_error_handling_middleware.py:396-409</code>）</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>中间件类</th>
+<th>定义位置</th>
+<th>挂钩</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>6</td>
+<td><code>ThreadDataMiddleware</code></td>
+<td><code>backend/packages/harness/deerflow/agents/middlewares/thread_data_middleware.py:24</code></td>
+<td><code>before_agent</code>（线程目录 + 首条消息打 run_id/时间戳）</td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>UploadsMiddleware</code></td>
+<td><code>backend/packages/harness/deerflow/agents/middlewares/uploads_middleware.py:49</code></td>
+<td><code>before_agent</code>（注入上传文件清单，lead 专属；子代理不带）</td>
+</tr>
+<tr>
+<td>8</td>
+<td><code>SandboxMiddleware</code></td>
+<td><code>backend/packages/harness/deerflow/sandbox/middleware.py:56</code></td>
+<td><code>before_agent</code> / <code>after_agent</code>（获取/释放沙箱，lazy 默认首工具调用才真正 acquire）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>共享运行时段 —— Layer 3 工具执行尾</strong>（<code>tool_error_handling_middleware.py:412-532</code>）</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>中间件类</th>
+<th>定义位置</th>
+<th>挂钩</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>9</td>
+<td><code>DanglingToolCallMiddleware</code></td>
+<td><code>backend/packages/harness/deerflow/agents/middlewares/dangling_tool_call_middleware.py:183</code></td>
+<td><code>wrap_model_call</code>（补悬空 ToolMessage）</td>
+</tr>
+<tr>
+<td>10</td>
+<td><code>LLMErrorHandlingMiddleware</code></td>
+<td><code>backend/packages/harness/deerflow/agents/middlewares/llm_error_handling_middleware.py:445</code></td>
+<td><code>wrap_model_call</code>（模型边界重试与回退消息）</td>
+</tr>
+<tr>
+<td>11✱</td>
+<td><code>ToolReceiptMiddleware</code></td>
+<td><code>backend/packages/harness/deerflow/agents/middlewares/tool_receipt_middleware.py:45</code></td>
+<td><code>wrap_tool_call</code>（回执台账，<code>verification.receipts_enabled</code>）</td>
+</tr>
+<tr>
+<td>12✱</td>
+<td><code>ArtifactResolutionMiddleware</code></td>
+<td><code>backend/packages/harness/deerflow/agents/middlewares/artifact_resolution_middleware.py:31</code></td>
+<td><code>wrap_tool_call</code>（解析参数里的 artifact 句柄）</td>
+</tr>
+<tr>
+<td>13✱</td>
+<td><code>GuardrailMiddleware</code></td>
+<td><code>backend/packages/harness/deerflow/guardrails/middleware.py:25</code></td>
+<td><code>wrap_tool_call</code>（授权适配器 / 显式 guardrail provider）</td>
+</tr>
+<tr>
+<td>14</td>
+<td><code>SandboxAuditMiddleware</code></td>
+<td><code>backend/packages/harness/deerflow/agents/middlewares/sandbox_audit_middleware.py:449</code></td>
+<td><code>wrap_tool_call</code>（中风险结果重建）</td>
+</tr>
+<tr>
+<td>15✱</td>
+<td><code>ReadBeforeWriteMiddleware</code></td>
+<td><code>backend/packages/harness/deerflow/agents/middlewares/read_before_write_middleware.py:209</code></td>
+<td><code>wrap_tool_call</code>（未读先写拦截）</td>
+</tr>
+<tr>
+<td>16✱</td>
+<td><code>HarnessGuardMiddleware</code></td>
+<td><code>backend/packages/harness/deerflow/agents/middlewares/harness_guard_middleware.py:207</code></td>
+<td><code>wrap_tool_call</code>（<code>harness_guard.enabled</code>）</td>
+</tr>
+<tr>
+<td>17✱</td>
+<td><code>ToolProgressMiddleware</code></td>
+<td><code>backend/packages/harness/deerflow/agents/middlewares/tool_progress_middleware.py:254</code></td>
+<td><code>wrap_tool_call</code>（结果质量相位机，默认关）</td>
+</tr>
+<tr>
+<td>18</td>
+<td><code>ToolErrorHandlingMiddleware</code></td>
+<td><code>backend/packages/harness/deerflow/agents/middlewares/tool_error_handling_middleware.py:62</code></td>
+<td><code>wrap_tool_call</code>（异常转 ToolMessage、盖 <code>deerflow_tool_meta</code>）</td>
+</tr>
+<tr>
+<td>19✱</td>
+<td><code>ArtifactCaptureMiddleware</code></td>
+<td><code>backend/packages/harness/deerflow/agents/middlewares/artifact_capture_middleware.py:29</code></td>
+<td><code>before_model</code>（捕获工具产物引用）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Lead 专属段</strong>（<code>backend/packages/harness/deerflow/agents/lead_agent/agent.py:567-778</code>）</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>中间件类</th>
+<th>定义位置</th>
+<th>挂钩</th>
+<th>条件</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>20</td>
+<td><code>DynamicContextMiddleware</code></td>
+<td><code>backend/packages/harness/deerflow/agents/middlewares/dynamic_context_middleware.py:364</code></td>
+<td><code>wrap_model_call</code>（日期/记忆作为 <code>&lt;system-reminder&gt;</code> 注入首条 HumanMessage，系统提示保持静态以复用前缀缓存）</td>
+<td>总是</td>
+</tr>
+<tr>
+<td>21</td>
+<td><code>SkillActivationMiddleware</code></td>
+<td><code>backend/packages/harness/deerflow/agents/middlewares/skill_activation_middleware.py:118</code></td>
+<td><code>wrap_model_call</code>（<code>/skill-name</code> 斜杠激活，第 7 章）</td>
+<td>总是</td>
+</tr>
+<tr>
+<td>22✱</td>
+<td><code>DeferredToolPromotionAuditMiddleware</code></td>
+<td><code>backend/packages/harness/deerflow/agents/middlewares/tool_promotion_audit_middleware.py:72</code></td>
+<td>观察最终 <code>tool_search</code> Command</td>
+<td>有延迟工具</td>
+</tr>
+<tr>
+<td>23</td>
+<td><code>DurableContextMiddleware</code></td>
+<td><code>backend/packages/harness/deerflow/agents/middlewares/durable_context_middleware.py:300</code></td>
+<td><code>before_model</code>/<code>wrap_model_call</code>（委派台账 + 摘要 + 已加载技能三个持久通道）</td>
+<td>总是</td>
+</tr>
+<tr>
+<td>24✱</td>
+<td><code>DeerFlowSummarizationMiddleware</code></td>
+<td><code>backend/packages/harness/deerflow/agents/middlewares/summarization_middleware.py:123</code></td>
+<td><code>before_model</code>（上下文压缩，第 11 章）</td>
+<td><code>summarization</code> 配置启用</td>
+</tr>
+<tr>
+<td>25✱</td>
+<td><code>TodoMiddleware</code></td>
+<td><code>backend/packages/harness/deerflow/agents/middlewares/todo_middleware.py:124</code></td>
+<td><code>before_model</code>/<code>after_model</code>/<code>wrap_model_call</code>（<code>write_todos</code>）</td>
+<td><code>is_plan_mode</code></td>
+</tr>
+<tr>
+<td>26✱</td>
+<td><code>TokenUsageMiddleware</code></td>
+<td><code>backend/packages/harness/deerflow/agents/middlewares/token_usage_middleware.py:353</code></td>
+<td>用量展示</td>
+<td><code>token_usage.enabled</code>（<code>config.example.yaml:96</code>）</td>
+</tr>
+<tr>
+<td>27</td>
+<td><code>TitleMiddleware</code></td>
+<td><code>backend/packages/harness/deerflow/agents/middlewares/title_middleware.py:37</code></td>
+<td><code>after_model</code>（首轮后自动生成标题）</td>
+<td>总是</td>
+</tr>
+<tr>
+<td>28✱</td>
+<td><code>MemoryMiddleware</code></td>
+<td><code>backend/packages/harness/deerflow/agents/middlewares/memory_middleware.py:160</code></td>
+<td><code>after_agent</code>（会话入队记忆抽取，第 10 章）</td>
+<td><code>memory_enabled</code></td>
+</tr>
+<tr>
+<td>29✱</td>
+<td><code>ViewImageMiddleware</code></td>
+<td><code>backend/packages/harness/deerflow/agents/middlewares/view_image_middleware.py:32</code></td>
+<td><code>wrap_model_call</code>（图片 base64 注入请求视图，不进 checkpoint）</td>
+<td>模型 <code>supports_vision</code></td>
+</tr>
+<tr>
+<td>30✱</td>
+<td><code>McpRoutingMiddleware</code>（由 <code>build_mcp_routing_middleware</code> 构建，<code>backend/packages/harness/deerflow/tools/builtins/tool_search.py:341</code>）</td>
+<td><code>backend/packages/harness/deerflow/agents/middlewares/mcp_routing_middleware.py:30</code></td>
+<td><code>after_model</code>（按 routing 关键词自动晋升延迟 MCP 工具）</td>
+<td>有带 routing 的延迟 MCP 工具</td>
+</tr>
+<tr>
+<td>31✱</td>
+<td><code>DeferredToolFilterMiddleware</code></td>
+<td><code>backend/packages/harness/deerflow/agents/middlewares/deferred_tool_filter_middleware.py:32</code></td>
+<td><code>wrap_model_call</code>（未晋升的延迟工具 schema 对模型隐藏）</td>
+<td>有延迟工具</td>
+</tr>
+<tr>
+<td>32</td>
+<td><code>SystemMessageCoalescingMiddleware</code></td>
+<td><code>backend/packages/harness/deerflow/agents/middlewares/system_message_coalescing_middleware.py:121</code></td>
+<td><code>wrap_model_call</code>（合并多条 SystemMessage；vLLM/Anthropic 等严格后端只接受首条）</td>
+<td>总是</td>
+</tr>
+<tr>
+<td>33✱</td>
+<td><code>SubagentLimitMiddleware</code></td>
+<td><code>backend/packages/harness/deerflow/agents/middlewares/subagent_limit_middleware.py:95</code></td>
+<td><code>after_model</code>（截断超额并行 task 调用）</td>
+<td><code>subagent_enabled</code></td>
+</tr>
+<tr>
+<td>34✱</td>
+<td><code>LoopDetectionMiddleware</code></td>
+<td><code>backend/packages/harness/deerflow/agents/middlewares/loop_detection_middleware.py:294</code></td>
+<td><code>before_agent</code>/<code>after_model</code>/<code>wrap_model_call</code>/<code>after_agent</code>（循环检测，<code>loop_detection.enabled</code>）</td>
+<td>配置启用</td>
+</tr>
+<tr>
+<td>35✱</td>
+<td><code>TokenBudgetMiddleware</code></td>
+<td><code>backend/packages/harness/deerflow/agents/middlewares/token_budget_middleware.py:77</code></td>
+<td>预算告警/硬停（<code>token_budget.enabled</code>，<code>config.example.yaml:106</code>）</td>
+<td>配置启用</td>
+</tr>
+<tr>
+<td>36✱</td>
+<td><code>CompletedSubagentUsageMiddleware</code></td>
+<td><code>backend/packages/harness/deerflow/agents/middlewares/token_usage_middleware.py:408</code></td>
+<td>预算前回填已完成子代理用量</td>
+<td>预算+用量同开</td>
+</tr>
+<tr>
+<td>37</td>
+<td><code>ModelContentCompatibilityMiddleware</code></td>
+<td><code>backend/packages/harness/deerflow/agents/middlewares/model_content_compatibility_middleware.py:204</code></td>
+<td><code>wrap_model_call</code>（把 URL 来源的文件/图片块改写为文本占位，修复历史脏数据）</td>
+<td>总是</td>
+</tr>
+<tr>
+<td>38✱</td>
+<td>自定义 / 扩展中间件</td>
+<td>经 <code>configured_extensions</code> 注入</td>
+<td>—</td>
+<td>配置了 <code>extensions.middlewares</code> 或扩展贡献</td>
+</tr>
+<tr>
+<td>39</td>
+<td><code>TerminalResponseMiddleware</code></td>
+<td><code>backend/packages/harness/deerflow/agents/middlewares/terminal_response_middleware.py:31</code></td>
+<td><code>after_model</code>（空回复终端兜底）</td>
+<td>总是</td>
+</tr>
+<tr>
+<td>40</td>
+<td><code>ModelLengthFinishReasonMiddleware</code></td>
+<td><code>backend/packages/harness/deerflow/agents/middlewares/model_length_finish_reason_middleware.py:80</code></td>
+<td><code>after_model</code>（<code>stop_reason=model_length_capped</code> 盖章并抑制工具调用）</td>
+<td>总是</td>
+</tr>
+<tr>
+<td>41✱</td>
+<td><code>SafetyFinishReasonMiddleware</code></td>
+<td><code>backend/packages/harness/deerflow/agents/middlewares/safety_finish_reason_middleware.py:99</code></td>
+<td><code>after_model</code>（供应商安全终止时抑制工具执行）</td>
+<td><code>safety_finish_reason.enabled</code></td>
+</tr>
+<tr>
+<td>42</td>
+<td><code>ClarificationMiddleware</code></td>
+<td><code>backend/packages/harness/deerflow/agents/middlewares/clarification_middleware.py:75</code></td>
+<td><code>wrap_tool_call</code>（<strong>永远最后</strong>；拦截 <code>ask_clarification</code> 并 <code>Command(goto=END)</code>）</td>
+<td>总是</td>
+</tr>
+<tr>
+<td>43✱</td>
+<td><code>RunInputAdmissionMiddleware</code>（插到位置 0）/ <code>RunInputMiddleware</code>（追加到末尾）</td>
+<td><code>backend/packages/harness/deerflow/agents/middlewares/run_input_middleware.py:53</code> 与 <code>:80</code></td>
+<td>输入准入 / <code>after_agent</code> 决定是否续跑</td>
+<td>run 带输入控制</td>
+</tr>
+</tbody>
+</table>
+<p>最后由 <code>compose_with_extensions</code>（<code>agent.py:806-820</code>）把扩展贡献合并进栈。仓库里
+另有一份纯 SDK 侧的组装函数 <code>_assemble_from_features</code>
+（<code>backend/packages/harness/deerflow/agents/factory.py:205</code>），供不读 YAML 的
+<code>create_deerflow_agent</code> 使用，顺序与上表一致——两条组装路径共用同一套顺序约定。</p>
+<p><strong>为什么子代理只有 4 个共享中间件？</strong> <code>build_subagent_runtime_middlewares</code>
+（<code>tool_error_handling_middleware.py:572</code>）复用 <code>_build_runtime_middlewares</code> 但
+<code>include_uploads=False</code>，再加 <code>SkillActivationMiddleware</code> 等少量成员。子代理共享
+lead 线程的沙箱与 skill 投影，因此不重复做线程级准备。</p>
+<h2 id="65-dthreadstate-checkpoint">6.5 源码走读 D：ThreadState 与 checkpoint<a class="headerlink" href="#65-dthreadstate-checkpoint" title="Permanent link">&para;</a></h2>
+<h3 id="threadstate">ThreadState 定义<a class="headerlink" href="#threadstate" title="Permanent link">&para;</a></h3>
+<p><code>ThreadState</code> 在 LangGraph <code>AgentState</code> 之上扩展（<code>backend/packages/harness/deerflow/agents/thread_state.py:379-398</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">ThreadState</span><span class="p">(</span><span class="n">AgentState</span><span class="p">):</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>    <span class="n">sandbox</span><span class="p">:</span> <span class="n">SandboxStateField</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>    <span class="n">thread_data</span><span class="p">:</span> <span class="n">NotRequired</span><span class="p">[</span><span class="n">ThreadDataState</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="n">title</span><span class="p">:</span> <span class="n">NotRequired</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>    <span class="n">artifacts</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">merge_artifacts</span><span class="p">]</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>    <span class="n">todos</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">merge_todos</span><span class="p">]</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>    <span class="n">goal</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">GoalState</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">merge_goal</span><span class="p">]</span>
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>    <span class="n">goal_outcome</span><span class="p">:</span> <span class="n">NotRequired</span><span class="p">[</span><span class="n">GoalOutcomeState</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span>
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>    <span class="n">applied_run_inputs</span><span class="p">:</span> <span class="n">NotRequired</span><span class="p">[</span><span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span>
+<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>    <span class="n">uploaded_files</span><span class="p">:</span> <span class="n">NotRequired</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span>
+<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>    <span class="n">viewed_images</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ViewedImageData</span><span class="p">],</span> <span class="n">merge_viewed_images</span><span class="p">]</span>  <span class="c1"># image_path -&gt; metadata (no base64)</span>
+<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a>    <span class="n">promoted</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">PromotedTools</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">merge_promoted</span><span class="p">]</span>
+<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>    <span class="n">delegations</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">DelegationEntry</span><span class="p">],</span> <span class="n">merge_delegations</span><span class="p">]</span>
+<a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a>    <span class="n">skill_context</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SkillEntry</span><span class="p">],</span> <span class="n">merge_skill_context</span><span class="p">]</span>
+<a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a>    <span class="n">tool_artifacts</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">ArtifactEntry</span><span class="p">],</span> <span class="n">merge_tool_artifacts</span><span class="p">]</span>
+<a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a>    <span class="n">tool_artifact_processed</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">merge_artifacts</span><span class="p">]</span>
+<a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a>    <span class="n">task_notes</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">TaskNotesChannel</span><span class="p">(</span><span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">merge_task_notes</span><span class="p">)]</span>
+<a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a>    <span class="n">task_history</span><span class="p">:</span> <span class="n">NotRequired</span><span class="p">[</span><span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span>
+<a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a>    <span class="n">summary_text</span><span class="p">:</span> <span class="n">NotRequired</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span>
+<a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a>    <span class="n">background_tasks</span><span class="p">:</span> <span class="n">NotRequired</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">BackgroundTaskState</span><span class="p">]]</span>
+</code></pre></div>
+<p>讲解要点：</p>
+<ul>
+<li><strong><code>Annotated[..., reducer]</code> 是 LangGraph 的自定义归并语义</strong>。例如
+  <code>merge_artifacts</code>（<code>thread_state.py:103</code>）合并去重产物列表——<code>present_files</code>
+  工具（第 7 章）返回 <code>Command(update={"artifacts": [...]})</code> 时靠它避免覆盖；
+  <code>merge_todos</code>（<code>thread_state.py:139</code>）"None 表示节点没碰 todos，保留旧值"；</li>
+<li><strong><code>sandbox</code> 字段的 reducer 会 fail-closed</strong>：<code>merge_sandbox</code>（<code>thread_state.py:79-97</code>）
+  允许幂等写入，但同一线程出现两个不同 <code>sandbox_id</code> 直接抛
+  <code>ValueError("Conflicting sandbox state updates")</code>——这是隔离性 bug 的显式失败；</li>
+<li><strong><code>viewed_images</code> 只存轻量元数据</strong>：<code>ViewedImageData</code>（<code>thread_state.py:62-76</code>）
+  的文档注释写明，图片字节按需从沙箱读取，base64 载荷不进 checkpoint（#4138）；</li>
+<li><strong>delta 模式</strong>：<code>get_thread_state_schema(mode)</code>（<code>thread_state.py:521</code>）在
+  <code>database.checkpoint_channel_mode == "delta"</code> 时返回把 <code>messages</code> 换成
+  <code>DeltaChannel</code> 的 <code>DeltaThreadState</code>，checkpoint 只存增量，由
+  <code>merge_message_writes</code>（<code>thread_state.py:431</code>）线性折叠。模式是<strong>进程级冻结</strong>的
+  （<code>assemble_lead_agent</code> 里 <code>freeze_checkpoint_channel_mode</code>，<code>agent.py:874-887</code>），
+  客户端无法通过 configurable 键切换。</li>
+</ul>
+<h3 id="_2">线程数据目录<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h3>
+<p><code>ThreadDataMiddleware.before_agent</code>（<code>backend/packages/harness/deerflow/agents/middlewares/thread_data_middleware.py:82-122</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nd">@override</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">before_agent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">ThreadDataMiddlewareState</span><span class="p">,</span> <span class="n">runtime</span><span class="p">:</span> <span class="n">Runtime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>    <span class="n">context</span> <span class="o">=</span> <span class="n">runtime</span><span class="o">.</span><span class="n">context</span> <span class="ow">or</span> <span class="p">{}</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    <span class="n">thread_id</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"thread_id"</span><span class="p">)</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>    <span class="o">...</span>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lazy_init</span><span class="p">:</span>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>        <span class="c1"># Lazy initialization: only compute paths, don't create directories</span>
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>        <span class="n">paths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_thread_paths</span><span class="p">(</span><span class="n">thread_id</span><span class="p">,</span> <span class="n">user_id</span><span class="o">=</span><span class="n">user_id</span><span class="p">)</span>
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>    <span class="k">else</span><span class="p">:</span>
+<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>        <span class="n">paths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_thread_directories</span><span class="p">(</span><span class="n">thread_id</span><span class="p">,</span> <span class="n">user_id</span><span class="o">=</span><span class="n">user_id</span><span class="p">)</span>
+<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>    <span class="o">...</span>
+<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>    <span class="k">return</span> <span class="p">{</span>
+<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a>        <span class="s2">"thread_data"</span><span class="p">:</span> <span class="p">{</span>
+<a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a>            <span class="o">**</span><span class="n">paths</span><span class="p">,</span>
+<a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a>        <span class="p">},</span>
+<a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a>        <span class="s2">"messages"</span><span class="p">:</span> <span class="n">messages</span><span class="p">,</span>
+<a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a>    <span class="p">}</span>
+</code></pre></div>
+<p>三个路径来自 <code>Paths</code> 的 <code>sandbox_work_dir / sandbox_uploads_dir / sandbox_outputs_dir</code>
+（<code>thread_data_middleware.py:62-66</code>），布局是
+<code>{DEER_FLOW_HOME}/threads/{thread_id}/user-data/{workspace,uploads,outputs}</code>。
+默认 <code>DEER_FLOW_HOME</code> 是 <code>backend/.deer-flow</code>（<code>backend/AGENTS.md</code> backend dev 一节：
+<code>make dev</code> 特意把该目录排除出 uvicorn 热重载监视）。沙箱内 agent 看到的是虚拟路径
+<code>/mnt/user-data/...</code>，映射关系在第 8 章展开。</p>
+<h2 id="66-esse">6.6 源码走读 E：SSE 流协议<a class="headerlink" href="#66-esse" title="Permanent link">&para;</a></h2>
+<h3 id="messages-tuple-vs-messages">模式名翻译：<code>messages-tuple</code> vs <code>messages</code><a class="headerlink" href="#messages-tuple-vs-messages" title="Permanent link">&para;</a></h3>
+<p><code>backend/packages/harness/deerflow/runtime/stream_modes.py:7-14</code> 定义了对外的
+LangGraph Platform 兼容模式：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nb">type</span> <span class="n">RunStreamMode</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>    <span class="s2">"values"</span><span class="p">,</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>    <span class="s2">"messages-tuple"</span><span class="p">,</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>    <span class="s2">"updates"</span><span class="p">,</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>    <span class="s2">"debug"</span><span class="p">,</span>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>    <span class="s2">"tasks"</span><span class="p">,</span>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>    <span class="s2">"checkpoints"</span><span class="p">,</span>
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>    <span class="s2">"custom"</span><span class="p">,</span>
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="p">]</span>
+</code></pre></div>
+<p><code>to_langgraph_stream_modes</code>（<code>stream_modes.py:43</code>）把公开的 <code>"messages-tuple"</code> 翻译成
+LangGraph 内部的 <code>"messages"</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">to_langgraph_stream_modes</span><span class="p">(</span><span class="n">raw</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="w">    </span><span class="sd">"""Map public run modes to ``graph.astream`` modes without silent fallback."""</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>    <span class="n">modes</span> <span class="o">=</span> <span class="n">normalize_stream_modes</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>    <span class="n">mapped</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"messages"</span> <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">"messages-tuple"</span> <span class="k">else</span> <span class="n">mode</span> <span class="k">for</span> <span class="n">mode</span> <span class="ow">in</span> <span class="n">modes</span><span class="p">]</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">mapped</span><span class="p">))</span>
+</code></pre></div>
+<p>讲解：<code>backend/docs/STREAMING.md</code> 用一整节解释"两套命名的由来"——Graph 层叫
+<code>messages</code>，Platform SDK 层叫 <code>messages-tuple</code>，是同一概念的三个协议层别名。
+<code>DeerFlowClient</code> 直调 <code>agent.stream()</code> 必须传 <code>"messages"</code>；IM 渠道走 HTTP SDK 必须传
+<code>"messages-tuple"</code>。<strong>两个字符串不能互相替代</strong>。</p>
+<h3 id="sse">序列化与 SSE 帧名<a class="headerlink" href="#sse" title="Permanent link">&para;</a></h3>
+<p><code>serialize</code>（<code>backend/packages/harness/deerflow/runtime/serialization.py:164</code>）按模式
+分发：<code>messages</code> 走 <code>serialize_messages_tuple</code>（<code>serialization.py:144</code>，把
+<code>(chunk, metadata)</code> 变成 <code>[chunk.model_dump(), metadata]</code>）；<code>values</code> 走
+<code>serialize_channel_values_for_api</code>（剥掉 <code>__pregel_*</code> 内部键与 <code>data:</code> base64 图片块）。</p>
+<p>SSE 事件名与 LangGraph 模式一一对应（<code>backend/packages/harness/deerflow/runtime/runs/worker.py:3633-3642</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">_lg_mode_to_sse_event</span><span class="p">(</span><span class="n">mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="w">    </span><span class="sd">"""Map LangGraph internal stream_mode name to SSE event name.</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="sd">    LangGraph's ``astream(stream_mode="messages")`` produces message</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="sd">    tuples.  The SSE protocol calls this ``messages-tuple`` when the</span>
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="sd">    client explicitly requests it, but the default SSE event name used</span>
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="sd">    by LangGraph Platform is simply ``"messages"``.</span>
+<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="sd">    """</span>
+<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>    <span class="c1"># All LG modes map 1:1 to SSE event names — "messages" stays "messages"</span>
+<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>    <span class="k">return</span> <span class="n">mode</span>
+</code></pre></div>
+<p>SSE 帧格式由 <code>format_sse</code>（<code>backend/app/gateway/services.py:221-234</code>）产出，
+字段顺序 <code>event:</code> → <code>data:</code> → <code>id:</code>（可选）→ 空行，与 <code>useStream</code> hook 和
+<code>langgraph-sdk</code> 解码器的期望一致。</p>
+<h3 id="_3">子图命名空间帧<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
+<p>开启 <code>stream_subgraphs</code> 时，子代理帧必须带命名空间前缀，否则会覆盖 SDK 的线程视图
+（#4399）。<code>_compose_sse_event</code>（<code>backend/packages/harness/deerflow/runtime/runs/worker.py:3797-3807</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">_compose_sse_event</span><span class="p">(</span><span class="n">sse_event</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">namespace</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="w">    </span><span class="sd">"""Namespace-qualified SSE event name, LangGraph Platform style.</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="sd">    Root frames keep the bare event name; subgraph frames become</span>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="sd">    ``mode|ns1|ns2`` so clients can tell them apart. The LangGraph SDK parses</span>
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="sd">    exactly this shape (``event.split("|").slice(1)``) and routes</span>
+<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="sd">    subagent-namespaced values away from the thread view.</span>
+<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="sd">    """</span>
+<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">namespace</span><span class="p">:</span>
+<a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a>        <span class="k">return</span> <span class="n">sse_event</span>
+<a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a>    <span class="k">return</span> <span class="s2">"|"</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">sse_event</span><span class="p">,</span> <span class="o">*</span><span class="n">namespace</span><span class="p">))</span>
+</code></pre></div>
+<p>讲解：根图帧保持裸事件名（<code>values</code>），子图帧变成 <code>values|&lt;ns1&gt;|&lt;ns2&gt;</code>。
+<code>backend/AGENTS.md:12</code> 总结了消费者契约——根命名空间消费者（文件工具 chunk 批处理器、
+子代理事件持久化、LLM 错误回退检测）忽略带命名空间的帧；Web 前端只用根命名空间的
+<code>task_*</code> 自定义事件，不请求子图流。</p>
+<h3 id="task_"><code>task_*</code> 自定义事件<a class="headerlink" href="#task_" title="Permanent link">&para;</a></h3>
+<p>子代理委派进度通过 <code>custom</code> 流发出：<code>task_started</code> / <code>task_running</code> /
+<code>task_completed</code> / <code>task_failed</code> 等载荷。持久化侧由
+<code>subagents/step_events.py::subagent_run_event()</code> 映射为 <code>subagent.start</code> /
+<code>subagent.step</code> / <code>subagent.end</code> 三类事件（<code>backend/docs/RUN_EVENT_STREAM.md</code>
+Producers 一节的表格），再经 <code>GET /api/threads/{thread_id}/runs/{run_id}/events</code>
+供历史子任务卡片恢复。事件存储的完整契约（信封字段、category 路由、<code>run.terminal</code>
+权威结果）见 <code>backend/docs/RUN_EVENT_STREAM.md</code>。</p>
+<h3 id="heartbeatgapend">控制帧：heartbeat、gap、end<a class="headerlink" href="#heartbeatgapend" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>heartbeat</code>：15 秒默认周期，SSE 注释帧 <code>": heartbeat\n\n"</code>；</li>
+<li><code>gap</code>：重连游标已超出保留窗口时，网关在任何部分重放之前发送
+  <code>event: gap</code> + <code>recovery: "reload_durable_state"</code>，客户端必须丢弃瞬时状态、
+  重读 checkpoint 与持久化历史（<code>backend/docs/STREAMING.md</code> "有界历史与 gap 恢复"）；</li>
+<li><code>end</code>：run 终止哨兵。</li>
+</ul>
+<h2 id="67-sse">6.7 动手实验：抓一次完整 SSE 流<a class="headerlink" href="#67-sse" title="Permanent link">&para;</a></h2>
+<p>目标：绕过前端，用脚本直连 Gateway，观察事件时序并标注中间件生效点。全程离线可做
+（只需要一个已配置的模型 Key，第 2 章的 <code>make dev</code> 环境即可）。</p>
+<p><strong>步骤 0：处理认证。</strong> 默认 <code>make dev</code> 启用了本地认证（首次访问 <code>/setup</code> 初始化
+管理员，见 <code>backend/docs/AUTH_UPGRADE.md:127</code>）。脚本直连有两种选择：最简单的是
+单用户模式——在启动 Gateway 前设置环境变量 <code>DEER_FLOW_AUTH_DISABLED=1</code>（非生产环境
+生效，<code>backend/app/gateway/auth_disabled.py:15-23</code>）；或保持认证，先在浏览器登录，
+再从开发者工具复制会话 Cookie，给下面的两个请求都加上 <code>-H "Cookie: &lt;...&gt;"</code>。</p>
+<p><strong>步骤 1：创建线程。</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>curl<span class="w"> </span>-s<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:2026/api/threads<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">'{"metadata": {}}'</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="c1"># 记下返回的 thread_id</span>
+</code></pre></div>
+<p><strong>步骤 2：订阅 run 流。</strong> 新建 <code>sse_capture.py</code>（放在仓库外任意目录，勿提交）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">json</span><span class="o">,</span><span class="w"> </span><span class="nn">sys</span><span class="o">,</span><span class="w"> </span><span class="nn">time</span>
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="n">thread_id</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"http://localhost:2026/api/langgraph/threads/</span><span class="si">{</span><span class="n">thread_id</span><span class="si">}</span><span class="s2">/runs/stream"</span>
+<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="n">body</span> <span class="o">=</span> <span class="p">{</span>
+<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>    <span class="s2">"assistant_id"</span><span class="p">:</span> <span class="s2">"lead_agent"</span><span class="p">,</span>
+<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>    <span class="s2">"input"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"messages"</span><span class="p">:</span> <span class="p">[{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"user"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="s2">"用一句话介绍你自己"</span><span class="p">}]},</span>
+<a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a>    <span class="s2">"stream_mode"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"messages-tuple"</span><span class="p">,</span> <span class="s2">"values"</span><span class="p">,</span> <span class="s2">"custom"</span><span class="p">],</span>
+<a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a>    <span class="s2">"stream_subgraphs"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+<a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a><span class="p">}</span>
+<a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a><span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
+<a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a><span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">stream</span><span class="p">(</span><span class="s2">"POST"</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">body</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">120</span><span class="p">)</span> <span class="k">as</span> <span class="n">resp</span><span class="p">:</span>
+<a id="__codelineno-15-14" name="__codelineno-15-14" href="#__codelineno-15-14"></a>    <span class="n">event</span> <span class="o">=</span> <span class="kc">None</span>
+<a id="__codelineno-15-15" name="__codelineno-15-15" href="#__codelineno-15-15"></a>    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">resp</span><span class="o">.</span><span class="n">iter_lines</span><span class="p">():</span>
+<a id="__codelineno-15-16" name="__codelineno-15-16" href="#__codelineno-15-16"></a>        <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"event:"</span><span class="p">):</span>
+<a id="__codelineno-15-17" name="__codelineno-15-17" href="#__codelineno-15-17"></a>            <span class="n">event</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">":"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+<a id="__codelineno-15-18" name="__codelineno-15-18" href="#__codelineno-15-18"></a>        <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"data:"</span><span class="p">)</span> <span class="ow">and</span> <span class="n">event</span><span class="p">:</span>
+<a id="__codelineno-15-19" name="__codelineno-15-19" href="#__codelineno-15-19"></a>            <span class="n">data</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">":"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+<a id="__codelineno-15-20" name="__codelineno-15-20" href="#__codelineno-15-20"></a>            <span class="n">size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<a id="__codelineno-15-21" name="__codelineno-15-21" href="#__codelineno-15-21"></a>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span><span class="o">-</span><span class="n">t0</span><span class="si">:</span><span class="s2">7.3f</span><span class="si">}</span><span class="s2">s  </span><span class="si">{</span><span class="n">event</span><span class="si">:</span><span class="s2">&lt;15</span><span class="si">}</span><span class="s2"> bytes=</span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a id="__codelineno-15-22" name="__codelineno-15-22" href="#__codelineno-15-22"></a>            <span class="k">if</span> <span class="n">event</span> <span class="o">==</span> <span class="s2">"values"</span><span class="p">:</span>
+<a id="__codelineno-15-23" name="__codelineno-15-23" href="#__codelineno-15-23"></a>                <span class="c1"># values 快照里能看到中间件写入的字段</span>
+<a id="__codelineno-15-24" name="__codelineno-15-24" href="#__codelineno-15-24"></a>                <span class="n">snapshot</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<a id="__codelineno-15-25" name="__codelineno-15-25" href="#__codelineno-15-25"></a>                <span class="n">keys</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">snapshot</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">k</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"__"</span><span class="p">))</span>
+<a id="__codelineno-15-26" name="__codelineno-15-26" href="#__codelineno-15-26"></a>                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"          values keys: </span><span class="si">{</span><span class="n">keys</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a id="__codelineno-15-27" name="__codelineno-15-27" href="#__codelineno-15-27"></a>            <span class="n">event</span> <span class="o">=</span> <span class="kc">None</span>
+</code></pre></div>
+<p>运行：<code>python sse_capture.py &lt;thread_id&gt;</code>。</p>
+<p><strong>步骤 3：读输出、画时序。</strong> 典型形状：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>  0.1s  values          bytes=...      ← 首快照：messages 只含用户输入
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>  0.3s  messages        bytes=...      ← token 增量开始（AIMessageChunk）
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>  ...
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>  2.1s  messages        bytes=...      ← 最后一个 chunk 带 usage
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>  2.2s  values          bytes=...      ← 终快照：此时 title 可能已生成（TitleMiddleware）
+<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>  2.3s  end                            ← Run 终止
+</code></pre></div>
+<p>对照检查点：</p>
+<ul>
+<li>首个 <code>values</code> 快照的键列表里应出现 <code>thread_data</code>（<code>ThreadDataMiddleware</code> 写入）、
+  若上传过文件还有 <code>uploaded_files</code>（<code>UploadsMiddleware</code>）；</li>
+<li>若在 UI 里开过 Plan Mode（<code>is_plan_mode</code>），终快照会多出 <code>todos</code> 键；</li>
+<li>发一张图片并使用 vision 模型，会看到 <code>viewed_images</code> 出现（<code>ViewImageMiddleware</code></li>
+<li><code>view_image</code> 工具），但消息里没有 base64——载荷只活在请求视图里；</li>
+<li>把 <code>"stream_subgraphs"</code> 改为 <code>True</code> 并让 agent 委派子代理，事件名会出现
+  <code>values|&lt;namespace&gt;</code> 形状（<code>_compose_sse_event</code>）；</li>
+<li>长时间不操作的 run 期间插入观察，可看到 15 秒周期的 <code>: heartbeat</code> 注释帧。</li>
+</ul>
+<p><strong>步骤 4（可选）：把事件与运行时事件存储对账。</strong> 访问
+<code>GET /api/threads/{thread_id}/runs/{run_id}/events</code>，对照
+<code>backend/docs/RUN_EVENT_STREAM.md</code> 的类别表（<code>trace</code> / <code>message</code> / <code>middleware</code> /
+<code>subagent</code> / <code>workspace</code>…），验证 <code>middleware:summarize</code>、<code>middleware:loop_detection</code>
+等审计事件的 <code>category</code> 与文档一致。</p>
+<h2 id="68">6.8 常见坑<a class="headerlink" href="#68" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>把 <code>"messages"</code> 和 <code>"messages-tuple"</code> 传错层</strong>：HTTP SDK 客户端要传
+   <code>messages-tuple</code>，直接调 <code>agent.stream()</code> 要传 <code>messages</code>。传错不报错，只是收不到
+   token 级事件（<code>backend/docs/STREAMING.md</code> 的 #1969 事故正是漏订阅 <code>messages</code>）。</li>
+<li><strong>以为 <code>values</code> 是增量</strong>：<code>values</code> 是节点级完整状态快照，<code>messages</code> 才是 token
+   增量；前端按消息 ID 去重合并（<code>backend/docs/STREAMING.md</code> "消费语义"一节）。</li>
+<li><strong>在中间件链上"随手"插中间件</strong>：<code>ClarificationMiddleware</code> 必须最后
+   （<code>agent.py:777-778</code> 的注释与不变式检查），<code>ThreadDataMiddleware</code> 必须先于
+   <code>SandboxMiddleware</code>。扩展作者应使用 <code>@Next</code>/<code>@Prev</code> 锚点而不是猜位置
+   （<code>backend/packages/harness/deerflow/agents/factory.py:474</code> 的 <code>_insert_extra</code>）。</li>
+<li><strong>直接跑 <code>uvicorn --reload</code> 替代 <code>make dev</code></strong>：agent 任务会往
+   <code>backend/.deer-flow/</code> 写运行时文件，触发无限重启——<code>backend/AGENTS.md</code> 明确要求
+   用预创建并排除该目录的 <code>make dev</code> target。</li>
+<li><strong>指望 checkpoint 里存图片</strong>：<code>viewed_images</code> 只存 SHA-256/size 等元数据，base64
+   在 <code>wrap_model_call</code> 内注入请求、从不落图状态（<code>thread_state.py:62-76</code>）。</li>
+<li><strong>忽略 <code>gap</code> 帧</strong>：断线重连收到 <code>gap</code> 后继续等事件会永远挂起——正确动作是丢弃
+   本地瞬时状态、重读持久化历史，再以 <code>latest_available_event_id</code> 重新入流
+   （<code>backend/docs/STREAMING.md</code>）。</li>
+</ol>
+<hr />
+<h2 id="_4">下一步<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<p>一次请求的"骨架"已经走通：HTTP 准入 → <code>run_agent</code> → 中间件链 → 模型/工具循环 →
+SSE 回流。骨架上最鲜活的器官是<strong>工具</strong>——模型真正"做事"的接口。下一章
+《第 7 章 工具系统与 Skills》（<code>docs/tutorials/07-tools-and-skills.md</code>）将打开
+<code>get_available_tools()</code> 的三来源合并、内置工具（<code>present_files</code>、<code>ask_clarification</code>、
+<code>view_image</code>、<code>review_skill_package</code>）的逐个拆解，以及 23 个官方技能与 Skill 引擎
+（frontmatter 解析、静态安全扫描、斜杠激活、质量评审）的内部机制。
+第 8 章（沙箱与代码执行）则接在本章 <code>SandboxMiddleware</code> 处继续深挖虚拟路径映射与
+两种沙箱实现。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      教程基于开源项目 <a href='https://github.com/bytedance/deer-flow'>bytedance/deer-flow</a> 的真实源码编写
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.sections", "navigation.expand", "navigation.top", "navigation.indexes", "search.suggest", "search.highlight", "content.code.copy", "toc.follow"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.a5f9d56c.min.js"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

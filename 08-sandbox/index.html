@@ -1,0 +1,3134 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="基于 DeerFlow 真实源码的中文系统教程：21 章 + 附录，覆盖环境配置、核心组件拆解、二次开发与 MCP 集成">
+      
+      
+      
+        <link rel="canonical" href="https://jigangbo.github.io/deer-flow-tutorial/08-sandbox/">
+      
+      
+        <link rel="prev" href="../07-tools-and-skills/">
+      
+      
+        <link rel="next" href="../09-multi-agent/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
+    
+    
+      
+        <title>第 8 章 沙箱与代码执行 - DeerFlow 从入门到精通 · 源码教程</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#8" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href=".." title="DeerFlow 从入门到精通 · 源码教程" class="md-header__button md-logo" aria-label="DeerFlow 从入门到精通 · 源码教程" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            DeerFlow 从入门到精通 · 源码教程
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              第 8 章 沙箱与代码执行
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jigangbo/deer-flow-tutorial" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="DeerFlow 从入门到精通 · 源码教程" class="md-nav__button md-logo" aria-label="DeerFlow 从入门到精通 · 源码教程" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    DeerFlow 从入门到精通 · 源码教程
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jigangbo/deer-flow-tutorial" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    导读
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    导读
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 0 章 全景鸟瞰
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第一篇 入门篇
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第一篇 入门篇
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-environment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 1 章 准备环境（Environment Setup）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 2 章 一键启动（Quick Start）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 3 章 配置系统入门
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-frontend-tour/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 4 章 前端界面与基本功能导览
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-run-modes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 5 章 更多运行方式
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第二篇 进阶篇
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第二篇 进阶篇
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-request-lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 6 章 一次请求的一生：Agent 运行时全链路
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-tools-and-skills/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 7 章 工具系统与 Skills
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 8 章 沙箱与代码执行
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 8 章 沙箱与代码执行
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        本章源码锚点
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#80" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.0 学习目标
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#81-agent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 概念：Agent 的代码执行为什么需要一层沙箱
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#82-provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 源码走读：Provider 抽象与进程级单例
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8.2 源码走读：Provider 抽象与进程级单例">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#821-sandboxprovider" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2.1 SandboxProvider 的五个生命周期方法
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#822" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2.2 带锁的单例装配
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#83-local-vs-aio-provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3 源码走读：Local vs Aio 两个 Provider（重点）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8.3 源码走读：Local vs Aio 两个 Provider（重点）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#831-localsandboxprovider" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3.1 LocalSandboxProvider：每线程一个映射表
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#832-aiosandboxprovider" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3.2 AioSandboxProvider：容器 + 温热池 + 跨实例所有权
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#833" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3.3 挂载计算的对称性
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#84-mntuser-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.4 源码走读：/mnt/user-data 虚拟路径映射（重点）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8.4 源码走读：/mnt/user-data 虚拟路径映射（重点）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#841" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.4.1 一份路径，三种形态
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#842-pathmapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.4.2 正向解析：PathMapping 表
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#843" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.4.3 反向掩码：宿主路径永远不回到模型眼前
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#844" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.4.4 上传与产物在沙箱内外的同步行为
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#85-sandbox-bash" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.5 源码走读：Sandbox 接口与一次 bash 执行
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8.5 源码走读：Sandbox 接口与一次 bash 执行">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#851" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.5.1 接口契约与"会话语义"自白
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#852-execute_command" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.5.2 execute_command 的完整流水线
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#853" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.5.3 环境变量策略：默认擦除凭据
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#854-aio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.5.4 AIO 侧的对应实现
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#86-leasepy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.6 源码走读：租约机制（lease.py，重点）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8.6 源码走读：租约机制（lease.py，重点）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#861" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.6.1 问题：一个沙箱，多个持有者
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#862" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.6.2 持有者绑定与最后持有者释放
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#863" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.6.3 取消与清积压：重复取消不能撕裂生命周期
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#864-command_scopepy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.6.4 命令作用域（command_scope.py）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#87" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.7 源码走读：沙箱中间件、预热与授权门
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8.7 源码走读：沙箱中间件、预热与授权门">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#871-sandboxmiddleware-threadstate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.7.1 SandboxMiddleware：沙箱进入 ThreadState
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#872-prewarmpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.7.2 预热（prewarm.py）：投机性获取
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#873-sandboxexecute" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.7.3 授权门：sandbox:execute
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#88-provisioner-k8s" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.8 源码走读：Provisioner / K8s 模式
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#89-configyaml-sandbox" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.9 配置详解：config.yaml → sandbox: 段
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        动手实验：观察两种沙箱下的路径映射
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        常见坑
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        下一步
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-multi-agent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 9 章 Multi-Agent 路由与子代理委派
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10-memory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 10 章 记忆系统（Memory / DeerMem）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../11-context-engineering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 11 章 上下文工程与长对话治理
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../12-scheduled-tasks-and-im/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 12 章 定时任务与 IM 渠道
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../13-gateway-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 13 章 Gateway API 与编程接入
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第三篇 精通篇
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    第三篇 精通篇
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../14-architecture-layers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 14 章 架构分层与开发规范（二次开发前必读）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../15-mcp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 15 章 MCP 集成（重点）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../16-extensions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 16 章 扩展（Extensions）开发
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../17-business-cases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 17 章 业务二次开发实战（综合案例）
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../18-frontend-dev/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 18 章 前端二次开发
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../19-testing-quality/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 19 章 可观测性、测试与质量保障
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../20-production/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第 20 章 生产部署与运维
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    附录
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    附录
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../appendices/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    附录
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        本章源码锚点
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#80" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.0 学习目标
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#81-agent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 概念：Agent 的代码执行为什么需要一层沙箱
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#82-provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 源码走读：Provider 抽象与进程级单例
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8.2 源码走读：Provider 抽象与进程级单例">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#821-sandboxprovider" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2.1 SandboxProvider 的五个生命周期方法
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#822" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2.2 带锁的单例装配
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#83-local-vs-aio-provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3 源码走读：Local vs Aio 两个 Provider（重点）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8.3 源码走读：Local vs Aio 两个 Provider（重点）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#831-localsandboxprovider" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3.1 LocalSandboxProvider：每线程一个映射表
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#832-aiosandboxprovider" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3.2 AioSandboxProvider：容器 + 温热池 + 跨实例所有权
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#833" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3.3 挂载计算的对称性
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#84-mntuser-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.4 源码走读：/mnt/user-data 虚拟路径映射（重点）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8.4 源码走读：/mnt/user-data 虚拟路径映射（重点）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#841" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.4.1 一份路径，三种形态
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#842-pathmapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.4.2 正向解析：PathMapping 表
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#843" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.4.3 反向掩码：宿主路径永远不回到模型眼前
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#844" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.4.4 上传与产物在沙箱内外的同步行为
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#85-sandbox-bash" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.5 源码走读：Sandbox 接口与一次 bash 执行
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8.5 源码走读：Sandbox 接口与一次 bash 执行">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#851" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.5.1 接口契约与"会话语义"自白
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#852-execute_command" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.5.2 execute_command 的完整流水线
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#853" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.5.3 环境变量策略：默认擦除凭据
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#854-aio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.5.4 AIO 侧的对应实现
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#86-leasepy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.6 源码走读：租约机制（lease.py，重点）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8.6 源码走读：租约机制（lease.py，重点）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#861" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.6.1 问题：一个沙箱，多个持有者
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#862" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.6.2 持有者绑定与最后持有者释放
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#863" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.6.3 取消与清积压：重复取消不能撕裂生命周期
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#864-command_scopepy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.6.4 命令作用域（command_scope.py）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#87" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.7 源码走读：沙箱中间件、预热与授权门
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8.7 源码走读：沙箱中间件、预热与授权门">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#871-sandboxmiddleware-threadstate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.7.1 SandboxMiddleware：沙箱进入 ThreadState
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#872-prewarmpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.7.2 预热（prewarm.py）：投机性获取
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#873-sandboxexecute" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.7.3 授权门：sandbox:execute
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#88-provisioner-k8s" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.8 源码走读：Provisioner / K8s 模式
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#89-configyaml-sandbox" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.9 配置详解：config.yaml → sandbox: 段
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        动手实验：观察两种沙箱下的路径映射
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        常见坑
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        下一步
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="8">第 8 章 沙箱与代码执行<a class="headerlink" href="#8" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>进阶篇第 3 章。第 7 章我们看到了工具三来源里的 <code>bash</code>、<code>read_file</code>、<code>write_file</code>、
+<code>str_replace</code>、<code>ls</code>、<code>glob</code>、<code>grep</code>——这一组"文件与命令"工具全部跑在一个统一抽象
+<strong>Sandbox</strong> 之上。Agent 眼里的世界是 <code>/mnt/user-data/...</code> 这样的虚拟路径，而真实字节
+落在 <code>backend/.deer-flow/users/{user_id}/threads/{thread_id}/user-data/...</code> 的线程目录里；
+开发模式下它是宿主机的直接子进程，生产模式下它是 Docker 容器甚至 K8s Pod。
+这一章拆解这条"虚拟路径 → Provider → 真实执行环境"的完整链路。</p>
+</blockquote>
+<h2 id="_1">本章源码锚点<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>主题</th>
+<th>锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>沙箱模块总纲</td>
+<td><code>backend/packages/harness/deerflow/sandbox/AGENTS.md</code></td>
+</tr>
+<tr>
+<td>Provider 抽象与单例</td>
+<td><code>backend/packages/harness/deerflow/sandbox/sandbox_provider.py:17</code>、<code>sandbox_provider.py:222</code></td>
+</tr>
+<tr>
+<td>Sandbox 接口契约</td>
+<td><code>backend/packages/harness/deerflow/sandbox/sandbox.py:45</code></td>
+</tr>
+<tr>
+<td>执行租约</td>
+<td><code>backend/packages/harness/deerflow/sandbox/lease.py:180</code></td>
+</tr>
+<tr>
+<td>Local Provider</td>
+<td><code>backend/packages/harness/deerflow/sandbox/local/local_sandbox_provider.py:36</code></td>
+</tr>
+<tr>
+<td>Local Sandbox 实现</td>
+<td><code>backend/packages/harness/deerflow/sandbox/local/local_sandbox.py:331</code></td>
+</tr>
+<tr>
+<td>AIO Provider（Docker）</td>
+<td><code>backend/packages/harness/deerflow/community/aio_sandbox/aio_sandbox_provider.py</code></td>
+</tr>
+<tr>
+<td>AIO Sandbox 实现</td>
+<td><code>backend/packages/harness/deerflow/community/aio_sandbox/aio_sandbox.py</code></td>
+</tr>
+<tr>
+<td>沙箱中间件</td>
+<td><code>backend/packages/harness/deerflow/sandbox/middleware.py:56</code></td>
+</tr>
+<tr>
+<td>环境变量策略</td>
+<td><code>backend/packages/harness/deerflow/sandbox/env_policy.py:108</code></td>
+</tr>
+<tr>
+<td>命令范围（取消）</td>
+<td><code>backend/packages/harness/deerflow/sandbox/command_scope.py:32</code></td>
+</tr>
+<tr>
+<td>预热</td>
+<td><code>backend/packages/harness/deerflow/sandbox/prewarm.py:200</code></td>
+</tr>
+<tr>
+<td>产物快照</td>
+<td><code>backend/packages/harness/deerflow/sandbox/artifact_snapshot.py:135</code></td>
+</tr>
+<tr>
+<td>路径掩码规则</td>
+<td><code>backend/packages/harness/deerflow/sandbox/path_patterns.py:115</code></td>
+</tr>
+<tr>
+<td>沙箱工具层</td>
+<td><code>backend/packages/harness/deerflow/sandbox/tools.py:2112</code>、<code>tools.py:2834</code></td>
+</tr>
+<tr>
+<td>虚拟路径常量与目录</td>
+<td><code>backend/packages/harness/deerflow/config/paths.py:14</code>、<code>paths.py:364</code></td>
+</tr>
+<tr>
+<td>隔离范围令牌</td>
+<td><code>backend/packages/harness/deerflow/sandbox/identity.py:26</code></td>
+</tr>
+<tr>
+<td>config.yaml sandbox 段</td>
+<td><code>config.example.yaml:1732</code></td>
+</tr>
+<tr>
+<td>Provisioner 服务</td>
+<td><code>docker/provisioner/app.py</code>、<code>docker/provisioner/README.md</code></td>
+</tr>
+<tr>
+<td>路径类型示例文档</td>
+<td><code>backend/docs/PATH_EXAMPLES.md</code></td>
+</tr>
+<tr>
+<td>内存剖析方法论</td>
+<td><code>backend/docs/SANDBOX_MEMORY_PROFILING.md</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="80">8.0 学习目标<a class="headerlink" href="#80" title="Permanent link">&para;</a></h2>
+<p>读完本章，你应该能够：</p>
+<ol>
+<li>说清 <code>SandboxProvider</code> / <code>Sandbox</code> 两级抽象的职责边界，以及 <code>LocalSandboxProvider</code> 与
+   <code>AioSandboxProvider</code> 在隔离强度、路径映射实现和生命周期上的本质差异；</li>
+<li>走读 <code>/mnt/user-data/{workspace,uploads,outputs}</code> 虚拟路径的<strong>正向解析</strong>（命令/文件内容
+   → 宿主路径）与<strong>反向掩码</strong>（输出 → 虚拟路径）双向机制；</li>
+<li>解释执行租约（<code>SandboxLeaseManager</code>）如何协调 lead agent、子代理、Gateway 请求与
+   上传同步多个持有者，以及"最后一个持有者才释放"的语义；</li>
+<li>掌握 <code>config.yaml → sandbox:</code> 段每个配置键的作用，理解"生产必须容器沙箱"的安全理由；</li>
+<li>独立完成一次 local 与 docker 两种沙箱下的对照实验，观察路径映射与文件落盘位置。</li>
+</ol>
+<h2 id="81-agent">8.1 概念：Agent 的代码执行为什么需要一层沙箱<a class="headerlink" href="#81-agent" title="Permanent link">&para;</a></h2>
+<p>DeerFlow 的核心能力之一是让模型<strong>真的去执行</strong>：写一个 Python 脚本跑数据分析、调
+<code>pip</code> 装依赖、对上传的 Excel 做转换。这些操作天然危险——模型生成的代码不可信，
+而 Gateway 进程持有平台凭据（<code>OPENAI_API_KEY</code>、数据库连接串、tracing key……）。</p>
+<p>DeerFlow 的答案是把"执行"收拢在一个统一抽象后面：</p>
+<ul>
+<li><strong><code>SandboxProvider</code></strong>（<code>backend/packages/harness/deerflow/sandbox/sandbox_provider.py:17</code>）
+  回答"沙箱从哪来"：按 <code>user_id + thread_id</code> 获取/复用/释放一个执行环境；</li>
+<li><strong><code>Sandbox</code></strong>（<code>backend/packages/harness/deerflow/sandbox/sandbox.py:45</code>）回答"沙箱能做什么"：
+  <code>execute_command</code> / <code>read_file</code> / <code>write_file</code> / <code>download_file</code> / <code>list_dir</code> / <code>glob</code> /
+  <code>grep</code> / <code>update_file</code> 八个原语。</li>
+</ul>
+<p><code>docs/ARCHITECTURE.md</code> §6 把隔离模型写得很直白：<strong>生产环境应该用 Docker 的
+<code>AioSandboxProvider</code>；local 沙箱只是开发期的直接执行，不是安全边界</strong>。
+<code>security.py:10</code> 里甚至内置了一句面向操作者的提示：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">LOCAL_HOST_BASH_DISABLED_MESSAGE</span> <span class="o">=</span> <span class="p">(</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="s2">"Host bash execution is disabled for LocalSandboxProvider because it is not a secure "</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="s2">"sandbox boundary. Switch to AioSandboxProvider for isolated bash access, or set "</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="s2">"sandbox.allow_host_bash: true only in a fully trusted local environment."</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="p">)</span>
+</code></pre></div>
+<p>默认配置 <code>config.example.yaml:1733</code> 的 <code>use: deerflow.sandbox.local:LocalSandboxProvider</code>
+配合 <code>config.example.yaml:1737</code> 的 <code>allow_host_bash: false</code>：开箱状态下 local 沙箱<strong>没有
+bash 工具</strong>，只有文件读写类工具（它们走 <code>PathMapping</code> 边界）；想跑 shell 要么显式打开
+host bash（仅在完全可信的本机环境），要么切到 AIO 容器沙箱。</p>
+<p>一个容易忽略的点：DeerFlow 其实内置了<strong>六种</strong> Provider 实现，全部通过
+<code>sandbox.use</code> 这个"class path"字段装配（<code>sandbox_provider.py:242</code> 的
+<code>resolve_class(config.sandbox.use, SandboxProvider)</code>）：</p>
+<table>
+<thead>
+<tr>
+<th><code>sandbox.use</code></th>
+<th>隔离形态</th>
+<th>典型场景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>deerflow.sandbox.local:LocalSandboxProvider</code></td>
+<td>宿主进程直接执行</td>
+<td><code>make dev</code> 开发</td>
+</tr>
+<tr>
+<td><code>deerflow.community.aio_sandbox:AioSandboxProvider</code></td>
+<td>Docker / Apple Container 容器</td>
+<td>生产（本地容器）</td>
+</tr>
+<tr>
+<td>同上 + <code>provisioner_url</code></td>
+<td>K8s Pod（经 Provisioner 8002）</td>
+<td>生产（K8s）</td>
+</tr>
+<tr>
+<td><code>deerflow.community.e2b_sandbox:E2BSandboxProvider</code></td>
+<td>E2B 云端微 VM</td>
+<td>远程托管</td>
+</tr>
+<tr>
+<td><code>deerflow.community.boxlite:BoxliteProvider</code></td>
+<td>BoxLite micro-VM</td>
+<td>需要 KVM/HVF</td>
+</tr>
+<tr>
+<td><code>deerflow.community.opensandbox:OpenSandboxProvider</code> / <code>deerflow.community.tenki:TenkiSandboxProvider</code></td>
+<td>远程沙箱服务</td>
+<td>可选集成</td>
+</tr>
+</tbody>
+</table>
+<p>本章以默认的两个实现（Local / AIO）为主线，其余实现共享同一套抽象与租约机制。</p>
+<h2 id="82-provider">8.2 源码走读：Provider 抽象与进程级单例<a class="headerlink" href="#82-provider" title="Permanent link">&para;</a></h2>
+<h3 id="821-sandboxprovider">8.2.1 SandboxProvider 的五个生命周期方法<a class="headerlink" href="#821-sandboxprovider" title="Permanent link">&para;</a></h3>
+<p><code>backend/packages/harness/deerflow/sandbox/sandbox_provider.py:17</code> 起：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">SandboxProvider</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="sd">"""Abstract base class for sandbox providers"""</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="n">uses_thread_data_mounts</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="n">needs_upload_permission_adjustment</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="c1"># Capability for enforcing a lead Agent's physical skill view across the</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    <span class="c1"># provider's current Agent-accessible tool surface. Host-backed providers</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="c1"># must return False whenever shell access can bypass managed path mappings.</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    <span class="n">supports_agent_skill_isolation</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+</code></pre></div>
+<p>三个类级能力位值得逐个解释：</p>
+<ul>
+<li><code>uses_thread_data_mounts</code>：线程的 <code>workspace/uploads/outputs</code> 是否通过<strong>共享挂载</strong>
+  直接对容器可见。<code>LocalSandboxProvider</code> 置 <code>True</code>（<code>local_sandbox_provider.py:73</code>），
+  因为虚拟路径和宿主目录本就指向同一份文件；AIO 本地容器模式由后端自动检测，
+  远程/provisioner 模式默认 <code>False</code>——上传文件需要一次显式的 <code>acquire + sync</code>。</li>
+<li><code>supports_agent_skill_isolation</code>：能否为"显式声明了技能白名单的 Agent"物理隔离
+  <code>/mnt/skills</code> 视图。宿主型 Provider 只要 bash 能绕过路径映射就必须报 <code>False</code>，
+  <code>local_sandbox_provider.py:77</code> 的 property 正是这样实现的——它动态读取
+  <code>is_host_bash_allowed()</code>。</li>
+<li><code>needs_upload_permission_adjustment</code>：上传后是否需要调整沙箱内文件权限。</li>
+</ul>
+<p>核心方法签名（<code>sandbox_provider.py:31</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>    <span class="nd">@abstractmethod</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">acquire</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">thread_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>        <span class="s2">"""Acquire a sandbox environment and return its ID.</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="s2">        ...</span>
+</code></pre></div>
+<p><code>acquire</code> 只返回一个 <strong>sandbox_id 字符串</strong>；<code>get(sandbox_id)</code> 才返回可操作的
+<code>Sandbox</code> 对象。<code>get_scoped</code>（<code>sandbox_provider.py:89</code>）是身份安全的关键补充：
+"只有当这个 sandbox_id 确实属于当前 <code>(user_id, thread_id)</code> 时才返回客户端，
+否则返回 <code>None</code> 让调用方走规范 <code>acquire</code> 重建"。这防止了 checkpoint 里持久化的
+<code>sandbox_id</code> 被另一个身份的会话捡走复用。</p>
+<h3 id="822">8.2.2 带锁的单例装配<a class="headerlink" href="#822" title="Permanent link">&para;</a></h3>
+<p>Provider 是进程级单例，但构造函数是插件代码（可能很慢、可能有副作用、甚至可能重入
+生命周期函数），所以装配逻辑把"换引用"和"跑构造"拆开（<code>sandbox_provider.py:222</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">get_sandbox_provider</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SandboxProvider</span><span class="p">:</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="k">global</span> <span class="n">_default_sandbox_provider</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    <span class="c1"># Fast path: a single locked read so a concurrent reset/shutdown can't null</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="c1"># the global between the check and the return.</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="k">with</span> <span class="n">_provider_lock</span><span class="p">:</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>        <span class="k">if</span> <span class="n">_default_sandbox_provider</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>            <span class="k">return</span> <span class="n">_default_sandbox_provider</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>    <span class="c1"># Cold start. Resolve + construct outside the lock: the import and the</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>    <span class="c1"># provider constructor are plugin code and must not run under a non-reentrant</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>    <span class="c1"># lock. The construction may race another caller; we reconcile under the lock.</span>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>    <span class="n">config</span> <span class="o">=</span> <span class="n">get_app_config</span><span class="p">()</span>
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>    <span class="bp">cls</span> <span class="o">=</span> <span class="n">resolve_class</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">sandbox</span><span class="o">.</span><span class="n">use</span><span class="p">,</span> <span class="n">SandboxProvider</span><span class="p">)</span>
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>    <span class="n">provider</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>
+<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>    <span class="k">with</span> <span class="n">_provider_lock</span><span class="p">:</span>
+<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>        <span class="k">if</span> <span class="n">_default_sandbox_provider</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>            <span class="n">_default_sandbox_provider</span> <span class="o">=</span> <span class="n">provider</span>
+<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>            <span class="k">return</span> <span class="n">provider</span>
+<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>        <span class="c1"># We lost the install race: another thread got there first. ...</span>
+<a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>        <span class="n">winner</span> <span class="o">=</span> <span class="n">_default_sandbox_provider</span>
+<a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a>
+<a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a>    <span class="c1"># Discard the instance we just built (outside the lock). ...</span>
+<a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a>    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">provider</span><span class="p">,</span> <span class="s2">"shutdown"</span><span class="p">):</span>
+<a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a>        <span class="n">provider</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
+<a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a>    <span class="k">return</span> <span class="n">winner</span>
+</code></pre></div>
+<p>两个并发场景是这套设计的动因：Feishu 渠道线程跑着自己的事件循环，会与主循环同时
+首次触碰 Provider；AIO 的构造函数会启动 idle-checker 守护线程，输掉安装竞争的那份
+实例必须 <code>shutdown()</code> 掉，否则就是线程泄漏（源码注释指向 issue #3721）。</p>
+<p>另一个细节：<code>hold_sandbox_shutdown_ownership()</code>（<code>sandbox_provider.py:191</code>）让 Gateway
+lifespan 声明"由宿主负责关停"，在它内部构造的 Provider 跳过 SIGTERM/SIGINT 处理器——
+避免 Provider 的信号处理器和 uvicorn 的优雅退出互相踩踏。</p>
+<h2 id="83-local-vs-aio-provider">8.3 源码走读：Local vs Aio 两个 Provider（重点）<a class="headerlink" href="#83-local-vs-aio-provider" title="Permanent link">&para;</a></h2>
+<h3 id="831-localsandboxprovider">8.3.1 LocalSandboxProvider：每线程一个映射表<a class="headerlink" href="#831-localsandboxprovider" title="Permanent link">&para;</a></h3>
+<p><code>backend/packages/harness/deerflow/sandbox/local/local_sandbox_provider.py:36</code> 的类注释
+交代了它的演化：早期版本是全局单例 <code>id="local"</code>，但 <code>/mnt/user-data</code> 的宿主目录是
+<strong>按线程</strong>划分的，单例无法兑现文档承诺的路径契约。现在的实现是：</p>
+<ul>
+<li><code>acquire(thread_id)</code> 返回 <code>local:{user_id}:{thread_id}</code> 的每线程沙箱
+  （<code>_sandbox_id_for_thread</code>，<code>local_sandbox_provider.py:320</code>）；</li>
+<li><code>acquire(None)</code> 保留遗留的通用单例 <code>id="local"</code>，供没有线程上下文的调用方使用；</li>
+<li>每线程实例放进 <strong>LRU 缓存</strong>，默认 256 条（<code>DEFAULT_MAX_CACHED_THREAD_SANDBOXES</code>，
+  <code>local_sandbox_provider.py:33</code>），超限时最久未用条目被驱逐，下次 acquire 重建
+  （只损失用于反向解析的 <code>_agent_written_paths</code> 提示）。</li>
+</ul>
+<p><code>acquire</code> 的主体（<code>local_sandbox_provider.py:458</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">acquire</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">thread_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>        <span class="o">...</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>        <span class="n">effective_user_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_effective_acquire_user_id</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>        <span class="c1"># Runs on every acquire, including cache hits, to self-heal drift — ...</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>        <span class="n">skill_projection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ensure_skills_projection</span><span class="p">(</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>            <span class="n">effective_user_id</span><span class="p">,</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>            <span class="n">thread_id</span><span class="o">=</span><span class="n">thread_id</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">supports_agent_skill_isolation</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>        <span class="p">)</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>        <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_thread_key</span><span class="p">(</span><span class="n">thread_id</span><span class="p">,</span> <span class="n">effective_user_id</span><span class="p">)</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>        <span class="o">...</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>        <span class="n">new_mappings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_without_managed_skill_mappings</span><span class="p">(</span>
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>            <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path_mappings</span><span class="p">),</span>
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>            <span class="n">policy_scoped</span><span class="o">=</span><span class="n">policy_scoped</span><span class="p">,</span>
+<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>        <span class="p">)</span>
+<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>        <span class="n">new_mappings</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_thread_path_mappings</span><span class="p">(</span>
+<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>            <span class="n">thread_id</span><span class="p">,</span>
+<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>            <span class="n">user_id</span><span class="o">=</span><span class="n">effective_user_id</span><span class="p">,</span>
+<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a>            <span class="n">skill_projection</span><span class="o">=</span><span class="n">skill_projection</span><span class="p">,</span>
+<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a>        <span class="p">)</span>
+<a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a>
+<a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a>        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+<a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a>            <span class="n">cached</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_thread_sandboxes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+<a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a>            <span class="k">if</span> <span class="n">cached</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">cached</span><span class="o">.</span><span class="n">path_mappings</span> <span class="o">!=</span> <span class="n">new_mappings</span><span class="p">:</span>
+<a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a>                <span class="n">replacement</span> <span class="o">=</span> <span class="n">LocalSandbox</span><span class="p">(</span>
+<a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">_sandbox_id_for_thread</span><span class="p">(</span><span class="n">thread_id</span><span class="p">,</span> <span class="n">effective_user_id</span><span class="p">),</span>
+<a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a>                    <span class="n">path_mappings</span><span class="o">=</span><span class="n">new_mappings</span><span class="p">,</span>
+<a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a>                    <span class="n">environment</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_environment</span><span class="p">,</span>
+<a id="__codelineno-4-28" name="__codelineno-4-28" href="#__codelineno-4-28"></a>                <span class="p">)</span>
+<a id="__codelineno-4-29" name="__codelineno-4-29" href="#__codelineno-4-29"></a>                <span class="k">if</span> <span class="n">cached</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-4-30" name="__codelineno-4-30" href="#__codelineno-4-30"></a>                    <span class="n">replacement</span><span class="o">.</span><span class="n">_agent_written_paths</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">cached</span><span class="o">.</span><span class="n">_agent_written_paths</span><span class="p">)</span>
+<a id="__codelineno-4-31" name="__codelineno-4-31" href="#__codelineno-4-31"></a>                <span class="n">cached</span> <span class="o">=</span> <span class="n">replacement</span>
+<a id="__codelineno-4-32" name="__codelineno-4-32" href="#__codelineno-4-32"></a>                <span class="bp">self</span><span class="o">.</span><span class="n">_thread_sandboxes</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">cached</span>
+<a id="__codelineno-4-33" name="__codelineno-4-33" href="#__codelineno-4-33"></a>                <span class="bp">self</span><span class="o">.</span><span class="n">_evict_until_within_cap_locked</span><span class="p">()</span>
+<a id="__codelineno-4-34" name="__codelineno-4-34" href="#__codelineno-4-34"></a>            <span class="k">else</span><span class="p">:</span>
+<a id="__codelineno-4-35" name="__codelineno-4-35" href="#__codelineno-4-35"></a>                <span class="bp">self</span><span class="o">.</span><span class="n">_thread_sandboxes</span><span class="o">.</span><span class="n">move_to_end</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+<a id="__codelineno-4-36" name="__codelineno-4-36" href="#__codelineno-4-36"></a>            <span class="k">return</span> <span class="n">cached</span><span class="o">.</span><span class="n">id</span>
+</code></pre></div>
+<p>三个值得注意的行为：</p>
+<ol>
+<li><strong>每次 acquire 都重建映射表再与缓存比对</strong>：技能投影、自定义挂载变化会在下一次
+   acquire 时自动生效（<code>cached.path_mappings != new_mappings</code> 触发替换）；</li>
+<li><code>_agent_written_paths</code>（Agent 写过哪些文件的反向解析提示）跨替换保留；</li>
+<li><code>release()</code> 是<strong>故意空实现</strong>（<code>local_sandbox_provider.py:578</code>）——LocalSandbox 没有需要
+   释放的外部资源，保留缓存实例让跨轮次复用成立，真正清理只发生在 LRU 驱逐和
+   <code>reset()</code>。</li>
+</ol>
+<h3 id="832-aiosandboxprovider">8.3.2 AioSandboxProvider：容器 + 温热池 + 跨实例所有权<a class="headerlink" href="#832-aiosandboxprovider" title="Permanent link">&para;</a></h3>
+<p>AIO（<code>backend/packages/harness/deerflow/community/aio_sandbox/aio_sandbox_provider.py</code>，
+约 3000 行）把同一套抽象落到了 Docker 上。三个关键机制：</p>
+<p><strong>（1）确定性容器标识。</strong> 容器/Pod 的身份由
+<code>derive_sandbox_scope_token(user_id, thread_id)</code>（<code>sandbox/identity.py:26</code>）决定：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">derive_sandbox_scope_token</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">thread_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    <span class="k">return</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">user_id</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">thread_id</span><span class="si">}</span><span class="s2">"</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()[:</span><span class="n">_TOKEN_HEX_LEN</span><span class="p">]</span>
+</code></pre></div>
+<p><code>sha256("{user_id}:{thread_id}")[:16]</code> 是一个<strong>兼容性契约</strong>：AIO、E2B、BoxLite、Tenki、
+OpenSandbox 都靠它找回已存在的容器/VM。模块注释明确警告——改动分隔符、摘要、
+大小写或截断长度都是破坏性迁移，已有远程资源会全部"失联"然后冷启动。</p>
+<p><strong>（2）温热池（warm pool）。</strong> <code>release</code> 不销毁容器，而是把它放回 <code>_warm_pool</code>
+（<code>aio_sandbox_provider.py:276</code>），同一 <code>(user_id, thread_id)</code> 的下一轮对话直接"回收"
+（<code>_reclaim_warm_pool_sandbox</code>，<code>aio_sandbox_provider.py:1827</code>），省掉数秒的容器冷启动。
+共享的 <code>WarmPoolLifecycleMixin</code>（<code>community/warm_pool_lifecycle.py</code>）提供默认参数：
+<code>DEFAULT_IDLE_TIMEOUT=600</code> 秒、<code>IDLE_CHECK_INTERVAL=60</code> 秒、<code>DEFAULT_REPLICAS=3</code>，
+空闲检查器按 <code>idle_timeout</code> 过期温热条目、按 <code>replicas</code> 驱逐最旧的温热 VM。</p>
+<p><strong>（3）跨实例所有权（issue #4206）。</strong> 多个 Gateway 实例共享一个 Docker 后端时，
+"谁可以回收这个容器"需要协调。<code>sandbox.ownership.type: memory | redis</code>
+（<code>config.example.yaml:1893</code>）选择租约存储；Redis 模式下 <code>take()</code>（acquire 路径转移
+所有权）与 <code>claim()</code>（adopt/reap 路径，仅在无主或已归我时成功）分离，<code>del:</code> 租约状态
+在销毁窗口内挡住新持有者。配置注释（<code>config.example.yaml:1879</code>）写明：<strong>多实例部署
+必须设 <code>type: redis</code></strong>；Docker Compose 已设置 <code>DEER_FLOW_STREAM_BRIDGE_REDIS_URL</code>，
+会被自动推断为多实例并启用 Redis 所有权。单实例用默认 <code>memory</code> 即可——它声明
+<code>supports_cross_process = False</code>，明示"看不见对端"。</p>
+<h3 id="833">8.3.3 挂载计算的对称性<a class="headerlink" href="#833" title="Permanent link">&para;</a></h3>
+<p>AIO 在<strong>容器创建时</strong>就把线程目录挂到同样的虚拟路径（<code>aio_sandbox_provider.py:1101</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>    <span class="nd">@staticmethod</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_get_thread_mounts</span><span class="p">(</span><span class="n">thread_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]:</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">        </span><span class="sd">"""Get volume mounts for a thread's data directories."""</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>        <span class="o">...</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>            <span class="p">(</span><span class="n">paths</span><span class="o">.</span><span class="n">host_sandbox_work_dir</span><span class="p">(</span><span class="n">thread_id</span><span class="p">,</span> <span class="n">user_id</span><span class="o">=</span><span class="n">effective_user_id</span><span class="p">),</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">VIRTUAL_PATH_PREFIX</span><span class="si">}</span><span class="s2">/workspace"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>            <span class="p">(</span><span class="n">paths</span><span class="o">.</span><span class="n">host_sandbox_uploads_dir</span><span class="p">(</span><span class="n">thread_id</span><span class="p">,</span> <span class="n">user_id</span><span class="o">=</span><span class="n">effective_user_id</span><span class="p">),</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">VIRTUAL_PATH_PREFIX</span><span class="si">}</span><span class="s2">/uploads"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>            <span class="p">(</span><span class="n">paths</span><span class="o">.</span><span class="n">host_sandbox_outputs_dir</span><span class="p">(</span><span class="n">thread_id</span><span class="p">,</span> <span class="n">user_id</span><span class="o">=</span><span class="n">effective_user_id</span><span class="p">),</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">VIRTUAL_PATH_PREFIX</span><span class="si">}</span><span class="s2">/outputs"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+</code></pre></div>
+<p>这就是 AGENTS.md 那句总结的出处："AIO has the directories volume-mounted at the same
+virtual paths inside its container, so both implementations accept <code>/mnt/user-data/...</code>
+natively"。两个 Provider 对外的路径契约完全一致，差异只在<strong>映射发生的位置</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>LocalSandboxProvider</th>
+<th>AioSandboxProvider</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>隔离边界</td>
+<td>无（宿主子进程，仅路径映射）</td>
+<td>Docker 容器 / K8s Pod / 远程 VM</td>
+</tr>
+<tr>
+<td>sandbox_id 形态</td>
+<td><code>local:{user_id}:{thread_id}</code></td>
+<td>16 位 hex scope token 派生</td>
+</tr>
+<tr>
+<td>路径映射</td>
+<td>Python 内 <code>PathMapping</code> 表，逐调用解析翻译</td>
+<td>容器 volume 挂载，内核级</td>
+</tr>
+<tr>
+<td>bash 执行</td>
+<td>默认禁用（<code>allow_host_bash</code> 显式打开）</td>
+<td>容器内 bash，支持服务端 hard_timeout</td>
+</tr>
+<tr>
+<td>release 语义</td>
+<td>no-op（LRU 缓存常驻）</td>
+<td>回收进温热池 / 归还所有权</td>
+</tr>
+<tr>
+<td>跨实例协调</td>
+<td>不需要</td>
+<td><code>ownership: memory/redis</code> 租约</td>
+</tr>
+<tr>
+<td>shell 会话</td>
+<td>每条命令新进程（<code>persistent_shell_sessions = False</code>）</td>
+<td>持久 PTY 会话（<code>persistent_shell_sessions = True</code>）</td>
+</tr>
+</tbody>
+</table>
+<h2 id="84-mntuser-data">8.4 源码走读：/mnt/user-data 虚拟路径映射（重点）<a class="headerlink" href="#84-mntuser-data" title="Permanent link">&para;</a></h2>
+<h3 id="841">8.4.1 一份路径，三种形态<a class="headerlink" href="#841" title="Permanent link">&para;</a></h3>
+<p><code>backend/docs/PATH_EXAMPLES.md</code> 把路径分为三类（节选自其第 9–53 行的表格化描述）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>实际文件系统路径 path:      {DEER_FLOW_HOME}/users/{user_id}/threads/{thread_id}/user-data/uploads/document.pdf
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>虚拟路径 virtual_path:      /mnt/user-data/uploads/document.pdf
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>HTTP 访问 URL artifact_url: /api/threads/{thread_id}/artifacts/mnt/user-data/uploads/document.pdf
+</code></pre></div>
+<p>常量定义在 <code>backend/packages/harness/deerflow/config/paths.py:14</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">VIRTUAL_PATH_PREFIX</span> <span class="o">=</span> <span class="s2">"/mnt/user-data"</span>
+</code></pre></div>
+<p>宿主目录的推导集中在同文件的几个 helper（<code>paths.py:364</code>–<code>paths.py:442</code>），例如：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">sandbox_uploads_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">thread_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">        </span><span class="sd">"""</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="sd">        Host path for user-uploaded files.</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="sd">        Host: `{base_dir}/threads/{thread_id}/user-data/uploads/`</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="sd">        Sandbox: `/mnt/user-data/uploads/`</span>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="sd">        """</span>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread_dir</span><span class="p">(</span><span class="n">thread_id</span><span class="p">,</span> <span class="n">user_id</span><span class="o">=</span><span class="n">user_id</span><span class="p">)</span> <span class="o">/</span> <span class="s2">"user-data"</span> <span class="o">/</span> <span class="s2">"uploads"</span>
+</code></pre></div>
+<p><code>base_dir</code> 即 <code>DEER_FLOW_HOME</code>（默认 <code>backend/.deer-flow</code>）。注意 <code>paths.py:344</code> 的
+<code>thread_dir</code>：带 <code>user_id</code> 时走 <code>users/{user_id}/threads/{thread_id}</code>，不带时走
+<code>threads/{thread_id}</code>——<strong>上传桶按用户分桶</strong>，这正是 IM 渠道多租户场景的基础。</p>
+<h3 id="842-pathmapping">8.4.2 正向解析：PathMapping 表<a class="headerlink" href="#842-pathmapping" title="Permanent link">&para;</a></h3>
+<p>LocalSandbox 持有一组 <code>PathMapping</code>（<code>local/local_sandbox.py:264</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="k">class</span><span class="w"> </span><span class="nc">PathMapping</span><span class="p">:</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">    </span><span class="sd">"""A path mapping from a container path to a local path with optional read-only flag."""</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>    <span class="n">container_path</span><span class="p">:</span> <span class="nb">str</span>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>    <span class="n">local_path</span><span class="p">:</span> <span class="nb">str</span>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>    <span class="n">read_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+</code></pre></div>
+<p>每线程映射表由 <code>_build_thread_path_mappings</code>（<code>local_sandbox_provider.py:334</code>）构建，
+覆盖五个虚拟根：<code>/mnt/user-data</code>（聚合父映射）、<code>.../workspace</code>、<code>.../uploads</code>、
+<code>.../outputs</code>、<code>/mnt/acp-workspace</code>，再叠加技能投影挂载与 <code>sandbox.mounts</code> 自定义挂载。
+解析时<strong>最长前缀优先</strong>（<code>local/local_sandbox.py:583</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_find_path_mapping</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">PathMapping</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>        <span class="n">path_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>        <span class="k">for</span> <span class="n">mapping</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mappings_by_container_specificity</span><span class="p">:</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>            <span class="n">container_path</span> <span class="o">=</span> <span class="n">mapping</span><span class="o">.</span><span class="n">container_path</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">"/"</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">"/"</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>            <span class="k">if</span> <span class="n">container_path</span> <span class="o">==</span> <span class="s2">"/"</span><span class="p">:</span>
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>                <span class="k">if</span> <span class="n">path_str</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"/"</span><span class="p">):</span>
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>                    <span class="k">return</span> <span class="n">mapping</span><span class="p">,</span> <span class="n">path_str</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">"/"</span><span class="p">)</span>
+<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>                <span class="k">continue</span>
+<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>
+<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a>            <span class="k">if</span> <span class="n">path_str</span> <span class="o">==</span> <span class="n">container_path</span> <span class="ow">or</span> <span class="n">path_str</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">container_path</span> <span class="o">+</span> <span class="s2">"/"</span><span class="p">):</span>
+<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a>                <span class="n">relative</span> <span class="o">=</span> <span class="n">path_str</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">container_path</span><span class="p">)</span> <span class="p">:]</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">"/"</span><span class="p">)</span>
+<a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a>                <span class="k">return</span> <span class="n">mapping</span><span class="p">,</span> <span class="n">relative</span>
+<a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a>
+<a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a>        <span class="k">return</span> <span class="kc">None</span>
+</code></pre></div>
+<p>随后 <code>_resolve_path_with_mapping</code>（<code>local_sandbox.py:599</code>）做两件安全事务：
+<code>os.path.realpath</code> 消解符号链接，再用 <code>commonpath</code> 检查解析结果没有逃出挂载根
+（<code>local_sandbox.py:622</code> 的 <code>PermissionError(errno.EACCES, "Access denied: path escapes
+mounted directory", path_str)</code>）——<code>..</code> 目录穿越和"挂在uploads里的软链接指向 uploads 外"
+都在这里被拒。</p>
+<h3 id="843">8.4.3 反向掩码：宿主路径永远不回到模型眼前<a class="headerlink" href="#843" title="Permanent link">&para;</a></h3>
+<p>Agent 跑 <code>python /mnt/user-data/workspace/x.py</code>，脚本里 <code>print(os.getcwd())</code>——输出是
+宿主真实路径。若原样返回模型，下一步它就会拿着宿主路径调工具（解析失败），更糟的是
+泄露了服务器目录结构。所以 <code>execute_command</code> 的最后一步是反向解析
+（<code>local/local_sandbox.py:964</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>        <span class="n">final_output</span> <span class="o">=</span> <span class="n">output</span> <span class="k">if</span> <span class="n">output</span> <span class="k">else</span> <span class="s2">"(no output)"</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>        <span class="c1"># Reverse resolve local paths back to container paths in output</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reverse_resolve_paths_in_output</span><span class="p">(</span><span class="n">final_output</span><span class="p">)</span>
+</code></pre></div>
+<p>底层扫描器 <code>replace_output_path_matches</code>（<code>sandbox/path_patterns.py:115</code>）的规则值得
+读一遍注释（<code>path_patterns.py:42</code>–<code>path_patterns.py:73</code>）：</p>
+<ul>
+<li><code>_SEGMENT_BOUNDARY</code>：宿主根必须结束在<strong>真实路径段边界</strong>，防止 <code>.../skills</code> 匹配进
+  <code>.../skills-extra</code>；</li>
+<li><code>PATH_START_BOUNDARY</code>：左侧镜像——根不能是一个更长路径的中段，否则
+  <code>/mnt/user-data</code> 会错误命中 artifact URL <code>.../artifacts/mnt/user-data/...</code>；</li>
+<li><code>_PATH_TAIL</code> 在 <code>:</code> 处停止，否则 <code>$PATH</code> 这类冒号连接的列表会把后续每个条目都
+  整段带进同一个根下返回给模型。</li>
+</ul>
+<p>这个模块存在的原因也写在注释里：<code>LocalSandbox</code> 与 <code>sandbox/tools.py</code> 是两个独立调用点，
+历史上各自维护一份匹配规则并两次漂移（#4035、#4053），现在收敛为单一实现。
+工具层还有第三道防线 <code>mask_local_paths_in_output</code>（<code>sandbox/tools.py:863</code>）与
+<code>replace_virtual_path</code>（<code>sandbox/tools.py:755</code>）——<code>tools.py</code> 把它们定位为
+"defense-in-depth 层以及路径校验"。</p>
+<h3 id="844">8.4.4 上传与产物在沙箱内外的同步行为<a class="headerlink" href="#844" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong><code>thread_data_mounts=True</code></strong>（Local、本地 AIO 容器默认）：上传 API 写完线程目录后
+  沙箱"天然可见"，无需同步。AIO 侧由后端自动检测，<code>sandbox.thread_data_mounts</code>
+  （<code>config.example.yaml:1836</code>）可显式覆盖。</li>
+<li><strong><code>thread_data_mounts=False</code> 或远程 Provider</strong>：每次上传后 Gateway 调
+  <code>SandboxProvider.acquire_async()</code> + <code>sandbox.update_file()</code> 把文件推入沙箱
+  （见 <code>backend/AGENTS.md</code> File Upload 节的约定）。</li>
+<li><strong>反向</strong>：Agent 在容器内写 <code>/mnt/user-data/outputs/report.html</code>，本地容器模式同样
+  天然落盘；远程模式靠产物回收管线。<code>artifact_snapshot.py</code> 为此实现了一个
+  <strong>描述符受限的 POSIX 协议</strong>：<code>publish_snapshot</code>（<code>artifact_snapshot.py:135</code>）先用
+  <code>O_NOFOLLOW</code> + <code>fstat</code> 身份戳分块 append 到临时文件，再以 sha256/size 双校验
+  <code>os.link</code> 原子发布——单文件上限 <code>MAX_BYTES = 2 * 1024 * 1024</code>（<code>artifact_snapshot.py:16</code>），
+  确认"远端文件在传输期间没有被掉包"才允许覆盖已有文件。</li>
+</ul>
+<h2 id="85-sandbox-bash">8.5 源码走读：Sandbox 接口与一次 bash 执行<a class="headerlink" href="#85-sandbox-bash" title="Permanent link">&para;</a></h2>
+<h3 id="851">8.5.1 接口契约与"会话语义"自白<a class="headerlink" href="#851" title="Permanent link">&para;</a></h3>
+<p><code>backend/packages/harness/deerflow/sandbox/sandbox.py:68</code> 声明了一个特殊的三态字段：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>    <span class="c1">#: Whether ``execute_command`` reuses one persistent shell session across</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>    <span class="c1">#: calls (shell state — exports, cwd, functions — survives from one call</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>    <span class="c1">#: into the next). When True, a recorded command's environment cannot be</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>    <span class="c1">#: proven clean from the command text alone, so evidence consumers (the</span>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>    <span class="c1">#: acceptance checklist's ``tests_passed`` matcher) must treat recorded</span>
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>    <span class="c1">#: bash evidence as untrusted and degrade to UNVERIFIED.</span>
+<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a>    <span class="c1">#:</span>
+<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>    <span class="c1">#: Tri-state, failing closed: ``None`` (the default) means the</span>
+<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a>    <span class="c1">#: implementation has NOT declared its session semantics — ...</span>
+<a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a>    <span class="n">persistent_shell_sessions</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</code></pre></div>
+<p><code>LocalSandbox.persistent_shell_sessions = False</code>（<code>local_sandbox.py:358</code>——每条命令都是
+<code>subprocess.run([shell, "-c", ...])</code> 新进程），<code>AioSandbox.persistent_shell_sessions = True</code>
+（<code>aio_sandbox.py:73</code>——复用容器内 PTY 会话）。这个字段会被第 9 章的验收检查消费：
+一条"测试通过"的证据如果产自状态不可信的持久会话，只能降级为 UNVERIFIED。
+自定义 Provider 忘了声明？三态默认 <code>None</code> 按"未声明"处理，同样失败闭合。</p>
+<h3 id="852-execute_command">8.5.2 execute_command 的完整流水线<a class="headerlink" href="#852-execute_command" title="Permanent link">&para;</a></h3>
+<p><code>LocalSandbox.execute_command</code>（<code>local/local_sandbox.py:844</code>）串起了本章前半部分的所有
+机制，节选关键段：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>        <span class="n">_validate_extra_env</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>        <span class="c1"># Resolve container paths in command before execution</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>        <span class="n">shell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_shell</span><span class="p">()</span>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>        <span class="n">resolved_command</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_paths_in_command</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="n">shell</span><span class="p">)</span>
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>        <span class="k">if</span> <span class="n">timeout</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>            <span class="n">timeout</span> <span class="o">=</span> <span class="n">DEFAULT_COMMAND_TIMEOUT_SECONDS</span>
+<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>
+<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>        <span class="c1"># Inherit os.environ minus platform secrets, then layer injected</span>
+<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a>        <span class="c1"># request-scoped secrets on top (#3861). ...</span>
+<a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a>        <span class="n">injected</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">environment</span><span class="p">,</span> <span class="o">**</span><span class="p">(</span><span class="n">env</span> <span class="ow">or</span> <span class="p">{})}</span>
+<a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a>        <span class="n">sandbox_env</span> <span class="o">=</span> <span class="n">build_sandbox_env</span><span class="p">(</span><span class="n">injected</span><span class="p">)</span>
+</code></pre></div>
+<p>五个步骤依次是：</p>
+<ol>
+<li><code>_validate_extra_env</code>：校验注入 env 的键名符合 POSIX 规则
+   <code>^[A-Za-z_][A-Za-z0-9_]*$</code>（<code>sandbox.py:15</code>），这是契约层的纵深防御——今天本地
+   实现用 <code>subprocess.run(env=...)</code> 不经 shell，但 AIO 实现会把键拼进
+   <code>export &lt;k&gt;=&lt;v&gt;</code>，统一在抽象层拒绝注入向量；</li>
+<li><code>_resolve_paths_in_command</code>：把命令文本里的 <code>/mnt/user-data/...</code> 翻译成宿主路径
+   （PowerShell 还要经过 <code>escape_powershell_path</code> 的引号上下文转义，
+   <code>local_sandbox.py:281</code>）；</li>
+<li><code>build_sandbox_env</code>：环境变量策略（下节）；</li>
+<li>按 shell 分派运行器：Windows 上 PowerShell/cmd/Git Bash 三条分支各自处理编码
+   （UTF-8 前导 + locale 回退解码，<code>local_sandbox.py:877</code>–<code>local_sandbox.py:942</code>），
+   POSIX 走 <code>_run_posix_command</code>；管道由有界排水线程读取（<code>_BoundedPipeCapture</code>，
+   捕获上限 10 MiB），stdin 立即 EOF；</li>
+<li>超时与非零退出都<strong>显式落状态标记</strong>（<code>local_sandbox.py:952</code>）：</li>
+</ol>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>        <span class="k">if</span> <span class="n">timed_out</span><span class="p">:</span>
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>            <span class="n">notice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format_timeout_notice</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>            <span class="n">output</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="si">{</span><span class="n">notice</span><span class="si">}</span><span class="s2">"</span> <span class="k">if</span> <span class="n">output</span> <span class="k">else</span> <span class="n">notice</span>
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>            <span class="c1"># A timeout is a failed execution: mark it authoritatively (the</span>
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>            <span class="c1"># coreutils ``timeout`` convention) so exit-status evidence</span>
+<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>            <span class="c1"># consumers cannot read partial output as success.</span>
+<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>            <span class="n">output</span> <span class="o">+=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">Exit Code: 124"</span>
+<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>        <span class="k">elif</span> <span class="n">returncode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+<a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a>            <span class="n">output</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Exit Code: </span><span class="si">{</span><span class="n">returncode</span><span class="si">}</span><span class="s2">"</span>
+</code></pre></div>
+<p>默认命令超时 <code>DEFAULT_COMMAND_TIMEOUT_SECONDS = 600</code>（<code>local_sandbox.py:38</code>），可被
+<code>config.example.yaml:1780</code> 的 <code>sandbox.bash_command_timeout: 600</code> 按 Provider 透传覆盖。</p>
+<h3 id="853">8.5.3 环境变量策略：默认擦除凭据<a class="headerlink" href="#853" title="Permanent link">&para;</a></h3>
+<p><code>backend/packages/harness/deerflow/sandbox/env_policy.py</code> 解决一个静默漏洞：子进程默认
+继承 <code>os.environ</code>，而里面躺着平台凭据——技能脚本只要 <code>os.environ.get("OPENAI_API_KEY")</code>
+就能把密钥抄走。策略是<strong>默认擦除，白名单保留</strong>（<code>env_policy.py:108</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">build_sandbox_env</span><span class="p">(</span><span class="n">injected</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">    </span><span class="sd">"""Build the environment dict for a sandbox subprocess.</span>
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="sd">    Inherits ``os.environ`` minus any secret-looking variables, then layers the</span>
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="sd">    explicitly injected request-scoped secrets on top. An injected secret wins</span>
+<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="sd">    even if its name matches a blocked pattern, because injection is authorized</span>
+<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="sd">    upstream (the skill declared it and the value came from the request, not from</span>
+<a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a><span class="sd">    the host environment).</span>
+<a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a><span class="sd">    """</span>
+<a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a>    <span class="n">env</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">value</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">is_blocked_env_name</span><span class="p">(</span><span class="n">key</span><span class="p">)}</span>
+<a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a>    <span class="k">if</span> <span class="n">injected</span><span class="p">:</span>
+<a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a>        <span class="n">env</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">injected</span><span class="p">)</span>
+<a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a>    <span class="k">return</span> <span class="n">env</span>
+</code></pre></div>
+<p><code>is_blocked_env_name</code>（<code>env_policy.py:99</code>）由两组规则构成：</p>
+<ul>
+<li>通配模式（<code>env_policy.py:24</code>）：<code>*KEY*</code>、<code>*SECRET*</code>、<code>*TOKEN*</code>、<code>*PASS*</code>、
+  <code>*CREDENTIAL*</code>、<code>*DSN*</code>——注意 <code>*PASS*</code> 连 <code>GIT_ASKPASS</code>、<code>SSH_ASKPASS</code> 这种
+  "指向凭据的程序名"也一起擦掉；</li>
+<li>精确名单（<code>env_policy.py:66</code>）：<code>DATABASE_URL</code>、<code>MYSQL_PWD</code>、<code>REDISCLI_AUTH</code>、
+  <code>SSH_AUTH_SOCK</code>、<code>PGSERVICEFILE</code> 等不含关键子串但必然携带凭据的名字。</li>
+</ul>
+<p><code>PATH</code>、<code>HOME</code>、<code>LANG</code>、<code>VIRTUAL_ENV</code>、<code>PWD</code> 这些良性变量天然不含上述 token 而得以
+保留。操作者可通过 <code>sandbox.environment</code>（<code>config.example.yaml:1851</code> 附近的示例段）
+注入显式变量，<code>$VAR</code> 形式在配置加载期解析；显式注入<strong>穿透擦除</strong>，因为它是操作者
+授权的通道。</p>
+<h3 id="854-aio">8.5.4 AIO 侧的对应实现<a class="headerlink" href="#854-aio" title="Permanent link">&para;</a></h3>
+<p>AioSandbox 的命令执行有两套传输：</p>
+<ul>
+<li><strong>持久 shell 会话</strong>（<code>/v1/shell</code> PTY）：<code>execute_command_in_scope</code>（<code>aio_sandbox.py:584</code>）
+  为每个 <code>scope_id</code> 维持一条服务端会话——scope 内命令串行、不同子代理的 scope 并发；
+  会话遇 <code>ErrorObservation</code> 污染、404 或传输错误时旋转重建；</li>
+<li><strong>fresh <code>bash.exec</code></strong>（<code>/v1/bash/exec</code>）：凡是携带 <code>env</code> 的命令走这条新会话通道
+  （<code>aio_sandbox.py:1097</code> 的 <code>_run_bash_exec</code>），保证密钥不残留进持久会话。老镜像
+  （<code>latest</code> 冻结在 1.0.0.x）没有这个 API，<code>aio_sandbox.py:30</code> 的
+  <code>_BASH_EXEC_UNSUPPORTED_ERROR</code> 会给出"升级到 all-in-one-sandbox &gt;= 1.9.3（推荐
+  1.11.0）"的可操作报错而不是让模型盲目重试。</li>
+</ul>
+<h2 id="86-leasepy">8.6 源码走读：租约机制（lease.py，重点）<a class="headerlink" href="#86-leasepy" title="Permanent link">&para;</a></h2>
+<h3 id="861">8.6.1 问题：一个沙箱，多个持有者<a class="headerlink" href="#861" title="Permanent link">&para;</a></h3>
+<p>一条线程的生命周期里会同时出现多个"正在使用沙箱"的执行：lead agent 本轮 run、
+并行的子代理、Gateway 的上传/产物同步请求、fork 恢复出的子执行。如果谁用完谁
+<code>release</code>，lead agent 还在跑的沙箱就会被子代理提前回收。<code>sandbox/lease.py:1</code> 的模块
+docstring 一句话讲清解法：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>Provider ownership stores answer which Gateway instance may reap a remote
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>sandbox.  This module answers a different question: which concurrently running
+<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>agent executions inside one Gateway are still using the provider's active
+<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>client.  The last execution lease is the only one allowed to call
+<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>``SandboxProvider.release``.
+</code></pre></div>
+<p>注意两套"租约"的分工：<strong>Provider ownership store</strong>（8.3.2 的 redis/memory）回答
+"哪个 Gateway 实例可以回收容器"，是跨实例的；<strong><code>SandboxLeaseManager</code></strong>（
+<code>lease.py:180</code>）回答"本进程内哪些执行还在用这个客户端"，是进程内的。</p>
+<h3 id="862">8.6.2 持有者绑定与最后持有者释放<a class="headerlink" href="#862" title="Permanent link">&para;</a></h3>
+<p><code>ensure_sandbox_lease_owner</code>（<code>lease.py:780</code>）在运行时 context 里创建一个临时
+owner id（<code>f"agent:{uuid4()}"</code>）；子代理则由执行器注入更稳定的
+<code>f"subagent:{task_id}"</code>（见第 9 章 <code>executor.py:1734</code>）。<code>release</code> 的核心逻辑
+（<code>lease.py:678</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">release</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="w">        </span><span class="sd">"""Release one execution and park the sandbox only after the last user."""</span>
+<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metadata_lock</span><span class="p">:</span>
+<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>            <span class="n">binding</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bindings_by_owner</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">owner_id</span><span class="p">)</span>
+<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>        <span class="k">if</span> <span class="n">binding</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a>            <span class="k">return</span>
+<a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a>
+<a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a>        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_serializer</span><span class="o">.</span><span class="n">hold</span><span class="p">(</span><span class="n">binding</span><span class="o">.</span><span class="n">thread_key</span><span class="p">):</span>
+<a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a>            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metadata_lock</span><span class="p">:</span>
+<a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a>                <span class="n">current</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bindings_by_owner</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">owner_id</span><span class="p">)</span>
+<a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a>                <span class="k">if</span> <span class="n">current</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-18-12" name="__codelineno-18-12" href="#__codelineno-18-12"></a>                    <span class="k">return</span>
+<a id="__codelineno-18-13" name="__codelineno-18-13" href="#__codelineno-18-13"></a>                <span class="n">binding</span> <span class="o">=</span> <span class="n">current</span>
+<a id="__codelineno-18-14" name="__codelineno-18-14" href="#__codelineno-18-14"></a>            <span class="k">try</span><span class="p">:</span>
+<a id="__codelineno-18-15" name="__codelineno-18-15" href="#__codelineno-18-15"></a>                <span class="n">sandbox</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_provider</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">binding</span><span class="o">.</span><span class="n">sandbox_id</span><span class="p">)</span>
+<a id="__codelineno-18-16" name="__codelineno-18-16" href="#__codelineno-18-16"></a>                <span class="k">if</span> <span class="n">sandbox</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-18-17" name="__codelineno-18-17" href="#__codelineno-18-17"></a>                    <span class="n">sandbox</span><span class="o">.</span><span class="n">release_command_scope</span><span class="p">(</span><span class="n">owner_id</span><span class="p">)</span>
+<a id="__codelineno-18-18" name="__codelineno-18-18" href="#__codelineno-18-18"></a>            <span class="k">finally</span><span class="p">:</span>
+<a id="__codelineno-18-19" name="__codelineno-18-19" href="#__codelineno-18-19"></a>                <span class="c1"># Scope cleanup still uses the client: keep the holder until</span>
+<a id="__codelineno-18-20" name="__codelineno-18-20" href="#__codelineno-18-20"></a>                <span class="c1"># it drains, then atomically decide whether parking is pending.</span>
+<a id="__codelineno-18-21" name="__codelineno-18-21" href="#__codelineno-18-21"></a>                <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metadata_lock</span><span class="p">:</span>
+<a id="__codelineno-18-22" name="__codelineno-18-22" href="#__codelineno-18-22"></a>                    <span class="n">binding</span><span class="p">,</span> <span class="n">release_provider</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remove_binding_locked</span><span class="p">(</span><span class="n">owner_id</span><span class="p">)</span>
+<a id="__codelineno-18-23" name="__codelineno-18-23" href="#__codelineno-18-23"></a>                <span class="k">if</span> <span class="n">release_provider</span><span class="p">:</span>
+<a id="__codelineno-18-24" name="__codelineno-18-24" href="#__codelineno-18-24"></a>                    <span class="k">assert</span> <span class="n">binding</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+<a id="__codelineno-18-25" name="__codelineno-18-25" href="#__codelineno-18-25"></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">_release_if_idle</span><span class="p">(</span><span class="n">binding</span><span class="o">.</span><span class="n">sandbox_id</span><span class="p">)</span>
+</code></pre></div>
+<p><code>_remove_binding_locked</code>（<code>lease.py:204</code>）实现"最后持有者"判定：owner 退出时，若
+同一 sandbox_id 还有其他 owner（<code>_owners_by_sandbox</code> 集合非空），只记下
+<code>_release_pending_by_sandbox</code> 释放意向；集合清空时才真正触发
+<code>_release_if_idle</code> → <code>provider.release</code>。"释放意向 + 最后退出者执行"把
+"持有者先后顺序不可预测"变成了一种安全排序。</p>
+<p>另外两类持有者语义（<code>acquire_sandbox_client_lease</code>，<code>lease.py:111</code> 的
+<code>release_on_last</code> 参数）：</p>
+<ul>
+<li><strong>普通执行</strong>（lead、子代理）：<code>release_on_last=True</code>，正常表达"我走之后可以收摊"；</li>
+<li><strong>借用者</strong>（上传同步、fork 恢复子执行）：<code>release_on_last=False</code>，只围栏客户端、
+  只清理自己的命令作用域，<strong>不请求</strong>回收温热沙箱。</li>
+</ul>
+<h3 id="863">8.6.3 取消与清积压：重复取消不能撕裂生命周期<a class="headerlink" href="#863" title="Permanent link">&para;</a></h3>
+<p><code>run_sync_lifecycle_operation</code>（<code>lease.py:60</code>）是全模块的基石原语：把阻塞的
+Provider 调用丢进 <code>asyncio.to_thread</code>，await 方被取消时<strong>记住取消但不传播</strong>，
+先把 worker 跑完（<code>_drain_task_after_cancellation</code> 反复 shield），再重抛取消。
+这保证"反复 cancel 的调用方"不可能让一次 <code>acquire</code>/<code>release</code> 半途而废——
+Provider 的工作线程无法被取消，唯一安全的做法是等它结束再做簿记。</p>
+<p><code>SandboxMiddleware.after_agent</code> / <code>aafter_agent</code>（<code>middleware.py:462</code>、<code>middleware.py:495</code>）
+是执行的外围栅栏：先关闭预热句柄（<code>close_sandbox_prewarm</code>），fork 恢复的沙箱
+<strong>不释放</strong>（"releasing it here would evict the parent's warm sandbox"），普通沙箱按
+owner 走 <code>SandboxLeaseManager.release</code>。</p>
+<h3 id="864-command_scopepy">8.6.4 命令作用域（command_scope.py）<a class="headerlink" href="#864-command_scopepy" title="Permanent link">&para;</a></h3>
+<p>租约的 owner id 同时兼任 <code>sandbox_command_scope_id</code>（子代理场景见
+<code>executor.py:1907</code>–<code>1908</code>，两个 context 键取同一个值）。<code>sandbox/command_scope.py:32</code>
+的 <code>CommandScopes</code> 维护"每个 owner 的取消令牌 + 进程组"：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="n">COMMAND_OWNER_ENV</span> <span class="o">=</span> <span class="s2">"DEERFLOW_COMMAND_OWNER"</span>
+</code></pre></div>
+<p>Local 沙箱（POSIX）把 owner 令牌写进子进程环境变量 <code>DEERFLOW_COMMAND_OWNER</code>；
+取消时（<code>local_sandbox.py:334</code> 的 <code>cancel_command_scope</code>）先 SIGTERM 进程组，再对
+"shell 已返回但留下 nohup 子进程"的情形用 <code>pgrep -g</code> + <code>ps eww</code> 校验环境变量里
+的令牌匹配，才敢 <code>SIGKILL</code> 那个可能已被复用的 PGID。AIO 则把每个 scope 映射为一条
+显式持久 shell 会话，scope 释放时一并清理。</p>
+<h2 id="87">8.7 源码走读：沙箱中间件、预热与授权门<a class="headerlink" href="#87" title="Permanent link">&para;</a></h2>
+<h3 id="871-sandboxmiddleware-threadstate">8.7.1 SandboxMiddleware：沙箱进入 ThreadState<a class="headerlink" href="#871-sandboxmiddleware-threadstate" title="Permanent link">&para;</a></h3>
+<p><code>middleware.py:56</code> 的 <code>SandboxMiddleware</code> 是第 6 章中间件链的第三环。它有两种取沙箱
+时机（<code>middleware.py:59</code>）：</p>
+<ul>
+<li><code>lazy_init=True</code>（默认）：<code>abefore_model</code> 里<strong>启动但不等待</strong>预热
+  （<code>middleware.py:452</code> 的 <code>start_sandbox_prewarm(state, runtime)</code>），模型第一次响应
+  与 Docker 启动重叠，第一个沙箱工具调用再正式认领；</li>
+<li><code>lazy_init=False</code>：<code>before_agent</code> 立即获取。</li>
+</ul>
+<p>获取后写进图状态 <code>{"sandbox": {"sandbox_id": ...}}</code>，经 LangGraph channel 持久化进
+checkpoint——下一轮对话从 checkpoint 恢复时，<code>_retain_existing_sandbox</code> 用
+<code>reuse_or_acquire</code> 校验"这个 id 还活着且属于本身份"，失效就换新。懒获取路径里
+<code>wrap_tool_call</code>（<code>middleware.py:590</code>）负责把工具执行期间新初始化的 sandbox_id
+<strong>diff 出来</strong>并用 <code>Command(update=...)</code> 回写状态——因为 <code>ensure_sandbox_initialized</code>
+直接改 <code>runtime.state</code>，不经包装器的话 LangGraph 的 channel reducer 根本看不到。</p>
+<h3 id="872-prewarmpy">8.7.2 预热（prewarm.py）：投机性获取<a class="headerlink" href="#872-prewarmpy" title="Permanent link">&para;</a></h3>
+<p><code>should_prewarm_sandbox</code>（<code>prewarm.py:73</code>）用正则预测"最新用户消息里是否出现代码栅栏、
+路径、命令行或 Traceback"，命中才允许投机启动。预算控制 <code>prewarm_max_concurrent</code>
+（默认 1，<code>config.example.yaml:1744</code>）限制"每 Provider 每进程"的未认领投机数；
+<code>config.example.yaml:1740</code> 的 <code>prewarm: false</code> 总开关默认关闭，且<strong>仅对 AIO 生效</strong>
+（<code>prewarm.py:120</code> 检查 <code>sandbox.use.endswith(":AioSandboxProvider")</code>）。</p>
+<p>预热句柄必须注册在"无条件异步租约释放的 finally"里
+（<code>register_sandbox_prewarm_cleanup</code>，<code>lease.py:769</code>）——一个投机获取如果比正式工具
+先拿到沙箱、又没有认领（<code>claim</code>），要在 run 结束时归还，且归还动作不能被取消跳过。</p>
+<h3 id="873-sandboxexecute">8.7.3 授权门：sandbox:execute<a class="headerlink" href="#873-sandboxexecute" title="Permanent link">&para;</a></h3>
+<p><code>tools.py:2112</code> 的 <code>ensure_sandbox_initialized</code> 是所有沙箱工具的单一初始化入口，
+第一件事就是授权（<code>tools.py:2139</code>）：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>    <span class="c1"># Authorization is a live execution policy, not a lifetime property of a</span>
+<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>    <span class="c1"># sandbox id. Re-check before both reuse and acquisition so a role or policy</span>
+<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>    <span class="c1"># change takes effect on the next sandbox-backed tool call.</span>
+<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">_SANDBOX_AUTHORIZATION_CHECKED</span><span class="o">.</span><span class="n">get</span><span class="p">():</span>
+<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a>        <span class="n">authorize_sandbox_execution</span><span class="p">(</span>
+<a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a>            <span class="n">context</span><span class="o">=</span><span class="n">runtime</span><span class="o">.</span><span class="n">context</span> <span class="ow">or</span> <span class="p">{},</span>
+<a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a>            <span class="n">app_config</span><span class="o">=</span><span class="n">safe_app_config</span><span class="p">(),</span>
+<a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a>        <span class="p">)</span>
+</code></pre></div>
+<p>RFC #4063 Phase 3 的语义：对每个沙箱工具调用做一次二元
+<code>authorize(principal, "sandbox", "execute", target="*")</code> 判定，<strong>复用已缓存沙箱也要重查</strong>——
+因为授权配置和用户角色可能在沙箱缓存存活期间变了。拒绝以普通错误 <code>ToolMessage</code>
+（"sandbox execution is not permitted for your role"）浮出，而不是炸掉整个 run；
+<code>SandboxMiddleware.before_agent</code>（<code>middleware.py:274</code>）的急切路径捕获同一异常后跳过
+获取，把拒绝推迟到第一个真正触碰沙箱的工具调用。无 <code>config.yaml</code> 或
+<code>authorization.enabled: false</code> 时整个门退化为 no-op（fail-open 由配置显式选择）。</p>
+<p>网络出站管控（AIO 本地容器独有）在 <code>config.example.yaml:1818</code> 附近：
+<code>network.mode: open | isolated | allowlist</code>，<code>allowlist</code> 模式下被拦域可经
+Human Input 卡片审批（临时放行 TTL 默认 300 秒）——审批卡片的构造在
+<code>middleware.py:659</code> 的 <code>_network_approval_result</code>，且<strong>非交互运行（定时任务、webhook、
+子代理）一律自动拒绝</strong>，绝不给没有人值守的 run 弹审批卡。</p>
+<h2 id="88-provisioner-k8s">8.8 源码走读：Provisioner / K8s 模式<a class="headerlink" href="#88-provisioner-k8s" title="Permanent link">&para;</a></h2>
+<p><code>docker/provisioner/app.py</code> 是一个独立 FastAPI 服务（端口 8002），五个端点：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>POST   /api/sandboxes              — Create a sandbox Pod + Service
+<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>DELETE /api/sandboxes/{sandbox_id} — Destroy a sandbox Pod + Service
+<a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>GET    /api/sandboxes/{sandbox_id} — Get sandbox status &amp; URL
+<a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a>GET    /api/sandboxes/{sandbox_id}/presence — Inspect Pod presence &amp; generation
+<a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a>GET    /api/sandboxes              — List all sandboxes
+</code></pre></div>
+<p><code>docker/provisioner/README.md</code> 描述了完整流程：Gateway 发 <code>POST /api/sandboxes</code>
+携带 <code>sandbox_id</code> / <code>thread_id</code> / <code>user_id</code>，Provisioner 在 <code>deer-flow</code> 命名空间创建
+专属 Pod，把技能投影（只读）与 <code>/mnt/user-data</code>（读写）挂进去，默认 NodePort
+Service 暴露访问 URL（集群内可切 <code>SANDBOX_SERVICE_TYPE=ClusterIP</code> 返回 DNS 名）。
+启用方式见 <code>config.example.yaml:1950</code>：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="c1"># sandbox:</span>
+<a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="c1">#   use: deerflow.community.aio_sandbox:AioSandboxProvider</span>
+<a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="c1">#   provisioner_url: http://provisioner:8002</span>
+<a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a><span class="c1">#   # provisioner_api_key: $PROVISIONER_API_KEY</span>
+</code></pre></div>
+<p>AGENTS.md 中的 PVC 约定在本章的落点：Provisioner 以 <code>USERDATA_PVC_NAME=user-data</code>
+<strong>声明一次</strong>共享 PVC；上传/产物目录与 Lark broker 凭据挂载都复用它（不同 subPath）。
+当 Gateway 与 Pod 共享同一份线程用户数据目录（对齐的 PVC/NFS/hostPath）时，把
+<code>sandbox.thread_data_mounts: true</code> 打开，上传就跳过 acquire/sync（Provisioner README
+明确警告：挂载关系不确定时保持未设置，<code>false</code> 误报会让上传不可用）。</p>
+<h2 id="89-configyaml-sandbox">8.9 配置详解：config.yaml → sandbox: 段<a class="headerlink" href="#89-configyaml-sandbox" title="Permanent link">&para;</a></h2>
+<p>默认（local）段的关键键（<code>config.example.yaml:1732</code> 起）：</p>
+<table>
+<thead>
+<tr>
+<th>键</th>
+<th>默认</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>use</code></td>
+<td><code>deerflow.sandbox.local:LocalSandboxProvider</code></td>
+<td>Provider class path，可指向任意 <code>SandboxProvider</code> 子类</td>
+</tr>
+<tr>
+<td><code>allow_host_bash</code></td>
+<td><code>false</code></td>
+<td>仅 local Provider 有效；打开 host bash（非安全边界）</td>
+</tr>
+<tr>
+<td><code>prewarm</code></td>
+<td><code>false</code></td>
+<td>仅 AIO；首次模型调用期间投机启动容器</td>
+</tr>
+<tr>
+<td><code>prewarm_max_concurrent</code></td>
+<td><code>1</code></td>
+<td>每 Provider 每进程的投机预算</td>
+</tr>
+<tr>
+<td><code>mounts</code></td>
+<td>空</td>
+<td>额外挂载 <code>host_path → container_path</code>（POSIX 风格），不得与保留前缀冲突（<code>local_sandbox_provider.py:177</code> 的 <code>_RESERVED_CONTAINER_PREFIXES</code>）</td>
+</tr>
+<tr>
+<td><code>bash_output_max_chars</code></td>
+<td><code>20000</code></td>
+<td>bash 输出<strong>中部截断</strong>（头+尾，错误可能在任何位置）</td>
+</tr>
+<tr>
+<td><code>read_file_output_max_chars</code></td>
+<td><code>50000</code></td>
+<td>读文件<strong>头部截断</strong>，标记续读 <code>start_line</code></td>
+</tr>
+<tr>
+<td><code>ls_output_max_chars</code></td>
+<td><code>20000</code></td>
+<td>目录列表头部截断</td>
+</tr>
+<tr>
+<td><code>bash_command_timeout</code></td>
+<td><code>600</code></td>
+<td>每命令超时；AIO 1.9.3+ 由服务端 <code>hard_timeout</code> 执行</td>
+</tr>
+</tbody>
+</table>
+<p>AIO 注释段（<code>config.example.yaml:1784</code> 起）补充：<code>image</code>（推荐显式 pin
+<code>all-in-one-sandbox:1.11.0</code>，<code>latest</code> 冻结在缺少 <code>/v1/bash/*</code> 路由的旧 digest）、
+<code>port</code>、<code>replicas</code>（默认 3，超限驱逐最久未用）、<code>container_prefix</code>、<code>network</code>
+（<code>config.example.yaml:1819</code>）、<code>thread_data_mounts</code>、<code>environment</code>
+（<code>$VAR</code> 运行时解析；AIO 镜像默认 <code>MAX_SHELL_SESSIONS=10</code>，配置注释要求它至少为
+<code>subagent_runtime.max_running + 1</code>——子代理与 lead 各占会话）与 <code>ownership</code>。
+第 9 章会用到 <code>MAX_SHELL_SESSIONS</code> 与 <code>max_running</code> 的联动关系。</p>
+<h2 id="_2">动手实验：观察两种沙箱下的路径映射<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<p><strong>目标</strong>：让同一个"分析上传 CSV"任务分别在 local 与 docker 沙箱执行，亲眼看到虚拟
+路径的双向翻译与落盘位置。全程可离线复现。</p>
+<p><strong>步骤 1：local 模式（默认配置）</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>make<span class="w"> </span>config<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>make<span class="w"> </span>install<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>make<span class="w"> </span>dev
+</code></pre></div>
+<ol>
+<li>浏览器打开 <code>http://localhost:2026</code>，新建会话，上传一个 <code>data.csv</code>；</li>
+<li>让 agent 执行：<em>"用 bash 打印 /mnt/user-data/uploads 目录列表，然后
+   <code>python3 -c "import os; print(os.getcwd())"</code>，再写一个
+   /mnt/user-data/outputs/hello.txt"</em>；</li>
+<li>观察模型可见的输出：全部是 <code>/mnt/user-data/...</code> 与相对路径——
+   <code>execute_command</code> 结尾的反向解析把宿主痕迹抹掉了；</li>
+<li>打开宿主机确认落盘：<code>ls backend/.deer-flow/users/default/threads/&lt;thread_id&gt;/user-data/{uploads,outputs}/</code>；</li>
+<li>在 Gateway 日志（<code>logs/gateway.log</code>）里搜 <code>Acquiring sandbox</code>，你会看到
+   <code>local:&lt;user_id&gt;:&lt;thread_id&gt;</code> 形态的 id，以及 LRU 缓存命中/替换的日志。</li>
+</ol>
+<p><strong>步骤 2（可选，需要 Docker）：AIO 容器模式</strong></p>
+<p>把 <code>config.yaml</code> 的 sandbox 段改为：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="nt">sandbox</span><span class="p">:</span>
+<a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a><span class="w">  </span><span class="nt">use</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">deerflow.community.aio_sandbox:AioSandboxProvider</span>
+<a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a><span class="w">  </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">enterprise-public-cn-beijing.cr.volces.com/vefaas-public/all-in-one-sandbox:1.11.0</span>
+</code></pre></div>
+<p>重启 Gateway（<code>make stop &amp;&amp; make dev</code>），重复同样的对话，然后：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>docker<span class="w"> </span>ps<span class="w"> </span>--filter<span class="w"> </span><span class="nv">name</span><span class="o">=</span>deer-flow-sandbox
+<a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>&lt;容器&gt;<span class="w"> </span>ls<span class="w"> </span>/mnt/user-data/uploads
+</code></pre></div>
+<p>你会看到容器内确实挂载着同一个线程目录（步骤 1 的 <code>hello.txt</code> 若是同一线程仍在）。
+对比日志中的 sandbox_id：现在是 16 位 hex（scope token），且第二次对话会命中
+温热池回收（<code>Reclaimed warm-pool sandbox ...</code>）而不是重新创建。</p>
+<p><strong>步骤 3：验证凭据擦除</strong></p>
+<p>在同一会话里让 agent 运行
+<code>python3 -c "import os; print([k for k in os.environ if 'KEY' in k or 'TOKEN' in k])"</code>。
+对比宿主机 <code>env | grep -i key</code> 的输出——沙箱子进程的列表应为空（或只剩你显式
+配置在 <code>sandbox.environment</code> 里的项），因为 <code>build_sandbox_env</code> 在进程启动前就
+擦掉了匹配 <code>*KEY*</code>/<code>*TOKEN*</code> 的继承变量。</p>
+<h2 id="_3">常见坑<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong><code>make dev</code> 下配置了不存在的 <code>sandbox.mounts.host_path</code></strong>。Local Provider 在
+   Docker 部署（<code>make up</code>）里从 <strong>gateway 容器内</strong>检查该路径，宿主机路径若没有
+   bind-mount 进容器就会被跳过。代码特意把这种静默失败升级为 ERROR 并给出
+   修复指引（<code>local_sandbox_provider.py:234</code>）——别忽略这条日志。</li>
+<li><strong>老 AIO 镜像跑 required-secrets 技能必失败</strong>。<code>latest</code> 标签冻结的旧镜像没有
+   <code>/v1/bash/exec</code>，env 注入命令直接报 404。这不是 bug，是镜像太老：pin
+   <code>all-in-one-sandbox:1.11.0</code>（<code>config.example.yaml:1793</code> 附近的注释）。</li>
+<li><strong>多实例共享 Docker 后端但没配 <code>ownership: type: redis</code></strong>。两个 Gateway 各自的
+   空闲回收器会把对方正在使用的容器当成孤儿回收，用户看到 502/connection refused
+   （issue #4206 的原始事故形态）。单实例用 <code>memory</code> 没问题，多实例必须 Redis，
+   并把 TTL（<code>renewal_interval_seconds × ttl_multiplier</code>）按你的 Redis 可用性目标
+   取值。</li>
+<li><strong>本地沙箱开 <code>allow_host_bash: true</code> 后以为还有技能隔离</strong>。host bash 子进程可以
+   用规范路径绕过 <code>PathMapping</code>，所以 <code>supports_agent_skill_isolation</code> 会动态变
+   <code>False</code>，显式技能白名单的 Agent 会被中间件直接拒绝（fail closed），而不是
+   "降级但继续"。</li>
+<li><strong>远程 Provider 下上传文件后 agent 看不见</strong>。<code>thread_data_mounts</code> 对
+   远程/provisioner 后端默认 <code>false</code>，上传需要显式同步；如果部署并没有真正共享
+   线程目录却把它设成 <code>true</code>，上传同步被跳过，agent 在沙箱里看不到文件——
+   配置注释的原话是"a false positive makes uploads unavailable"。</li>
+<li><strong>改了 <code>sandbox.environment</code> 但新会话没生效</strong>。Provider 是进程级单例，
+   config 热编辑对<strong>新 acquire</strong> 生效，但已缓存的 LocalSandbox 映射表/环境快照要等
+   下一次 acquire 重建或 Provider reset；拿不准就重启 Gateway。</li>
+</ol>
+<h2 id="_4">下一步<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>第 9 章</strong>（<code>docs/tutorials/09-multi-agent.md</code>）：子代理与 lead agent <strong>共享同一个
+  线程沙箱</strong>——每个子代理以 <code>subagent:{task_id}</code> 为租约 owner 和命令作用域接入本章
+  的 lease 机制，AIO 为每个作用域维持独立持久会话。读完本章再看第 9 章的
+  "共享沙箱执行生命周期"会有完全不同的体感。</li>
+<li><strong>第 10 章</strong>（<code>docs/tutorials/10-memory.md</code>）：沙箱管"执行"，记忆管"跨会话知识"——
+  两者共同构成 Agent 的长期工作环境。</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      教程基于开源项目 <a href='https://github.com/bytedance/deer-flow'>bytedance/deer-flow</a> 的真实源码编写
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.sections", "navigation.expand", "navigation.top", "navigation.indexes", "search.suggest", "search.highlight", "content.code.copy", "toc.follow"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.a5f9d56c.min.js"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
