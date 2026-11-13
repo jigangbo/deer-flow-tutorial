@@ -21,29 +21,35 @@ title: 首页
 ## 项目全景架构
 
 ```
-                       浏览器 │ IM 渠道(飞书/Slack/Telegram/Discord/钉钉) │ 定时任务
-              ────────────────┴──────────────────┬─────────────────────┴────────────
+                      Browser │              IM Channels               │ Scheduled Tasks
+              ────────────────┴────────────────────┬───────────────────┴────────────────────────
                                               ┌────▼────┐
                                               │  Nginx  │  :2026 唯一公网入口(回环默认)
                                               └────┬────┘
-                 /api/langgraph/* ──重写──▶ /api/* ││ 其余请求 ──▶ Frontend
+                /api/langgraph/* ─rewrite─▶ /api/* ││ 其余请求 ──▶ Frontend
               ┌────────────────────────┬───────────┘└──────────────────────┐
               │                        │                                   │
    ┌──────────▼─────────────┐   ┌──────▼───────────────────┐   ┌───────────▼──────────┐
    │  Gateway API :8001     │   │  Frontend :3000          │   │ Provisioner :8002    │
-   │  FastAPI + 内嵌运行时   │   │  Next.js 16 / React 19   │   │ (可选)沙箱 K8s 模式   │
+   │  FastAPI + embedded    │   │  Next.js 16 / React 19   │   │ (optional) K8s mode  │ （可选）沙箱 K8s 模式
    │  ┌───────────────────┐ │   │  /workspace /showcase    │   └──────────────────────┘
-   │  │ app.*  网关+IM渠道 │ │   └──────────────────────────┘
+   │  │ app.* gateway+IM  │ │   └──────────────────────────┘
    │  └────────┬──────────┘ │
-   │           │ 单向依赖    │
+   │           │ one-way dep│
    │  ┌────────▼──────────┐ │
    │  │ deerflow.* Harness│ │   横切子系统：config.yaml + extensions_config.json
-   │  │ runtime 中间件链   │ │   skills 技能 · sandbox 沙箱 · subagents 子代理
-   │  │ sandbox 技能 MCP  │ │   memory(DeerMem) · scheduler 定时 · persistence
+   │  │ middleware chain  │ │   skills 技能 · sandbox 沙箱 · subagents 子代理
+   │  │ sandbox skills MCP│ │  memory(DeerMem) · scheduler 定时 · persistence
    │  │ memory scheduler  │ │
    │  └───────────────────┘ │
    └────────────────────────┘
 ```
+
+> **图例**：Browser = 浏览器 · IM Channels = IM 渠道（飞书 / Slack / Telegram / Discord / 钉钉） ·
+> Scheduled Tasks = 定时任务 · rewrite = 重写 · gateway+IM = 网关与 IM 渠道接入 ·
+> embedded = 内嵌运行时 · one-way dep = 单向依赖（`app.*` 可 import `deerflow.*`，反之禁止） ·
+> middleware = 运行时中间件链 · sandbox skills MCP = 沙箱 / 技能 / MCP 子系统 ·
+> (optional) K8s mode = （可选）沙箱 K8s 模式。
 
 ## 主工作流：一次对话请求的一生
 
