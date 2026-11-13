@@ -24,8 +24,9 @@ for f in "$SRC"/*.md; do
 done
 
 cp "$SRC/.pages" "$DST/.pages"
-mkdir -p "$DST/javascripts"
+mkdir -p "$DST/javascripts" "$DST/stylesheets"
 cp "$SRC/javascripts/mathjax.js" "$DST/javascripts/mathjax.js"
+cp "$SRC/stylesheets/extra.css" "$DST/stylesheets/extra.css"
 
 echo "Synced from: $SRC"
 echo "Next: review 'git diff', commit & push (GitHub Actions will redeploy)."

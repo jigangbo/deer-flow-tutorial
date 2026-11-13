@@ -1,0 +1,33 @@
+/* ============================================================
+   宽屏布局优化（Material for MkDocs 9.x）
+   - 左侧目录（导航）贴视口最左
+   - 右侧大纲（TOC）贴视口最右
+   - 中间正文自适应撑满剩余空间
+
+   实现原理：Material 把整页宽度限制在唯一的
+   .md-grid { max-width: 61rem } 上；flex 结构本身已经是
+   [primary sidebar | content(flex-grow) | secondary sidebar] 的
+   DOM 顺序，放开栅格上限即可让三栏贴边铺满。
+   仅作用于 ≥60em（960px+）宽屏；窄屏保持抽屉式交互不变。
+   ============================================================ */
+
+@media screen and (min-width: 60em) {
+  /* 放开整页栅格宽度上限：header / main / footer 共用 .md-grid。
+     header 同步变宽（logo 贴左、搜索/仓库链接贴右），视觉一致 */
+  .md-grid {
+    max-width: none;
+    margin-left: 0;
+    margin-right: 0;
+    /* 视口两侧留少量呼吸边距，避免内容贴死屏幕边缘 */
+    padding-left: 1.2rem;
+    padding-right: 1.2rem;
+  }
+}
+
+@media screen and (min-width: 76.25em) {
+  /* 兜底：正文列吃满中间全部空间（Material 默认已 flex-grow:1） */
+  .md-content {
+    flex-grow: 1;
+    min-width: 0;
+  }
+}
